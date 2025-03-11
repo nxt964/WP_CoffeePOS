@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "PLknSR1ITjayrgz191OZ5HpZ2eMTDVYXuVPn70xIo0Rkub29UO3WBYEZOXBk7DfNktHmuUKfH0lx76hrICfL6A==",
+  "success": true,
+  "projectFilePath": "D:\\PROGRAMMING\\UNIVERSITY\\Windows_Programming\\FinalProject\\CoffeePOS.Core\\CoffeePOS.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\THANH NGUYEN\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
+    "C:\\Users\\THANH NGUYEN\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.20\\microsoft.windowsdesktop.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\THANH NGUYEN\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.20\\microsoft.netcore.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\THANH NGUYEN\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.20\\microsoft.aspnetcore.app.ref.7.0.20.nupkg.sha512"
+  ],
+  "logs": []
+}
