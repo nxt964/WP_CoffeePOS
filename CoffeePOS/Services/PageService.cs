@@ -14,12 +14,18 @@ public class PageService : IPageService
 
     public PageService()
     {
-        Configure<MainViewModel, MainPage>();
+        Configure<DashboardViewModel, DashboardPage>();
+        Configure<CategoriesViewModel, CategoriesPage>();
+        Configure<ProductsViewModel, ProductsPage>();
+        Configure<ProductsDetailViewModel, ProductsDetailPage>();
+        Configure<CustomersViewModel, CustomersPage>();
+        Configure<OrdersViewModel, OrdersPage>();
+        Configure<InventoryViewModel, InventoryPage>();
+        Configure<MaterialViewModel, MaterialPage>();
+        Configure<TableViewModel, TablePage>();
+        Configure<TableDetailViewModel, TableDetailPage>();
+        Configure<StatisticsViewModel, StatisticsPage>();
         Configure<WebViewViewModel, WebViewPage>();
-        Configure<ListDetailsViewModel, ListDetailsPage>();
-        Configure<ContentGridViewModel, ContentGridPage>();
-        Configure<ContentGridDetailViewModel, ContentGridDetailPage>();
-        Configure<DataGridViewModel, DataGridPage>();
         Configure<SettingsViewModel, SettingsPage>();
     }
 
