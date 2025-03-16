@@ -7,6 +7,10 @@
     mc:Ignorable="d">
 
     <Grid x:Name="ContentArea">
-        
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="SaveButton" Content="Save Order to Firebase" Click="SaveButton_Click" Margin="10"/>
+            <Button x:Name="ReadButton" Content="Read Order from Firebase" Click="ReadButton_Click" Margin="10"/>
+            <TextBlock x:Name="ResultText" Text="Result will appear here" Margin="10"/>
+        </StackPanel>
     </Grid>
 </Page>
