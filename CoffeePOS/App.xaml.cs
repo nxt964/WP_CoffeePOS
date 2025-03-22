@@ -102,6 +102,9 @@ public partial class App : Application
             services.AddTransient<DashboardPage>();
             services.AddTransient<ShellPage>();
             services.AddTransient<ShellViewModel>();
+            services.AddTransient<ProductViewModel>();
+            services.AddTransient<AddProductViewModel>();
+            services.AddTransient<UpdateProductViewModel>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

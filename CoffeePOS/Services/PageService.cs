@@ -27,6 +27,9 @@ public class PageService : IPageService
         Configure<StatisticsViewModel, StatisticsPage>();
         Configure<WebViewViewModel, WebViewPage>();
         Configure<SettingsViewModel, SettingsPage>();
+        Configure<ProductViewModel, ProductPage>();
+        Configure<AddProductViewModel, AddProductPage>();
+        Configure<UpdateProductViewModel, UpdateProductPage>();
     }
 
     public Type GetPageType(string key)
