@@ -4,16 +4,16 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace CoffeePOS.Views;
 
-public sealed partial class MainPage : Page
+public sealed partial class TablePage : Page
 {
-    public MainViewModel ViewModel
+    public TableViewModel ViewModel
     {
         get;
     }
 
-    public MainPage()
+    public TablePage()
     {
-        ViewModel = App.GetService<MainViewModel>();
+        ViewModel = App.GetService<TableViewModel>();
         InitializeComponent();
     }
 }

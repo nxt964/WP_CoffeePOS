@@ -1,3 +1,16 @@
+# .NET Build Artifacts
 bin/
 obj/
-.vs/
+
+# Visual Studio Files
+*.user
+*.suo
+*.sln.docstates
+
+# NuGet Packages
+*.nupkg
+packages/
+
+# IDE-Specific Files
+.vscode/
+.idea/

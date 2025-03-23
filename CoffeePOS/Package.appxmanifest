@@ -11,11 +11,11 @@
   IgnorableNamespaces="uap rescap genTemplate">
 
   <Identity
-    Name="3cad4fa5-4be7-4712-9438-9f0cbc9869d7"
+    Name="029cad97-086c-485c-87ef-5cb75013e005"
     Publisher="CN=THANH NGUYEN"
     Version="1.0.0.0" />
     
-  <mp:PhoneIdentity PhoneProductId="3cad4fa5-4be7-4712-9438-9f0cbc9869d7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="029cad97-086c-485c-87ef-5cb75013e005" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
     
   <Properties>
     <DisplayName>CoffeePOS</DisplayName>
@@ -47,13 +47,13 @@
       </uap:VisualElements>
       <Extensions>
           <desktop:Extension Category="windows.toastNotificationActivation">
-              <desktop:ToastNotificationActivation ToastActivatorCLSID="60e28829-d256-48e9-b4b9-993629d808fd" />
+              <desktop:ToastNotificationActivation ToastActivatorCLSID="3a52cda7-6815-4dd9-b07b-c86e5dae412a" />
           </desktop:Extension>
 
           <com:Extension Category="windows.comServer">
               <com:ComServer>
                   <com:ExeServer Executable="CoffeePOS.exe" Arguments="----AppNotificationActivated:" DisplayName="Toast activator">
-                      <com:Class Id="60e28829-d256-48e9-b4b9-993629d808fd" DisplayName="Toast activator"/>
+                      <com:Class Id="3a52cda7-6815-4dd9-b07b-c86e5dae412a" DisplayName="Toast activator"/>
                   </com:ExeServer>
               </com:ComServer>
           </com:Extension>

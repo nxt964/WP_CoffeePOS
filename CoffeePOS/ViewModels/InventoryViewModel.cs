@@ -8,13 +8,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CoffeePOS.ViewModels;
 
-public partial class DataGridViewModel : ObservableRecipient, INavigationAware
+public partial class InventoryViewModel : ObservableRecipient, INavigationAware
 {
     private readonly ISampleDataService _sampleDataService;
 
     public ObservableCollection<SampleOrder> Source { get; } = new ObservableCollection<SampleOrder>();
 
-    public DataGridViewModel(ISampleDataService sampleDataService)
+    public InventoryViewModel(ISampleDataService sampleDataService)
     {
         _sampleDataService = sampleDataService;
     }

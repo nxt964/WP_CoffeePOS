@@ -2,9 +2,9 @@
 
 namespace CoffeePOS.ViewModels;
 
-public partial class MainViewModel : ObservableRecipient
+public partial class StatisticsViewModel : ObservableRecipient
 {
-    public MainViewModel()
+    public StatisticsViewModel()
     {
     }
 }

@@ -6,16 +6,16 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace CoffeePOS.Views;
 
-public sealed partial class ListDetailsPage : Page
+public sealed partial class CategoriesPage : Page
 {
-    public ListDetailsViewModel ViewModel
+    public CategoriesViewModel ViewModel
     {
         get;
     }
 
-    public ListDetailsPage()
+    public CategoriesPage()
     {
-        ViewModel = App.GetService<ListDetailsViewModel>();
+        ViewModel = App.GetService<CategoriesViewModel>();
         InitializeComponent();
     }
 

@@ -11,14 +11,14 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace CoffeePOS.ViewModels;
 
-public partial class ContentGridViewModel : ObservableRecipient, INavigationAware
+public partial class TableViewModel : ObservableRecipient, INavigationAware
 {
     private readonly INavigationService _navigationService;
     private readonly ISampleDataService _sampleDataService;
 
     public ObservableCollection<SampleOrder> Source { get; } = new ObservableCollection<SampleOrder>();
 
-    public ContentGridViewModel(INavigationService navigationService, ISampleDataService sampleDataService)
+    public TableViewModel(INavigationService navigationService, ISampleDataService sampleDataService)
     {
         _navigationService = navigationService;
         _sampleDataService = sampleDataService;
@@ -46,7 +46,7 @@ public partial class ContentGridViewModel : ObservableRecipient, INavigationAwar
         if (clickedItem != null)
         {
             _navigationService.SetListDataItemForNextConnectedAnimation(clickedItem);
-            _navigationService.NavigateTo(typeof(ContentGridDetailViewModel).FullName!, clickedItem.OrderID);
+            _navigationService.NavigateTo(typeof(TableDetailViewModel).FullName!, clickedItem.OrderID);
         }
     }
 }

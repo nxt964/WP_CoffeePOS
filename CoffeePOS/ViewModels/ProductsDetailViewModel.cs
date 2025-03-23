@@ -6,14 +6,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CoffeePOS.ViewModels;
 
-public partial class ContentGridDetailViewModel : ObservableRecipient, INavigationAware
+public partial class ProductsDetailViewModel : ObservableRecipient, INavigationAware
 {
     private readonly ISampleDataService _sampleDataService;
 
     [ObservableProperty]
     private SampleOrder? item;
 
-    public ContentGridDetailViewModel(ISampleDataService sampleDataService)
+    public ProductsDetailViewModel(ISampleDataService sampleDataService)
     {
         _sampleDataService = sampleDataService;
     }

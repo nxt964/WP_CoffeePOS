@@ -120,11 +120,38 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>CoffeePOS</value>
   </data>
-  <data name="AppDescription" xml:space="preserve">
-    <value>CoffeePOS</value>
+	<data name="AppDescription" xml:space="preserve">
+		<value>CoffeePOS</value>
+  	</data>
+  <data name="Shell_Dashboard.Content" xml:space="preserve">
+    <value>Dashboard</value>
   </data>
-  <data name="Shell_Main.Content" xml:space="preserve">
-    <value>Main</value>
+  <data name="Categories_NoSelection.Text" xml:space="preserve">
+    <value>Select an item from the list.</value>
+  </data>
+  <data name="Shell_Categories.Content" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="Shell_Products.Content" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="Shell_Customers.Content" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="Shell_Orders.Content" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="Shell_Inventory.Content" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="Shell_Material.Content" xml:space="preserve">
+    <value>Material</value>
+  </data>
+  <data name="Shell_Table.Content" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="Shell_Statistics.Content" xml:space="preserve">
+    <value>Statistics</value>
   </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Loading...</value>
@@ -161,18 +188,6 @@
   </data>
   <data name="Shell_WebView.Content" xml:space="preserve">
     <value>WebView</value>
-  </data>
-  <data name="ListDetails_NoSelection.Text" xml:space="preserve">
-    <value>Select an item from the list.</value>
-  </data>
-  <data name="Shell_ListDetails.Content" xml:space="preserve">
-    <value>ListDetails</value>
-  </data>
-  <data name="Shell_ContentGrid.Content" xml:space="preserve">
-    <value>ContentGrid</value>
-  </data>
-  <data name="Shell_DataGrid.Content" xml:space="preserve">
-    <value>DataGrid</value>
   </data>
   <data name="Settings_Personalization.Text" xml:space="preserve">
     <value>Personalization</value>

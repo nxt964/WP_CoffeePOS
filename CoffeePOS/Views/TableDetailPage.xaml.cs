@@ -8,16 +8,16 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace CoffeePOS.Views;
 
-public sealed partial class ContentGridDetailPage : Page
+public sealed partial class TableDetailPage : Page
 {
-    public ContentGridDetailViewModel ViewModel
+    public TableDetailViewModel ViewModel
     {
         get;
     }
 
-    public ContentGridDetailPage()
+    public TableDetailPage()
     {
-        ViewModel = App.GetService<ContentGridDetailViewModel>();
+        ViewModel = App.GetService<TableDetailViewModel>();
         InitializeComponent();
     }
 

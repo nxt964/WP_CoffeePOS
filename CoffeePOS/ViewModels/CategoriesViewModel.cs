@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CoffeePOS.ViewModels;
 
-public partial class ListDetailsViewModel : ObservableRecipient, INavigationAware
+public partial class CategoriesViewModel : ObservableRecipient, INavigationAware
 {
     private readonly ISampleDataService _sampleDataService;
 
@@ -17,7 +17,7 @@ public partial class ListDetailsViewModel : ObservableRecipient, INavigationAwar
 
     public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
 
-    public ListDetailsViewModel(ISampleDataService sampleDataService)
+    public CategoriesViewModel(ISampleDataService sampleDataService)
     {
         _sampleDataService = sampleDataService;
     }
