@@ -16,23 +16,23 @@ public partial class ProductViewModel : ObservableRecipient, INavigationAware
 
     public void OnNavigatedTo(object parameter)
     {
-        Source.Clear();
+        source.Clear();
         // Giả lập dữ liệu sản phẩm
-        Source.Add(new Product
+        source.Add(new Product
         {
             Id = "P001",
             Name = "Sample Product 1",
             Price = 100.0,
             Image = "/Assets/StoreLogo.png"
         });
-        Source.Add(new Product
+        source.Add(new Product
         {
             Id = "P002",
             Name = "Sample Product 2",
             Price = 200.0,
             Image = "/Assets/StoreLogo.png"
         });
-        Source.Add(new Product
+        source.Add(new Product
         {
             Id = "P003",
             Name = "Sample Product 3",
@@ -47,10 +47,10 @@ public partial class ProductViewModel : ObservableRecipient, INavigationAware
 
     public void DeleteProduct(string productId)
     {
-        var productToRemove = Source.FirstOrDefault(p => p.Id == productId);
+        var productToRemove = source.FirstOrDefault(p => p.Id == productId);
         if (productToRemove != null)
         {
-            Source.Remove(productToRemove);
+            source.Remove(productToRemove);
         }
     }
 }
