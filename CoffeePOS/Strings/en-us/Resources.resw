@@ -218,4 +218,7 @@
   <data name="Shell_Product.Content" xml:space="preserve">
     <value>Products</value>
   </data>
+  <data name="Shell_Order.Content" xml:space="preserve">
+    <value>Order</value>
+  </data>
 </root>
