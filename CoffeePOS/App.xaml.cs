@@ -103,8 +103,17 @@ public partial class App : Application
             services.AddTransient<ShellPage>();
             services.AddTransient<ShellViewModel>();
             services.AddTransient<ProductViewModel>();
+            services.AddTransient<ProductPage>();
             services.AddTransient<AddProductViewModel>();
+            services.AddTransient<AddProductPage>();
             services.AddTransient<UpdateProductViewModel>();
+            services.AddTransient<UpdateProductPage>();
+            services.AddTransient<OrderPage>();
+            services.AddTransient<OrderViewModel>();
+            services.AddTransient<AddOrderPage>();
+            services.AddTransient<AddOrderViewModel>();
+            services.AddTransient<DetailOrderPage>(); 
+            services.AddTransient<DetailOrderViewModel>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

@@ -30,6 +30,9 @@ public class PageService : IPageService
         Configure<ProductViewModel, ProductPage>();
         Configure<AddProductViewModel, AddProductPage>();
         Configure<UpdateProductViewModel, UpdateProductPage>();
+        Configure<OrderViewModel, OrderPage>();
+        Configure<AddOrderViewModel, AddOrderPage>();
+        Configure<DetailOrderViewModel, DetailOrderPage>();
     }
 
     public Type GetPageType(string key)
