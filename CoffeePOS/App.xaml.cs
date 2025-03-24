@@ -1,6 +1,8 @@
 ﻿using CoffeePOS.Activation;
 using CoffeePOS.Contracts.Services;
 using CoffeePOS.Core.Contracts.Services;
+using CoffeePOS.Core.Daos;
+using CoffeePOS.Core.Interfaces;
 using CoffeePOS.Core.Services;
 using CoffeePOS.Helpers;
 using CoffeePOS.Models;
@@ -68,6 +70,9 @@ public partial class App : Application
             services.AddSingleton<IActivationService, ActivationService>();
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<INavigationService, NavigationService>();
+
+            // Core Dao
+            services.AddSingleton<IDao, MockDao>();
 
             // Core Services
             services.AddSingleton<ISampleDataService, SampleDataService>();
