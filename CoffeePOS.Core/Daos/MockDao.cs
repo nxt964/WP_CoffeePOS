@@ -41,13 +41,13 @@ public class MockDao : IDao
         new Product { Id = 2, Name = "Cappuccino", Description = "Espresso with milk", Price = 3.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
         new Product { Id = 3, Name = "Latte", Description = "Creamy espresso", Price = 4.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
         new Product { Id = 4, Name = "Americano", Description = "Espresso with water", Price = 2.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
-        new Product { Id = 5, Name = "Mocha", Description = "Chocolate-flavored coffee", Price = 4.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
+        new Product { Id = 5, Name = "Mocha", Description = "Chocolate-flavored coffee", Price = 4.50, ImageURL = "ProductImage.jpg", IsStocked = false, CategoryId = 1 },
 
         // Tea (CategoryId = 2)
-        new Product { Id = 6, Name = "Green Tea", Description = "Healthy green tea", Price = 2.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
+        new Product { Id = 6, Name = "Green Tea", Description = "Healthy green tea", Price = 2.00, ImageURL = "ProductImage.jpg", IsStocked = false, CategoryId = 2 },
         new Product { Id = 7, Name = "Black Tea", Description = "Strong tea", Price = 2.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
         new Product { Id = 8, Name = "Oolong Tea", Description = "Smooth flavor", Price = 3.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
-        new Product { Id = 9, Name = "Herbal Tea", Description = "Caffeine-free tea", Price = 2.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
+        new Product { Id = 9, Name = "Herbal Tea", Description = "Caffeine-free tea", Price = 2.75, ImageURL = "ProductImage.jpg", IsStocked = false, CategoryId = 2 },
         new Product { Id = 10, Name = "Chai Tea", Description = "Spiced milk tea", Price = 3.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
 
         // Pastries (CategoryId = 3)
