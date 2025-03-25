@@ -131,7 +131,21 @@ public class MockDao : IDao
         new ProductIngredient { Id = 18, ProductId = 13, IngredientId = 7, QuantityUsed = 1 },
     });
 
-    public IRepository<IngredientInventoryTransaction> IngredientInventoryTransactions { get; } = new MockRepository<IngredientInventoryTransaction>( new List<IngredientInventoryTransaction>() { });
+    public IRepository<IngredientInventoryTransaction> IngredientInventoryTransactions
+    {
+        get;
+    } = new MockRepository<IngredientInventoryTransaction>(new List<IngredientInventoryTransaction>() {
+    new IngredientInventoryTransaction { Id = 1, IngredientId = 1, QuantityChange = 50, TransactionDate = DateTime.Parse("2025-03-01 10:00:00"), TransactionType = "Purchase" },
+    new IngredientInventoryTransaction { Id = 2, IngredientId = 2, QuantityChange = -10, TransactionDate = DateTime.Parse("2025-03-02 14:30:00"), TransactionType = "Usage" },
+    new IngredientInventoryTransaction { Id = 3, IngredientId = 3, QuantityChange = 100, TransactionDate = DateTime.Parse("2025-03-03 09:15:00"), TransactionType = "Purchase" },
+    new IngredientInventoryTransaction { Id = 4, IngredientId = 4, QuantityChange = -5, TransactionDate = DateTime.Parse("2025-03-04 16:00:00"), TransactionType = "Usage" },
+    new IngredientInventoryTransaction { Id = 5, IngredientId = 5, QuantityChange = 20, TransactionDate = DateTime.Parse("2025-03-05 11:45:00"), TransactionType = "Purchase" },
+    new IngredientInventoryTransaction { Id = 6, IngredientId = 6, QuantityChange = -15, TransactionDate = DateTime.Parse("2025-03-06 13:20:00"), TransactionType = "Usage" },
+    new IngredientInventoryTransaction { Id = 7, IngredientId = 7, QuantityChange = 30, TransactionDate = DateTime.Parse("2025-03-07 08:30:00"), TransactionType = "Purchase" },
+    new IngredientInventoryTransaction { Id = 8, IngredientId = 8, QuantityChange = -8, TransactionDate = DateTime.Parse("2025-03-08 15:10:00"), TransactionType = "Usage" },
+    new IngredientInventoryTransaction { Id = 9, IngredientId = 9, QuantityChange = 25, TransactionDate = DateTime.Parse("2025-03-09 12:00:00"), TransactionType = "Purchase" },
+    new IngredientInventoryTransaction { Id = 10, IngredientId = 10, QuantityChange = -12, TransactionDate = DateTime.Parse("2025-03-10 17:00:00"), TransactionType = "Usage" }
+});
 
     public IRepository<Customer> Customers { get; } = new MockRepository<Customer>(new List<Customer>() {
         new Customer { Id = 1, Name = "Alice", Phone = "111-222-3333", IsMembership = true, Points = 100 },
@@ -145,19 +159,117 @@ public class MockDao : IDao
         new Customer { Id = 9, Name = "Ivy", Phone = "999-000-1111", IsMembership = true, Points = 180 },
         new Customer { Id = 10, Name = "Jack", Phone = "000-111-2222", IsMembership = false, Points = 60 },
     });
-    public IRepository<ServiceType> ServiceTypes { get; } = new MockRepository<ServiceType>(new List<ServiceType>() { });
+    public IRepository<ServiceType> ServiceTypes
+    {
+        get;
+    } = new MockRepository<ServiceType>(new List<ServiceType>() {
+    new ServiceType { Id = 1, Name = "Dine-in", Description = "Eat at the restaurant" },
+    new ServiceType { Id = 2, Name = "Take-away", Description = "Take food to go" },
+    new ServiceType { Id = 3, Name = "Delivery", Description = "Home delivery service" },
+    new ServiceType { Id = 4, Name = "Drive-thru", Description = "Order from car" },
+    new ServiceType { Id = 5, Name = "Catering", Description = "Bulk order for events" },
+    new ServiceType { Id = 6, Name = "Online Order", Description = "Order via website" },
+    new ServiceType { Id = 7, Name = "Pre-order", Description = "Order in advance" },
+    new ServiceType { Id = 8, Name = "Curbside Pickup", Description = "Pick up at curb" },
+    new ServiceType { Id = 9, Name = "Bar Service", Description = "Order at bar counter" },
+    new ServiceType { Id = 10, Name = "Room Service", Description = "Hotel room delivery" }
+});
 
-    public IRepository<Table> Tables { get; } = new MockRepository<Table>(new List<Table>() { } );
+    public IRepository<Table> Tables
+    {
+        get;
+    } = new MockRepository<Table>(new List<Table>() {
+    new Table { Id = 1, TableNumber = "T01", Status = "Available" },
+    new Table { Id = 2, TableNumber = "T02", Status = "Occupied" },
+    new Table { Id = 3, TableNumber = "T03", Status = "Available" },
+    new Table { Id = 4, TableNumber = "T04", Status = "Reserved" },
+    new Table { Id = 5, TableNumber = "T05", Status = "Available" },
+    new Table { Id = 6, TableNumber = "T06", Status = "Occupied" },
+    new Table { Id = 7, TableNumber = "T07", Status = "Available" },
+    new Table { Id = 8, TableNumber = "T08", Status = "Reserved" },
+    new Table { Id = 9, TableNumber = "T09", Status = "Available" },
+    new Table { Id = 10, TableNumber = "T10", Status = "Occupied" }
+});
 
-    public IRepository<Reservation> Reservations { get; } = new MockRepository<Reservation>(new List<Reservation>() { });
+    public IRepository<Reservation> Reservations
+    {
+        get;
+    } = new MockRepository<Reservation>(new List<Reservation>() {
+    new Reservation { Id = 1, CustomerId = 1, TableId = 4, ReservationDate = DateTime.Parse("2025-03-25"), StartTime = TimeSpan.Parse("18:00"), EndTime = TimeSpan.Parse("20:00"), Status = "Confirmed" },
+    new Reservation { Id = 2, CustomerId = 3, TableId = 8, ReservationDate = DateTime.Parse("2025-03-26"), StartTime = TimeSpan.Parse("12:00"), EndTime = TimeSpan.Parse("14:00"), Status = "Pending" },
+    new Reservation { Id = 3, CustomerId = 5, TableId = 1, ReservationDate = DateTime.Parse("2025-03-27"), StartTime = TimeSpan.Parse("19:00"), EndTime = TimeSpan.Parse("21:00"), Status = "Confirmed" },
+    new Reservation { Id = 4, CustomerId = 7, TableId = 5, ReservationDate = DateTime.Parse("2025-03-28"), StartTime = TimeSpan.Parse("17:00"), EndTime = TimeSpan.Parse("19:00"), Status = "Pending" },
+    new Reservation { Id = 5, CustomerId = 9, TableId = 9, ReservationDate = DateTime.Parse("2025-03-29"), StartTime = TimeSpan.Parse("13:00"), EndTime = TimeSpan.Parse("15:00"), Status = "Confirmed" },
+    new Reservation { Id = 6, CustomerId = 2, TableId = 3, ReservationDate = DateTime.Parse("2025-03-30"), StartTime = TimeSpan.Parse("11:00"), EndTime = TimeSpan.Parse("13:00"), Status = "Pending" },
+    new Reservation { Id = 7, CustomerId = 4, TableId = 7, ReservationDate = DateTime.Parse("2025-03-31"), StartTime = TimeSpan.Parse("20:00"), EndTime = TimeSpan.Parse("22:00"), Status = "Confirmed" },
+    new Reservation { Id = 8, CustomerId = 6, TableId = 2, ReservationDate = DateTime.Parse("2025-04-01"), StartTime = TimeSpan.Parse("16:00"), EndTime = TimeSpan.Parse("18:00"), Status = "Pending" },
+    new Reservation { Id = 9, CustomerId = 8, TableId = 6, ReservationDate = DateTime.Parse("2025-04-02"), StartTime = TimeSpan.Parse("14:00"), EndTime = TimeSpan.Parse("16:00"), Status = "Confirmed" },
+    new Reservation { Id = 10, CustomerId = 10, TableId = 10, ReservationDate = DateTime.Parse("2025-04-03"), StartTime = TimeSpan.Parse("18:30"), EndTime = TimeSpan.Parse("20:30"), Status = "Pending" }
+});
 
-    public IRepository<Voucher> Vouchers { get; } = new MockRepository<Voucher>(new List<Voucher>() { });
+    public IRepository<Voucher> Vouchers
+    {
+        get;
+    } = new MockRepository<Voucher>(new List<Voucher>() {
+    new Voucher { Id = 1, Code = "WELCOME10", DiscountPercentage = 10, ExpirationDate = DateTime.Parse("2025-06-30"), IsUsed = false },
+    new Voucher { Id = 2, Code = "COFFEE20", DiscountPercentage = 20, ExpirationDate = DateTime.Parse("2025-04-15"), IsUsed = true },
+    new Voucher { Id = 3, Code = "PASTRY15", DiscountPercentage = 15, ExpirationDate = DateTime.Parse("2025-05-31"), IsUsed = false },
+    new Voucher { Id = 4, Code = "LOYALTY25", DiscountPercentage = 25, ExpirationDate = DateTime.Parse("2025-12-31"), IsUsed = false },
+    new Voucher { Id = 5, Code = "SPRING10", DiscountPercentage = 10, ExpirationDate = DateTime.Parse("2025-03-31"), IsUsed = true },
+    new Voucher { Id = 6, Code = "SUMMER20", DiscountPercentage = 20, ExpirationDate = DateTime.Parse("2025-08-31"), IsUsed = false },
+    new Voucher { Id = 7, Code = "TEA15", DiscountPercentage = 15, ExpirationDate = DateTime.Parse("2025-07-15"), IsUsed = false },
+    new Voucher { Id = 8, Code = "FIRSTORDER30", DiscountPercentage = 30, ExpirationDate = DateTime.Parse("2025-04-30"), IsUsed = true },
+    new Voucher { Id = 9, Code = "WEEKEND10", DiscountPercentage = 10, ExpirationDate = DateTime.Parse("2025-05-15"), IsUsed = false },
+    new Voucher { Id = 10, Code = "BIRTHDAY50", DiscountPercentage = 50, ExpirationDate = DateTime.Parse("2025-03-25"), IsUsed = true }
+});
 
-    public IRepository<PaymentMethod> PaymentMethods { get; } = new MockRepository<PaymentMethod>(new List<PaymentMethod>() { });
+    public IRepository<PaymentMethod> PaymentMethods
+    {
+        get;
+    } = new MockRepository<PaymentMethod>(new List<PaymentMethod>() {
+    new PaymentMethod { Id = 1, Name = "Cash", Description = "Payment in cash" },
+    new PaymentMethod { Id = 2, Name = "Credit Card", Description = "Payment via credit card" },
+    new PaymentMethod { Id = 3, Name = "Debit Card", Description = "Payment via debit card" },
+    new PaymentMethod { Id = 4, Name = "Mobile Pay", Description = "Payment via mobile apps" },
+    new PaymentMethod { Id = 5, Name = "Gift Card", Description = "Payment using gift card" },
+    new PaymentMethod { Id = 6, Name = "Bank Transfer", Description = "Direct bank transfer" },
+    new PaymentMethod { Id = 7, Name = "PayPal", Description = "Payment via PayPal" },
+    new PaymentMethod { Id = 8, Name = "Cryptocurrency", Description = "Payment in crypto" },
+    new PaymentMethod { Id = 9, Name = "Check", Description = "Payment by check" },
+    new PaymentMethod { Id = 10, Name = "Contactless", Description = "Tap-to-pay method" }
+});
 
-    public IRepository<Order> Orders { get; } = new MockRepository<Order>(new List<Order>() { });
+    public IRepository<Order> Orders
+    {
+        get;
+    } = new MockRepository<Order>(new List<Order>() {
+    new Order { Id = 1, CustomerId = 1, OrderDate = DateTime.Parse("2025-03-20 10:00:00"), PaymentDate = DateTime.Parse("2025-03-20 10:05:00"), Status = "Completed", TableId = 1, VoucherId = 1, TotalAmount = 15.00m, PaymentMethodId = 1, ServiceTypeId = 1 },
+    new Order { Id = 2, CustomerId = 2, OrderDate = DateTime.Parse("2025-03-21 12:30:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 8.50m, PaymentMethodId = 2, ServiceTypeId = 2 },
+    new Order { Id = 3, CustomerId = 3, OrderDate = DateTime.Parse("2025-03-22 15:00:00"), PaymentDate = DateTime.Parse("2025-03-22 15:10:00"), Status = "Completed", TableId = 2, VoucherId = 2, TotalAmount = 20.00m, PaymentMethodId = 3, ServiceTypeId = 1 },
+    new Order { Id = 4, CustomerId = 4, OrderDate = DateTime.Parse("2025-03-23 09:15:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 12.75m, PaymentMethodId = 4, ServiceTypeId = 3 },
+    new Order { Id = 5, CustomerId = 5, OrderDate = DateTime.Parse("2025-03-24 17:45:00"), PaymentDate = DateTime.Parse("2025-03-24 17:50:00"), Status = "Completed", TableId = 3, VoucherId = 3, TotalAmount = 25.50m, PaymentMethodId = 5, ServiceTypeId = 1 },
+    new Order { Id = 6, CustomerId = 6, OrderDate = DateTime.Parse("2025-03-25 11:20:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 9.25m, PaymentMethodId = 6, ServiceTypeId = 4 },
+    new Order { Id = 7, CustomerId = 7, OrderDate = DateTime.Parse("2025-03-26 19:00:00"), PaymentDate = DateTime.Parse("2025-03-26 19:05:00"), Status = "Completed", TableId = 4, VoucherId = 4, TotalAmount = 30.00m, PaymentMethodId = 7, ServiceTypeId = 1 },
+    new Order { Id = 8, CustomerId = 8, OrderDate = DateTime.Parse("2025-03-27 14:30:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 7.50m, PaymentMethodId = 8, ServiceTypeId = 2 },
+    new Order { Id = 9, CustomerId = 9, OrderDate = DateTime.Parse("2025-03-28 16:15:00"), PaymentDate = DateTime.Parse("2025-03-28 16:20:00"), Status = "Completed", TableId = 5, VoucherId = 5, TotalAmount = 18.00m, PaymentMethodId = 9, ServiceTypeId = 1 },
+    new Order { Id = 10, CustomerId = 10, OrderDate = DateTime.Parse("2025-03-29 13:00:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 10.00m, PaymentMethodId = 10, ServiceTypeId = 3 }
+});
 
-    public IRepository<OrderDetail> OrderDetails { get; } = new MockRepository<OrderDetail>(new List<OrderDetail>() { });
+    public IRepository<OrderDetail> OrderDetails
+    {
+        get;
+    } = new MockRepository<OrderDetail>(new List<OrderDetail>() {
+    new OrderDetail { Id = 1, OrderId = 1, ProductId = 1, Quantity = 2, Price = 2.50m },
+    new OrderDetail { Id = 2, OrderId = 1, ProductId = 11, Quantity = 1, Price = 3.00m },
+    new OrderDetail { Id = 3, OrderId = 2, ProductId = 6, Quantity = 1, Price = 2.00m },
+    new OrderDetail { Id = 4, OrderId = 3, ProductId = 21, Quantity = 1, Price = 5.50m },
+    new OrderDetail { Id = 5, OrderId = 3, ProductId = 26, Quantity = 1, Price = 4.50m },
+    new OrderDetail { Id = 6, OrderId = 4, ProductId = 16, Quantity = 2, Price = 3.00m },
+    new OrderDetail { Id = 7, OrderId = 5, ProductId = 31, Quantity = 1, Price = 6.00m },
+    new OrderDetail { Id = 8, OrderId = 5, ProductId = 2, Quantity = 2, Price = 3.50m },
+    new OrderDetail { Id = 9, OrderId = 7, ProductId = 35, Quantity = 1, Price = 6.50m },
+    new OrderDetail { Id = 10, OrderId = 9, ProductId = 3, Quantity = 2, Price = 4.00m }
+});
 
     public Task SaveChangesAsync() => Task.CompletedTask;
 }
