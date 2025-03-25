@@ -1,9 +1,18 @@
 ﻿<Application
     x:Class="CoffeePOS.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="using:CoffeePOS.Converters">
+
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Converters -->
+            <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converter:AbsolutePathConverter x:Key="AbsolutePathConverter"/>
+            <converter:CurrencyFormatter x:Key="CurrencyFormatter"/>
+
+
+            <!-- Merged Resource Dictionaries -->
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <ResourceDictionary Source="/Styles/FontSizes.xaml" />

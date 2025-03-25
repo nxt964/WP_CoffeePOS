@@ -5,37 +5,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:models="using:CoffeePOS.Core.Models"
+    xmlns:models="using:CoffeePOS.Models"
     xmlns:views="using:CoffeePOS.Views"
     xmlns:behaviors="using:CoffeePOS.Behaviors"
     behaviors:NavigationViewHeaderBehavior.HeaderMode="Never"
     mc:Ignorable="d">
     <Page.Resources>
-        <DataTemplate x:Key="ItemTemplate" x:DataType="models:SampleOrder">
-            <Grid Height="60">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <FontIcon
-                    Grid.Column="0"
-                    VerticalAlignment="Center"
-                    FontSize="32"
-                    Glyph="{x:Bind Symbol}"
-                    AutomationProperties.Name="{x:Bind SymbolName}" />
-                <StackPanel
-                    Grid.Column="1"
-                    Margin="{StaticResource SmallLeftMargin}"
-                    VerticalAlignment="Center">
-                    <TextBlock Text="{x:Bind Company}" Style="{StaticResource ListTitleStyle}" />
-                    <TextBlock Text="{x:Bind Status}" Style="{StaticResource ListSubTitleStyle}" />
-                </StackPanel>
+        <DataTemplate x:Key="ItemTemplate" x:DataType="models:CategoryProducts" >
+            <Grid Height="40">
+                <TextBlock Text="{x:Bind Name}" 
+                   Style="{StaticResource ListTitleStyle}" 
+                   FontSize="18" 
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"/>
             </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="DetailsTemplate">
             <Grid>
-                <views:CategoriesDetailControl ListDetailsMenuItem="{Binding}" />
+                <views:CategoriesDetailControl CategoryWithProducts="{Binding}" />
             </Grid>
         </DataTemplate>
 
@@ -83,18 +71,27 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <controls:ListDetailsView
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                <Button Content="Add" Margin="10, 0" Command="{x:Bind ViewModel.AddCategoryCommand}" />
+                <Button Content="Edit" Margin="10, 0" Command="{x:Bind ViewModel.EditCategoryCommand}" />
+                <Button Content="Delete" Margin="10, 0" Command="{x:Bind ViewModel.DeleteCategoryCommand}" />
+            </StackPanel>
+
+            <controls:ListDetailsView
             x:Uid="Categories"
             x:Name="ListDetailsViewControl"
             BackButtonBehavior="Manual"
             Background="Transparent"
             BorderBrush="Transparent"
             DetailsTemplate="{StaticResource DetailsTemplate}"
-            ItemsSource="{x:Bind ViewModel.SampleItems}"
+            ItemsSource="{x:Bind ViewModel.Categories}"
             ItemTemplate="{StaticResource ItemTemplate}"
             ListHeaderTemplate="{StaticResource MinimalListHeaderTemplate}"
             NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
             SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
-            ViewStateChanged="OnViewStateChanged"/>
+            ViewStateChanged="OnViewStateChanged">
+            </controls:ListDetailsView>
+        </StackPanel>
     </Grid>
 </Page>
