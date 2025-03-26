@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:models="using:CoffeePOS.Models"
+    xmlns:viewmodels="using:CoffeePOS.ViewModels"
     mc:Ignorable="d">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -29,7 +29,7 @@
                     Grid.Column="0"
                     Width="300"
                     Height="30"
-                    PlaceholderText="Search order"
+                    PlaceholderText="Search by customer name"
                     Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button
                     Grid.Column="1"
@@ -83,37 +83,31 @@
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn
                             Header="Order ID"
-                            Binding="{Binding OrderId}"/>
+                            Width="*"
+                            Binding="{Binding Id}"/>
                         <controls:DataGridTextColumn
                             Header="Date"
-                            Binding="{Binding Date}"/>
+                            Width="*"
+                            Binding="{Binding OrderDate}"/>
                         <controls:DataGridTextColumn
-                            Header="Customer ID"
-                            Binding="{Binding CustomerId}"/>
-                        <controls:DataGridTextColumn
-                            Header="Voucher ID"
-                            Binding="{Binding VoucherId}"/>
-                        <controls:DataGridTextColumn
-                            Header="Payment Method ID"
-                            Binding="{Binding PaymentMethodId}"/>
-                        <controls:DataGridTextColumn
-                            Header="Service Type ID"
-                            Binding="{Binding ServiceTypeId}"/>
-                        <controls:DataGridTextColumn
-                            Header="Table ID"
-                            Binding="{Binding TableId}"/>
+                            Header="Customer Name"
+                            Width="*"
+                            Binding="{Binding CustomerName}"/>
                         <controls:DataGridTextColumn
                             Header="Total Price"
-                            Binding="{Binding TotalPrice}"/>
-                        <controls:DataGridTemplateColumn Header="Action">
+                            Width="*"
+                            Binding="{Binding TotalAmount}"/>
+                        <controls:DataGridTemplateColumn
+                            Header="Actions"
+                            Width="*">
                             <controls:DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="models:Order">
-                                    <StackPanel Orientation="Horizontal">
+                                <DataTemplate x:DataType="viewmodels:OrderDisplay">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                         <Button
                                             Content=""
                                             FontFamily="Segoe MDL2 Assets"
                                             Margin="0,0,5,0"
-                                            Tag="{x:Bind OrderId}"
+                                            Tag="{x:Bind Id}"
                                             Click="ViewButton_Click"/>
                                         <Button
                                             Content=""
@@ -121,7 +115,7 @@
                                             Background="Red"
                                             Foreground="White"
                                             Margin="5,0,0,0"
-                                            Tag="{x:Bind OrderId}"
+                                            Tag="{x:Bind Id}"
                                             Click="DeleteButton_Click"/>
                                     </StackPanel>
                                 </DataTemplate>

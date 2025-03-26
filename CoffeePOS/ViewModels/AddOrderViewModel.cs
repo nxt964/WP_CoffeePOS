@@ -1,98 +1,174 @@
-﻿using CoffeePOS.Contracts.Services;
-using CoffeePOS.Contracts.ViewModels;
-using CoffeePOS.Models;
+﻿using CoffeePOS.Core.Interfaces;
+using CoffeePOS.Core.Models;
+using CoffeePOS.Contracts.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using CoffeePOS.Services;
 
 namespace CoffeePOS.ViewModels;
 
-public partial class AddOrderViewModel : ObservableRecipient, INavigationAware
+public partial class AddOrderViewModel : ObservableRecipient
 {
     private readonly INavigationService _navigationService;
-
-    // Danh sách các tùy chọn cho ComboBox
-    [ObservableProperty]
-    private ObservableCollection<Customer> customers = new ObservableCollection<Customer>();
+    private readonly IDao _dao;
+    private ObservableCollection<Customer> _allCustomers = new ObservableCollection<Customer>();
 
     [ObservableProperty]
-    private ObservableCollection<Voucher> vouchers = new ObservableCollection<Voucher>();
+    private ObservableCollection<Customer> customerSuggestions = new ObservableCollection<Customer>();
 
     [ObservableProperty]
-    private ObservableCollection<PaymentMethod> paymentMethods = new ObservableCollection<PaymentMethod>();
+    private DateTimeOffset orderDate = DateTimeOffset.Now;
 
-    [ObservableProperty]
-    private ObservableCollection<ServiceType> serviceTypes = new ObservableCollection<ServiceType>();
-
-    [ObservableProperty]
-    private ObservableCollection<Table> tables = new ObservableCollection<Table>();
-
-    // Thuộc tính để binding với các trường nhập liệu
     [ObservableProperty]
     private Customer selectedCustomer;
 
     [ObservableProperty]
-    private Voucher selectedVoucher;
+    private string customerName;
 
     [ObservableProperty]
-    private decimal totalAmount;
+    private string customerPhone;
 
-    [ObservableProperty]
-    private PaymentMethod selectedPaymentMethod;
-
-    [ObservableProperty]
-    private ServiceType selectedServiceType;
-
-    [ObservableProperty]
-    private Table selectedTable;
-
-    public AddOrderViewModel(INavigationService navigationService)
+    public AddOrderViewModel(INavigationService navigationService, IDao dao)
     {
         _navigationService = navigationService;
+        _dao = dao;
+    }
+
+    public async void OnNavigatedTo(object parameter)
+    {
+        System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.OnNavigatedTo: Loading customers...");
+        _allCustomers.Clear();
+        CustomerSuggestions.Clear();
+        var customersList = await _dao.Customers.GetAll();
+        foreach (var customer in customersList)
+        {
+            _allCustomers.Add(customer);
+            CustomerSuggestions.Add(customer);
+        }
+        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnNavigatedTo: Loaded {customersList.Count()} customers");
+    }
+
+    public void OnNavigatedFrom()
+    {
+        System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.OnNavigatedFrom: Leaving page...");
+    }
+
+    public void UpdateCustomerSuggestions(string query)
+    {
+        CustomerSuggestions.Clear();
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            foreach (var customer in _allCustomers)
+            {
+                CustomerSuggestions.Add(customer);
+            }
+        }
+        else
+        {
+            var filteredCustomers = _allCustomers
+                .Where(c => c.Name != null && c.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            foreach (var customer in filteredCustomers)
+            {
+                CustomerSuggestions.Add(customer);
+            }
+        }
+        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.UpdateCustomerSuggestions: Found {CustomerSuggestions.Count} suggestions for query '{query}'");
     }
 
     [RelayCommand]
-    private void SaveOrder()
+    private async Task AddOrder()
     {
-        // Kiểm tra dữ liệu
-        if (SelectedCustomer == null || TotalAmount <= 0 || SelectedPaymentMethod == null || SelectedServiceType == null || SelectedTable == null)
+        try
         {
-            // Hiển thị thông báo lỗi (có thể sử dụng InfoBar hoặc ContentDialog)
-            return;
+            // Kiểm tra nếu thiếu trường
+            if (string.IsNullOrWhiteSpace(CustomerName) || string.IsNullOrWhiteSpace(CustomerPhone))
+            {
+                System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.AddOrder: Missing required fields");
+                var dialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "Please fill in both customer name and phone number.",
+                    CloseButtonText = "OK"
+                };
+                dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
+                await dialog.ShowAsync();
+                return;
+            }
+
+            // Lấy danh sách khách hàng mới nhất từ _dao và kiểm tra số điện thoại
+            var customers = await _dao.Customers.GetAll();
+            var existingCustomer = customers.FirstOrDefault(c => c.Phone == CustomerPhone);
+
+            if (existingCustomer != null)
+            {
+                // Nếu số điện thoại đã tồn tại, báo lỗi
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Phone {CustomerPhone} already used by customer {existingCustomer.Name}");
+                var dialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "This phone number is already used by another customer. Please enter a different phone number.",
+                    CloseButtonText = "OK"
+                };
+                dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
+                await dialog.ShowAsync();
+                return;
+            }
+
+            // Nếu số điện thoại không tồn tại, tạo khách hàng mới
+            var newCustomer = new Customer
+            {
+                Name = CustomerName,
+                Phone = CustomerPhone,
+                IsMembership = false, // Giá trị mặc định
+                Points = 0 // Giá trị mặc định
+            };
+            var addedCustomer = await _dao.Customers.Add(newCustomer);
+            await _dao.SaveChangesAsync();
+            _allCustomers.Add(addedCustomer); // Cập nhật danh sách khách hàng
+            SelectedCustomer = addedCustomer;
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Created new customer with Id = {SelectedCustomer.Id}");
+
+            // Tạo đối tượng Order mới
+            var newOrder = new Order
+            {
+                OrderDate = OrderDate.DateTime,
+                CustomerId = SelectedCustomer.Id
+            };
+
+            // Thêm đơn hàng mới vào database
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Adding new order for CustomerId = {newOrder.CustomerId}");
+            var addedOrder = await _dao.Orders.Add(newOrder);
+            await _dao.SaveChangesAsync();
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Order added successfully with Id = {addedOrder.Id}");
+
+            // Điều hướng về trang danh sách đơn hàng
+            _navigationService.NavigateTo(typeof(OrderViewModel).FullName);
+            System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.AddOrder: Navigated to OrderPage");
         }
-
-        // Tạo một đối tượng Order mới
-        var newOrder = new Order
+        catch (Exception ex)
         {
-            OrderId = Guid.NewGuid().ToString(), // Tạo ID ngẫu nhiên (thay thế bằng logic từ DB nếu cần)
-            CustomerId = SelectedCustomer.Id.ToString(),
-            Date = DateTimeOffset.Now.ToString("yyyy-MM-dd"),
-            VoucherId = SelectedVoucher?.Id.ToString(),
-            TotalPrice = TotalAmount,
-            PaymentMethodId = SelectedPaymentMethod.Id.ToString(),
-            ServiceTypeId = SelectedServiceType.Id.ToString(),
-            TableId = SelectedTable.Id.ToString()
-        };
-
-        // TODO: Lưu newOrder vào cơ sở dữ liệu
-        // Ví dụ: Gọi một service để lưu vào DB
-        // await _orderService.CreateOrderAsync(newOrder);
-
-        // Sau khi lưu, điều hướng về trang OrderPage
-        _navigationService.NavigateTo(typeof(OrderViewModel).FullName);
+            System.Diagnostics.Debug.WriteLine($"[ERROR] AddOrderViewModel.AddOrder: {ex.Message}");
+            var dialog = new ContentDialog
+            {
+                Title = "Error",
+                Content = $"Failed to add order: {ex.Message}",
+                CloseButtonText = "OK"
+            };
+            dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
+            await dialog.ShowAsync();
+        }
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        // Reset form: Xóa dữ liệu đã nhập
-        SelectedCustomer = null;
-        SelectedVoucher = null;
-        TotalAmount = 0;
-        SelectedPaymentMethod = null;
-        SelectedServiceType = null;
-        SelectedTable = null;
+        System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.Cancel: Navigating to OrderPage");
+        _navigationService.NavigateTo(typeof(OrderViewModel).FullName);
     }
-
 }

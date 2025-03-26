@@ -148,7 +148,7 @@ public class MockDao : IDao
 });
 
     public IRepository<Customer> Customers { get; } = new MockRepository<Customer>(new List<Customer>() {
-        new Customer { Id = 1, Name = "Alice", Phone = "111-222-3333", IsMembership = true, Points = 100 },
+        new Customer { Id = 1, Name = "Alice", Phone = "0123456789", IsMembership = true, Points = 100 },
         new Customer { Id = 2, Name = "Bob", Phone = "222-333-4444", IsMembership = false, Points = 50 },
         new Customer { Id = 3, Name = "Charlie", Phone = "333-444-5555", IsMembership = true, Points = 200 },
         new Customer { Id = 4, Name = "David", Phone = "444-555-6666", IsMembership = false, Points = 30 },

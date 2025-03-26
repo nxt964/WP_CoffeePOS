@@ -22,6 +22,14 @@ public class MockRepository<T> : IRepository<T> where T : class
 
     public Task<T> Add(T entity)
     {
+
+        var idProperty = entity.GetType().GetProperty("Id");
+        if (idProperty != null && (int)idProperty.GetValue(entity) == 0)
+        {
+            int newId = _entities.Any() ? _entities.Max(e => (int)e.GetType().GetProperty("Id").GetValue(e)) + 1 : 1;
+            idProperty.SetValue(entity, newId);
+        }
+
         _entities.Add(entity);
         return Task.FromResult(entity);
     }

@@ -93,8 +93,6 @@ public partial class App : Application
             services.AddTransient<MaterialPage>();
             services.AddTransient<InventoryViewModel>();
             services.AddTransient<InventoryPage>();
-            services.AddTransient<OrdersViewModel>();
-            services.AddTransient<OrdersPage>();
             services.AddTransient<CustomersViewModel>();
             services.AddTransient<CustomersPage>();
             services.AddTransient<ProductsDetailViewModel>();
@@ -117,8 +115,10 @@ public partial class App : Application
             services.AddTransient<OrderViewModel>();
             services.AddTransient<AddOrderPage>();
             services.AddTransient<AddOrderViewModel>();
-            services.AddTransient<DetailOrderPage>(); 
-            services.AddTransient<DetailOrderViewModel>();
+
+
+            //services.AddTransient<DetailOrderPage>(); 
+            //services.AddTransient<DetailOrderViewModel>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
