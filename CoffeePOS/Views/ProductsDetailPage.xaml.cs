@@ -1,8 +1,10 @@
-﻿using CoffeePOS.Contracts.Services;
+﻿using System.Diagnostics;
+using CoffeePOS.Contracts.Services;
+using CoffeePOS.Core.Models;
 using CoffeePOS.ViewModels;
 
 using CommunityToolkit.WinUI.UI.Animations;
-
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
@@ -24,7 +26,6 @@ public sealed partial class ProductsDetailPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        this.RegisterElementForConnectedAnimation("animationKeyContentGrid", itemHero);
     }
 
     protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -37,6 +38,17 @@ public sealed partial class ProductsDetailPage : Page
             if (ViewModel.Item != null)
             {
                 navigationService.SetListDataItemForNextConnectedAnimation(ViewModel.Item);
+            }
+        }
+    }
+
+    private void OnProductClicked(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            if (button.Tag is int productId)
+            {
+                ViewModel.OnProductClicked(productId);
             }
         }
     }

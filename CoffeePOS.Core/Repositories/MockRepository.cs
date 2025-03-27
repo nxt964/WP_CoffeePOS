@@ -52,13 +52,21 @@ public class MockRepository<T> : IRepository<T> where T : class
     }
     public Task<T> Update(T entity)
     {
-        var entityToUpdate = _entities.FirstOrDefault(e => (int)e.GetType().GetProperty("Id").GetValue(e) == (int)entity.GetType().GetProperty("Id").GetValue(entity));
+        var entityToUpdate = _entities.FirstOrDefault(e =>
+            (int)e.GetType().GetProperty("Id")?.GetValue(e) == (int)entity.GetType().GetProperty("Id")?.GetValue(entity));
+
         if (entityToUpdate != null)
         {
-            _entities.Remove(entityToUpdate);
-            _entities.Add(entity);
-            return Task.FromResult(entity);
+            foreach (var prop in typeof(T).GetProperties())
+            {
+                if (prop.CanWrite)
+                {
+                    prop.SetValue(entityToUpdate, prop.GetValue(entity));
+                }
+            }
+            return Task.FromResult(entityToUpdate);
         }
+
         return Task.FromResult<T>(null);
     }
 }
