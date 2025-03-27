@@ -14,6 +14,11 @@ public class AbsolutePathConverter : IValueConverter
         if (value == null) return null;
 
         string filename = value.ToString();
+
+        if (filename.StartsWith("C:\\Users"))
+        {
+            return new BitmapImage(new Uri(filename));
+        }
         string folder = AppDomain.CurrentDomain.BaseDirectory;
         string path = Path.Combine(folder, "Assets", filename);
 
@@ -23,7 +28,7 @@ public class AbsolutePathConverter : IValueConverter
             return new BitmapImage(new Uri(path, UriKind.Absolute));
         }
 
-        return new BitmapImage(new Uri("ms-appx:///Assets/default.jpg")); // Provide a fallback image
+        return new BitmapImage(new Uri("ms-appx:///Assets/ProductImageDefault.png")); // Provide a fallback image
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language)

@@ -10,6 +10,8 @@
             <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:AbsolutePathConverter x:Key="AbsolutePathConverter"/>
             <converter:CurrencyFormatter x:Key="CurrencyFormatter"/>
+            <converter:BoolToStockStatusConverter x:Key="BoolToStockStatusConverter"/>
+            <converter:BoolToColorConverter x:Key="BoolToColorConverter"/>
 
 
             <!-- Merged Resource Dictionaries -->
