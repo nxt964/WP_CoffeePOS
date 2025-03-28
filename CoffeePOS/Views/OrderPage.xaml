@@ -7,7 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:viewmodels="using:CoffeePOS.ViewModels"
+    xmlns:models="using:CoffeePOS.Models"
+    xmlns:converters="using:CoffeePOS.Converters"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:CurrencyFormatter x:Key="CurrencyConverter"/>
+    </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid x:Name="ContentArea" Margin="20">
@@ -30,13 +36,13 @@
                     Width="300"
                     Height="30"
                     PlaceholderText="Search by customer name"
-                    Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button
                     Grid.Column="1"
                     Margin="10,0,0,0"
                     HorizontalAlignment="Left"
                     Content="Search"
-                    Command="{x:Bind ViewModel.SearchCommand}"/>
+                    Command="{Binding SearchCommand}"/>
                 <Button
                     Grid.Column="2"
                     HorizontalAlignment="Right"
@@ -56,30 +62,30 @@
                     Grid.Column="0"
                     Width="200"
                     Header="From day"
-                    Date="{x:Bind ViewModel.FromDate, Mode=TwoWay}"/>
+                    Date="{Binding FromDate, Mode=TwoWay}"/>
                 <DatePicker
                     Grid.Column="1"
                     Width="200"
                     Margin="10,0,0,0"
                     Header="To day"
-                    Date="{x:Bind ViewModel.ToDate, Mode=TwoWay}"/>
+                    Date="{Binding ToDate, Mode=TwoWay}"/>
                 <Button
                     Grid.Column="2"
                     HorizontalAlignment="Right"
                     Margin="0,0,10,0"
                     Content="Filter"
-                    Command="{x:Bind ViewModel.FilterCommand}"/>
+                    Command="{Binding FilterCommand}"/>
                 <Button
                     Grid.Column="3"
                     Content="Remove Filter"
-                    Command="{x:Bind ViewModel.RemoveFilterCommand}"/>
+                    Command="{Binding RemoveFilterCommand}"/>
             </Grid>
 
             <!-- Row 2: Order List -->
             <Grid Grid.Row="2" Margin="0,0,0,20">
                 <controls:DataGrid
                     AutoGenerateColumns="False"
-                    ItemsSource="{x:Bind ViewModel.Source, Mode=OneWay}">
+                    ItemsSource="{Binding Source, Mode=OneWay}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn
                             Header="Order ID"
@@ -94,29 +100,37 @@
                             Width="*"
                             Binding="{Binding CustomerName}"/>
                         <controls:DataGridTextColumn
+                            Header="Service Type"
+                            Width="*"
+                            Binding="{Binding ServiceTypeName}"/>
+                        <controls:DataGridTextColumn
                             Header="Total Price"
                             Width="*"
-                            Binding="{Binding TotalAmount}"/>
+                            Binding="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}"/>
                         <controls:DataGridTemplateColumn
                             Header="Actions"
                             Width="*">
                             <controls:DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="viewmodels:OrderDisplay">
+                                <DataTemplate x:DataType="models:OrderDisplay">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                         <Button
-                                            Content=""
-                                            FontFamily="Segoe MDL2 Assets"
                                             Margin="0,0,5,0"
-                                            Tag="{x:Bind Id}"
-                                            Click="ViewButton_Click"/>
+                                            Tag="{Binding Id}"
+                                            Click="ViewButton_Click">
+                                            <TextBlock
+                                                Text=""
+                                                FontFamily="Segoe MDL2 Assets"/>
+                                        </Button>
                                         <Button
-                                            Content=""
-                                            FontFamily="Segoe MDL2 Assets"
                                             Background="Red"
                                             Foreground="White"
                                             Margin="5,0,0,0"
-                                            Tag="{x:Bind Id}"
-                                            Click="DeleteButton_Click"/>
+                                            Tag="{Binding Id}"
+                                            Click="DeleteButton_Click">
+                                            <TextBlock
+                                                Text=""
+                                                FontFamily="Segoe MDL2 Assets"/>
+                                        </Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </controls:DataGridTemplateColumn.CellTemplate>
@@ -141,7 +155,7 @@
                     <TextBox
                         Width="50"
                         Margin="10,0,0,0"
-                        Text="{x:Bind ViewModel.PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextAlignment="Center"/>
                 </StackPanel>
                 <StackPanel
@@ -151,16 +165,16 @@
                         Width="80"
                         Margin="10,0"
                         Content="Previous"
-                        Command="{x:Bind ViewModel.PreviousPageCommand}"/>
+                        Command="{Binding PreviousPageCommand}"/>
                     <TextBlock
                         VerticalAlignment="Center"
-                        Text="{x:Bind ViewModel.PageInfo, Mode=OneWay}"
+                        Text="{Binding PageInfo, Mode=OneWay}"
                         TextAlignment="Center"/>
                     <Button
                         Width="80"
                         Margin="10,0"
                         Content="Next"
-                        Command="{x:Bind ViewModel.NextPageCommand}"/>
+                        Command="{Binding NextPageCommand}"/>
                 </StackPanel>
             </Grid>
         </Grid>

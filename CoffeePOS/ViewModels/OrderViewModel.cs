@@ -6,13 +6,14 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CoffeePOS.Models;
 
 namespace CoffeePOS.ViewModels;
 
 public partial class OrderViewModel : ObservableRecipient, INavigationAware
 {
     private readonly IDao _dao;
-    private ObservableCollection<OrderDisplay> _allOrdersDisplay = new ObservableCollection<OrderDisplay>(); // Lưu trữ toàn bộ dữ liệu hiển thị
+    private ObservableCollection<OrderDisplay> _allOrdersDisplay = new ObservableCollection<OrderDisplay>();
 
     [ObservableProperty]
     private ObservableCollection<OrderDisplay> source = new ObservableCollection<OrderDisplay>();
@@ -26,9 +27,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     [ObservableProperty]
     private DateTimeOffset toDate = DateTimeOffset.Now;
 
-    [ObservableProperty]
-    private int pageSize = 10;
-
+    private int _pageSize = 10;
     [ObservableProperty]
     private string pageInfo = "1 / 1";
 
@@ -41,6 +40,20 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
         System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel Constructor: _dao is null: {_dao == null}");
     }
 
+    public int PageSize
+    {
+        get => _pageSize;
+        set
+        {
+            if (SetProperty(ref _pageSize, value))
+            {
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.PageSize: Changed to {value}");
+                currentPage = 1;
+                UpdatePagination();
+            }
+        }
+    }
+
     public async void OnNavigatedTo(object parameter)
     {
         System.Diagnostics.Debug.WriteLine("[DEBUG] OrderViewModel.OnNavigatedTo: Loading orders...");
@@ -49,6 +62,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
 
         var orders = await _dao.Orders.GetAll();
         var customers = await _dao.Customers.GetAll();
+        var serviceTypes = await _dao.ServiceTypes.GetAll();
 
         foreach (var order in orders)
         {
@@ -65,17 +79,21 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
                 : null;
             var customerName = customer?.Name ?? "No Customer";
 
+            var serviceType = order.ServiceTypeId.HasValue ? serviceTypes.FirstOrDefault(st => st.Id == order.ServiceTypeId.Value) : null;
+            var serviceTypeName = serviceType?.Name ?? "No Service Type";
+
+
             // Tạo OrderDisplay
             var orderDisplay = new OrderDisplay
             {
                 Id = order.Id,
                 OrderDate = order.OrderDate,
                 CustomerName = customerName,
-                TotalAmount = order.TotalAmount
+                TotalAmount = order.TotalAmount,
+                ServiceTypeName = serviceTypeName // Gán giá trị cho ServiceTypeName
             };
 
             _allOrdersDisplay.Add(orderDisplay);
-            Source.Add(orderDisplay);
         }
         UpdatePagination();
     }
@@ -100,11 +118,9 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
             await _dao.Orders.Delete(id);
             await _dao.SaveChangesAsync();
 
-            // Xóa khỏi Source và _allOrdersDisplay
-            var orderDisplay = Source.FirstOrDefault(o => o.Id == id);
+            var orderDisplay = _allOrdersDisplay.FirstOrDefault(o => o.Id == id);
             if (orderDisplay != null)
             {
-                Source.Remove(orderDisplay);
                 _allOrdersDisplay.Remove(orderDisplay);
             }
             UpdatePagination();
@@ -115,25 +131,16 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     private void Search()
     {
         System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.Search: SearchQuery = {SearchQuery}");
-        Source.Clear();
-        if (string.IsNullOrWhiteSpace(SearchQuery))
-        {
-            // Nếu không có từ khóa, hiển thị toàn bộ đơn hàng
-            foreach (var order in _allOrdersDisplay)
-            {
-                Source.Add(order);
-            }
-        }
-        else
-        {
-            // Lọc đơn hàng dựa trên CustomerName
-            var filteredOrders = _allOrdersDisplay
+        var filteredOrders = string.IsNullOrWhiteSpace(SearchQuery)
+            ? _allOrdersDisplay.ToList()
+            : _allOrdersDisplay
                 .Where(o => o.CustomerName != null && o.CustomerName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
                 .ToList();
-            foreach (var order in filteredOrders)
-            {
-                Source.Add(order);
-            }
+
+        _allOrdersDisplay.Clear();
+        foreach (var order in filteredOrders)
+        {
+            _allOrdersDisplay.Add(order);
         }
         currentPage = 1;
         UpdatePagination();
@@ -143,13 +150,22 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     private void Filter()
     {
         System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.Filter: FromDate = {FromDate}, ToDate = {ToDate}");
-        Source.Clear();
+        if (FromDate > ToDate)
+        {
+            System.Diagnostics.Debug.WriteLine("[DEBUG] OrderViewModel.Filter: FromDate is greater than ToDate, swapping...");
+            var temp = FromDate;
+            FromDate = ToDate;
+            ToDate = temp;
+        }
+
         var filteredOrders = _allOrdersDisplay
             .Where(o => o.OrderDate >= FromDate.Date && o.OrderDate <= ToDate.Date)
             .ToList();
+
+        _allOrdersDisplay.Clear();
         foreach (var order in filteredOrders)
         {
-            Source.Add(order);
+            _allOrdersDisplay.Add(order);
         }
         currentPage = 1;
         UpdatePagination();
@@ -162,13 +178,9 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
         FromDate = DateTimeOffset.Now;
         ToDate = DateTimeOffset.Now;
         SearchQuery = null;
-        Source.Clear();
-        foreach (var order in _allOrdersDisplay)
-        {
-            Source.Add(order);
-        }
-        currentPage = 1;
-        UpdatePagination();
+
+        _allOrdersDisplay.Clear();
+        OnNavigatedTo(null);
     }
 
     [RelayCommand]
@@ -195,10 +207,21 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
 
     public void UpdatePagination()
     {
-        totalPages = (int)Math.Ceiling((double)Source.Count / PageSize);
+        totalPages = PageSize > 0 ? (int)Math.Ceiling((double)_allOrdersDisplay.Count / PageSize) : 1;
         totalPages = Math.Max(1, totalPages);
         currentPage = Math.Min(currentPage, totalPages);
+
+        Source.Clear();
+        var ordersToDisplay = _allOrdersDisplay
+            .Skip((currentPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
+        foreach (var order in ordersToDisplay)
+        {
+            Source.Add(order);
+        }
+
         PageInfo = $"{currentPage} / {totalPages}";
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.UpdatePagination: PageInfo = {PageInfo}");
+        System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.UpdatePagination: PageInfo = {PageInfo}, Displayed Orders = {Source.Count}");
     }
 }

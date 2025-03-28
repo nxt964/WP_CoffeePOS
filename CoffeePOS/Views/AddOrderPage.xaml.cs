@@ -1,5 +1,6 @@
-using CoffeePOS.Core.Models;
+﻿using CoffeePOS.Core.Models;
 using CoffeePOS.ViewModels;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace CoffeePOS.Views;

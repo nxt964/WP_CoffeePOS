@@ -12,6 +12,7 @@ public sealed partial class OrderPage : Page
     public OrderPage()
     {
         ViewModel = App.GetService<OrderViewModel>();
+        this.DataContext = ViewModel;
         InitializeComponent();
     }
 
@@ -23,10 +24,22 @@ public sealed partial class OrderPage : Page
 
     private void ViewButton_Click(object sender, RoutedEventArgs e)
     {
-        //var button = sender as Button;
-        //var orderId = button?.Tag?.ToString();
-        //System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderPage.ViewButton_Click: Navigating to DetailOrderPage with OrderId = {orderId}");
-        //Frame.Navigate(typeof(DetailOrderPage), orderId);
+        if (sender is Button button && button.Tag != null)
+        {
+            if (int.TryParse(button.Tag.ToString(), out int orderId))
+            {
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderPage.ViewButton_Click: Navigating to DetailOrderPage with OrderId = {orderId}");
+                Frame.Navigate(typeof(DetailOrderPage), orderId);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] OrderPage.ViewButton_Click: Invalid OrderId = {button.Tag}");
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("[ERROR] OrderPage.ViewButton_Click: Button or Tag is null");
+        }
     }
 
     private async void DeleteButton_Click(object sender, RoutedEventArgs e)

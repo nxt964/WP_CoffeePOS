@@ -15,7 +15,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Row 0: Tiêu đề -->
+            <!-- Tiêu đề -->
             <TextBlock
                 Grid.Row="0"
                 Text="Add New Order"
@@ -23,7 +23,7 @@
                 HorizontalAlignment="Center"
                 Margin="0,0,0,20"/>
 
-            <!-- Row 1: Form nhập liệu -->
+            <!-- Form nhập liệu -->
             <StackPanel Grid.Row="1" Spacing="10" Margin="20,0">
                 <DatePicker
                     Header="Order Date"
@@ -43,9 +43,17 @@
                     Width="300"
                     HorizontalAlignment="Left"
                     Text="{x:Bind ViewModel.CustomerPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <!-- Service Type RadioButtons -->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Service Type" Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <RadioButton Content="Dine-in" GroupName="ServiceType" IsChecked="{x:Bind ViewModel.IsDineIn, Mode=TwoWay}"/>
+                        <RadioButton Content="Take-away" GroupName="ServiceType" IsChecked="{x:Bind ViewModel.IsTakeAway, Mode=TwoWay}"/>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
 
-            <!-- Row 2: Nút Add và Cancel -->
+            <!-- Nút Add và Cancel -->
             <StackPanel
                 Grid.Row="2"
                 Orientation="Horizontal"
