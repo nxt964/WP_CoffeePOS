@@ -106,7 +106,7 @@
         [RelayCommand]
         private void Add()
         {
-            // Logic điều hướng đã được chuyển sang OrderPage.xaml.cs
+            
         }
 
         [RelayCommand]

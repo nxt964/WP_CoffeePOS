@@ -175,11 +175,11 @@ public class ContentDialogHelper
             Height = 150,
             Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill,
             Source = new BitmapImage(new Uri(
-                string.IsNullOrEmpty(product.ImageURL) 
+                string.IsNullOrEmpty(product.Image) 
                 ? "ms-appx:///Assets/ProductImageDefault.png"
-                : (product.ImageURL.StartsWith("C:\\Users"))
-                ? $"file:///{product.ImageURL}"
-                : $"ms-appx:///Assets/{product.ImageURL}"))
+                : (product.Image.StartsWith("C:\\Users"))
+                ? $"file:///{product.Image}"
+                : $"ms-appx:///Assets/{product.Image}"))
         };
 
         var pickImageButton = new Button
@@ -193,7 +193,7 @@ public class ContentDialogHelper
             if (!string.IsNullOrEmpty(selectedImagePath))
             {
                 imagePreview.Source = new BitmapImage(new Uri($"file:///{selectedImagePath}"));
-                product.ImageURL = selectedImagePath;
+                product.Image = selectedImagePath;
             }
         };
 

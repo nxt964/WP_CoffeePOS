@@ -80,7 +80,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
                 Id = item.Id,
                 Name = nameBox.Text,
                 Price = double.TryParse(priceBox.Text, out double price) ? price : 0,
-                ImageURL = item.ImageURL,
+                Image = item.Image,
                 IsStocked = item.IsStocked,
                 Description = descriptionBox.Text,
                 CategoryId = (await _dao.Categories.GetAll())
@@ -114,11 +114,11 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
                 Height = 150,
                 Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill,
                 Source = new BitmapImage(new Uri(
-                    string.IsNullOrEmpty(item.ImageURL)
+                    string.IsNullOrEmpty(item.Image)
                     ? "ms-appx:///Assets/ProductImageDefault.png"
-                    : (item.ImageURL.StartsWith("C:\\Users"))
-                    ? $"file:///{item.ImageURL}"
-                    : $"ms-appx:///Assets/{item.ImageURL}"))
+                    : (item.Image.StartsWith("C:\\Users"))
+                    ? $"file:///{item.Image}"
+                    : $"ms-appx:///Assets/{item.Image}"))
             }
         );
 

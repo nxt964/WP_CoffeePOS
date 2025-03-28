@@ -37,53 +37,53 @@ public class MockDao : IDao
     public IRepository<Product> Products { get; } = new MockRepository<Product>(new List<Product>() { 
 
         // Coffee (CategoryId = 1)
-        new Product { Id = 1, Name = "Espresso", Description = "Strong coffee", Price = 2.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
-        new Product { Id = 2, Name = "Cappuccino", Description = "Espresso with milk", Price = 3.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
-        new Product { Id = 3, Name = "Latte", Description = "Creamy espresso", Price = 4.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
-        new Product { Id = 4, Name = "Americano", Description = "Espresso with water", Price = 2.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 1 },
-        new Product { Id = 5, Name = "Mocha", Description = "Chocolate-flavored coffee", Price = 4.50, ImageURL = "ProductImage.jpg", IsStocked = false, CategoryId = 1 },
+        new Product { Id = 1, Name = "Espresso", Description = "Strong coffee", Price = 2.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 1 },
+        new Product { Id = 2, Name = "Cappuccino", Description = "Espresso with milk", Price = 3.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 1 },
+        new Product { Id = 3, Name = "Latte", Description = "Creamy espresso", Price = 4.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 1 },
+        new Product { Id = 4, Name = "Americano", Description = "Espresso with water", Price = 2.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 1 },
+        new Product { Id = 5, Name = "Mocha", Description = "Chocolate-flavored coffee", Price = 4.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = false, CategoryId = 1 },
 
         // Tea (CategoryId = 2)
-        new Product { Id = 6, Name = "Green Tea", Description = "Healthy green tea", Price = 2.00, ImageURL = "ProductImage.jpg", IsStocked = false, CategoryId = 2 },
-        new Product { Id = 7, Name = "Black Tea", Description = "Strong tea", Price = 2.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
-        new Product { Id = 8, Name = "Oolong Tea", Description = "Smooth flavor", Price = 3.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
-        new Product { Id = 9, Name = "Herbal Tea", Description = "Caffeine-free tea", Price = 2.75, ImageURL = "ProductImage.jpg", IsStocked = false, CategoryId = 2 },
-        new Product { Id = 10, Name = "Chai Tea", Description = "Spiced milk tea", Price = 3.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 2 },
+        new Product { Id = 6, Name = "Green Tea", Description = "Healthy green tea", Price = 2.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = false, CategoryId = 2 },
+        new Product { Id = 7, Name = "Black Tea", Description = "Strong tea", Price = 2.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 2 },
+        new Product { Id = 8, Name = "Oolong Tea", Description = "Smooth flavor", Price = 3.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 2 },
+        new Product { Id = 9, Name = "Herbal Tea", Description = "Caffeine-free tea", Price = 2.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = false, CategoryId = 2 },
+        new Product { Id = 10, Name = "Chai Tea", Description = "Spiced milk tea", Price = 3.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 2 },
 
         // Pastries (CategoryId = 3)
-        new Product { Id = 11, Name = "Blueberry Muffin", Description = "Soft and sweet muffin", Price = 3.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 3 },
-        new Product { Id = 12, Name = "Croissant", Description = "Buttery and flaky", Price = 2.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 3 },
-        new Product { Id = 13, Name = "Danish Pastry", Description = "Sweet and fruity", Price = 3.25, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 3 },
-        new Product { Id = 14, Name = "Chocolate Donut", Description = "Glazed donut", Price = 2.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 3 },
-        new Product { Id = 15, Name = "Apple Turnover", Description = "Crispy apple filling", Price = 3.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 3 },
+        new Product { Id = 11, Name = "Blueberry Muffin", Description = "Soft and sweet muffin", Price = 3.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 3 },
+        new Product { Id = 12, Name = "Croissant", Description = "Buttery and flaky", Price = 2.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 3 },
+        new Product { Id = 13, Name = "Danish Pastry", Description = "Sweet and fruity", Price = 3.25, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 3 },
+        new Product { Id = 14, Name = "Chocolate Donut", Description = "Glazed donut", Price = 2.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 3 },
+        new Product { Id = 15, Name = "Apple Turnover", Description = "Crispy apple filling", Price = 3.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 3 },
 
         // Juices (CategoryId = 4)
-        new Product { Id = 16, Name = "Orange Juice", Description = "Fresh squeezed", Price = 3.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 4 },
-        new Product { Id = 17, Name = "Apple Juice", Description = "Sweet and refreshing", Price = 2.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 4 },
-        new Product { Id = 18, Name = "Lemonade", Description = "Tart and sweet", Price = 2.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 4 },
-        new Product { Id = 19, Name = "Mango Juice", Description = "Rich mango flavor", Price = 3.25, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 4 },
-        new Product { Id = 20, Name = "Grape Juice", Description = "Sweet grape flavor", Price = 3.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 4 },
+        new Product { Id = 16, Name = "Orange Juice", Description = "Fresh squeezed", Price = 3.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 4 },
+        new Product { Id = 17, Name = "Apple Juice", Description = "Sweet and refreshing", Price = 2.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 4 },
+        new Product { Id = 18, Name = "Lemonade", Description = "Tart and sweet", Price = 2.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 4 },
+        new Product { Id = 19, Name = "Mango Juice", Description = "Rich mango flavor", Price = 3.25, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 4 },
+        new Product { Id = 20, Name = "Grape Juice", Description = "Sweet grape flavor", Price = 3.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 4 },
    
         // Sandwiches (CategoryId = 5)
-        new Product { Id = 21, Name = "Club Sandwich", Description = "Turkey, ham, bacon", Price = 5.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 5 },
-        new Product { Id = 22, Name = "BLT Sandwich", Description = "Bacon, lettuce, tomato", Price = 4.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 5 },
-        new Product { Id = 23, Name = "Grilled Cheese", Description = "Cheese & toast", Price = 4.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 5 },
-        new Product { Id = 24, Name = "Tuna Sandwich", Description = "Tuna & mayo", Price = 5.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 5 },
-        new Product { Id = 25, Name = "Chicken Avocado Sandwich", Description = "Chicken & avocado", Price = 5.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 5 },
+        new Product { Id = 21, Name = "Club Sandwich", Description = "Turkey, ham, bacon", Price = 5.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 5 },
+        new Product { Id = 22, Name = "BLT Sandwich", Description = "Bacon, lettuce, tomato", Price = 4.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 5 },
+        new Product { Id = 23, Name = "Grilled Cheese", Description = "Cheese & toast", Price = 4.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 5 },
+        new Product { Id = 24, Name = "Tuna Sandwich", Description = "Tuna & mayo", Price = 5.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 5 },
+        new Product { Id = 25, Name = "Chicken Avocado Sandwich", Description = "Chicken & avocado", Price = 5.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 5 },
 
         // Milkshakes (CategoryId = 6)
-        new Product { Id = 26, Name = "Vanilla Milkshake", Description = "Classic vanilla", Price = 4.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 6 },
-        new Product { Id = 27, Name = "Chocolate Milkshake", Description = "Rich chocolate", Price = 4.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 6 },
-        new Product { Id = 28, Name = "Strawberry Milkshake", Description = "Fruity and creamy", Price = 5.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 6 },
-        new Product { Id = 29, Name = "Oreo Milkshake", Description = "Cookies & cream", Price = 5.25, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 6 },
-        new Product { Id = 30, Name = "Caramel Milkshake", Description = "Sweet caramel flavor", Price = 5.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 6 },
+        new Product { Id = 26, Name = "Vanilla Milkshake", Description = "Classic vanilla", Price = 4.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 6 },
+        new Product { Id = 27, Name = "Chocolate Milkshake", Description = "Rich chocolate", Price = 4.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 6 },
+        new Product { Id = 28, Name = "Strawberry Milkshake", Description = "Fruity and creamy", Price = 5.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 6 },
+        new Product { Id = 29, Name = "Oreo Milkshake", Description = "Cookies & cream", Price = 5.25, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 6 },
+        new Product { Id = 30, Name = "Caramel Milkshake", Description = "Sweet caramel flavor", Price = 5.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 6 },
 
         // Desserts (CategoryId = 7)
-        new Product { Id = 31, Name = "Chocolate Cake", Description = "Rich chocolate layers", Price = 6.00, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 7 },
-        new Product { Id = 32, Name = "Cheesecake", Description = "Creamy and sweet", Price = 5.75, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 7 },
-        new Product { Id = 33, Name = "Brownie", Description = "Dense & fudgy", Price = 4.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 7 },
-        new Product { Id = 34, Name = "Apple Pie", Description = "Classic American dessert", Price = 5.25, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 7 },
-        new Product { Id = 35, Name = "Tiramisu", Description = "Coffee-flavored dessert", Price = 6.50, ImageURL = "ProductImage.jpg", IsStocked = true, CategoryId = 7 },
+        new Product { Id = 31, Name = "Chocolate Cake", Description = "Rich chocolate layers", Price = 6.00, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 7 },
+        new Product { Id = 32, Name = "Cheesecake", Description = "Creamy and sweet", Price = 5.75, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 7 },
+        new Product { Id = 33, Name = "Brownie", Description = "Dense & fudgy", Price = 4.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 7 },
+        new Product { Id = 34, Name = "Apple Pie", Description = "Classic American dessert", Price = 5.25, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 7 },
+        new Product { Id = 35, Name = "Tiramisu", Description = "Coffee-flavored dessert", Price = 6.50, Image = "ms-appx:///Assets/ProductImage.jpg", IsStocked = true, CategoryId = 7 },
     });
 
     public IRepository<Ingredient> Ingredients { get; } = new MockRepository<Ingredient>(new List<Ingredient>() {
@@ -162,17 +162,10 @@ public class MockDao : IDao
     public IRepository<ServiceType> ServiceTypes
     {
         get;
-    } = new MockRepository<ServiceType>(new List<ServiceType>() {
-    new ServiceType { Id = 1, Name = "Dine-in", Description = "Eat at the restaurant" },
-    new ServiceType { Id = 2, Name = "Take-away", Description = "Take food to go" },
-    new ServiceType { Id = 3, Name = "Delivery", Description = "Home delivery service" },
-    new ServiceType { Id = 4, Name = "Drive-thru", Description = "Order from car" },
-    new ServiceType { Id = 5, Name = "Catering", Description = "Bulk order for events" },
-    new ServiceType { Id = 6, Name = "Online Order", Description = "Order via website" },
-    new ServiceType { Id = 7, Name = "Pre-order", Description = "Order in advance" },
-    new ServiceType { Id = 8, Name = "Curbside Pickup", Description = "Pick up at curb" },
-    new ServiceType { Id = 9, Name = "Bar Service", Description = "Order at bar counter" },
-    new ServiceType { Id = 10, Name = "Room Service", Description = "Hotel room delivery" }
+    } = new MockRepository<ServiceType>(new List<ServiceType>()
+{
+    new ServiceType { Id = 1, Name = "Dine-in" },
+    new ServiceType { Id = 2, Name = "Take-away" }
 });
 
     public IRepository<Table> Tables
@@ -228,15 +221,8 @@ public class MockDao : IDao
         get;
     } = new MockRepository<PaymentMethod>(new List<PaymentMethod>() {
     new PaymentMethod { Id = 1, Name = "Cash", Description = "Payment in cash" },
-    new PaymentMethod { Id = 2, Name = "Credit Card", Description = "Payment via credit card" },
-    new PaymentMethod { Id = 3, Name = "Debit Card", Description = "Payment via debit card" },
-    new PaymentMethod { Id = 4, Name = "Mobile Pay", Description = "Payment via mobile apps" },
-    new PaymentMethod { Id = 5, Name = "Gift Card", Description = "Payment using gift card" },
-    new PaymentMethod { Id = 6, Name = "Bank Transfer", Description = "Direct bank transfer" },
-    new PaymentMethod { Id = 7, Name = "PayPal", Description = "Payment via PayPal" },
-    new PaymentMethod { Id = 8, Name = "Cryptocurrency", Description = "Payment in crypto" },
-    new PaymentMethod { Id = 9, Name = "Check", Description = "Payment by check" },
-    new PaymentMethod { Id = 10, Name = "Contactless", Description = "Tap-to-pay method" }
+    new PaymentMethod { Id = 2, Name = "Card", Description = "Payment via credit or debit card" },
+    new PaymentMethod { Id = 3, Name = "Online Transfer", Description = "Direct online bank transfer" }
 });
 
     public IRepository<Order> Orders
@@ -244,15 +230,15 @@ public class MockDao : IDao
         get;
     } = new MockRepository<Order>(new List<Order>() {
     new Order { Id = 1, CustomerId = 1, OrderDate = DateTime.Parse("2025-03-20 10:00:00"), PaymentDate = DateTime.Parse("2025-03-20 10:05:00"), Status = "Completed", TableId = 1, VoucherId = 1, TotalAmount = 15.00m, PaymentMethodId = 1, ServiceTypeId = 1 },
-    new Order { Id = 2, CustomerId = 2, OrderDate = DateTime.Parse("2025-03-21 12:30:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 8.50m, PaymentMethodId = 2, ServiceTypeId = 2 },
+    new Order { Id = 2, CustomerId = 2, OrderDate = DateTime.Parse("2025-03-21 12:30:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 8.50m, PaymentMethodId = 2, ServiceTypeId = 1 },
     new Order { Id = 3, CustomerId = 3, OrderDate = DateTime.Parse("2025-03-22 15:00:00"), PaymentDate = DateTime.Parse("2025-03-22 15:10:00"), Status = "Completed", TableId = 2, VoucherId = 2, TotalAmount = 20.00m, PaymentMethodId = 3, ServiceTypeId = 1 },
-    new Order { Id = 4, CustomerId = 4, OrderDate = DateTime.Parse("2025-03-23 09:15:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 12.75m, PaymentMethodId = 4, ServiceTypeId = 3 },
+    new Order { Id = 4, CustomerId = 4, OrderDate = DateTime.Parse("2025-03-23 09:15:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 12.75m, PaymentMethodId = 4, ServiceTypeId = 2 },
     new Order { Id = 5, CustomerId = 5, OrderDate = DateTime.Parse("2025-03-24 17:45:00"), PaymentDate = DateTime.Parse("2025-03-24 17:50:00"), Status = "Completed", TableId = 3, VoucherId = 3, TotalAmount = 25.50m, PaymentMethodId = 5, ServiceTypeId = 1 },
-    new Order { Id = 6, CustomerId = 6, OrderDate = DateTime.Parse("2025-03-25 11:20:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 9.25m, PaymentMethodId = 6, ServiceTypeId = 4 },
+    new Order { Id = 6, CustomerId = 6, OrderDate = DateTime.Parse("2025-03-25 11:20:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 9.25m, PaymentMethodId = 6, ServiceTypeId = 2 },
     new Order { Id = 7, CustomerId = 7, OrderDate = DateTime.Parse("2025-03-26 19:00:00"), PaymentDate = DateTime.Parse("2025-03-26 19:05:00"), Status = "Completed", TableId = 4, VoucherId = 4, TotalAmount = 30.00m, PaymentMethodId = 7, ServiceTypeId = 1 },
     new Order { Id = 8, CustomerId = 8, OrderDate = DateTime.Parse("2025-03-27 14:30:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 7.50m, PaymentMethodId = 8, ServiceTypeId = 2 },
     new Order { Id = 9, CustomerId = 9, OrderDate = DateTime.Parse("2025-03-28 16:15:00"), PaymentDate = DateTime.Parse("2025-03-28 16:20:00"), Status = "Completed", TableId = 5, VoucherId = 5, TotalAmount = 18.00m, PaymentMethodId = 9, ServiceTypeId = 1 },
-    new Order { Id = 10, CustomerId = 10, OrderDate = DateTime.Parse("2025-03-29 13:00:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 10.00m, PaymentMethodId = 10, ServiceTypeId = 3 }
+    new Order { Id = 10, CustomerId = 10, OrderDate = DateTime.Parse("2025-03-29 13:00:00"), PaymentDate = null, Status = "Pending", TableId = null, VoucherId = null, TotalAmount = 10.00m, PaymentMethodId = 10, ServiceTypeId = 2 }
 });
 
     public IRepository<OrderDetail> OrderDetails

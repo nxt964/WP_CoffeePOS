@@ -32,7 +32,7 @@ public partial class UpdateProductViewModel : ObservableRecipient, INavigationAw
         // Giả lập dữ liệu sản phẩm hiện có (có thể thay bằng logic tải từ API hoặc database)
         Product = new Product
         {
-            Id = "P001",
+            Id = 001,
             Name = "Sample Product",
             Price = 100.0,
             Cost = 80.0,

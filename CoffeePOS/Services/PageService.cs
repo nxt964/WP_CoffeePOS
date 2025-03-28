@@ -32,6 +32,8 @@ public class PageService : IPageService
         Configure<OrderViewModel, OrderPage>();
         Configure<AddOrderViewModel, AddOrderPage>();
         Configure<DetailOrderViewModel, DetailOrderPage>();
+
+        Configure<AddProductToOrderDetailViewModel, AddProductToOrderDetailPage>();
     }
 
     public Type GetPageType(string key)
@@ -41,7 +43,7 @@ public class PageService : IPageService
         {
             if (!_pages.TryGetValue(key, out pageType))
             {
-                throw new ArgumentException($"Page not found: {key}. Did you forget to call PageService.Configure?");
+                throw new ArgumentException($"Page not found: {key}. Forget to call PageService.Configure?");
             }
         }
 
