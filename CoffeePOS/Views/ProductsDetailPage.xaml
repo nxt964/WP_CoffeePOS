@@ -18,7 +18,7 @@
                 
                 <StackPanel x:Name="ProductDetail" Orientation="Horizontal">
                     <Image
-                        Source="{x:Bind ViewModel.Item.ImageURL, Converter={StaticResource AbsolutePathConverter}, Mode=OneWay}"
+                        Source="{x:Bind ViewModel.Item.Image, Converter={StaticResource AbsolutePathConverter}, Mode=OneWay}"
                         Height="250" Width="250"
                         Stretch="UniformToFill"
                         HorizontalAlignment="Center"/>
@@ -98,7 +98,7 @@
                                     <Border Padding="10" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
                                         <StackPanel HorizontalAlignment="Center">
                                             <!-- Product Image -->
-                                            <Image Source="{x:Bind ImageURL, Mode=OneWay, Converter={StaticResource AbsolutePathConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
+                                            <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource AbsolutePathConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
 
                                             <!-- Product Name -->
                                             <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="5,10,5,0"/>

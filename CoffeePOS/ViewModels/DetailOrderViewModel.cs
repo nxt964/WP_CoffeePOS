@@ -43,6 +43,8 @@ public partial class DetailOrderViewModel : ObservableObject
     private int orderId;
     private Voucher appliedVoucher;
 
+    public int OrderId => orderId;
+
     public DetailOrderViewModel(IDao dao)
     {
         _dao = dao;
@@ -51,6 +53,12 @@ public partial class DetailOrderViewModel : ObservableObject
     public async void OnNavigatedTo(int orderId)
     {
         this.orderId = orderId;
+        await LoadOrderDetails();
+    }
+
+    [RelayCommand]
+    private async Task Refresh()
+    {
         await LoadOrderDetails();
     }
 
@@ -131,11 +139,11 @@ public partial class DetailOrderViewModel : ObservableObject
                 appliedVoucher = voucher;
                 if (voucher != null)
                 {
-                    VoucherInfo = $"Đã áp dụng voucher {voucher.Code}: Giảm {voucher.DiscountPercentage}%";
+                    VoucherInfo = $"Voucher Applied {voucher.Code}: Discount {voucher.DiscountPercentage}%";
                 }
                 else
                 {
-                    VoucherInfo = "Voucher không hợp lệ hoặc đã hết hạn.";
+                    VoucherInfo = "Invalid or expired voucher.";
                 }
             }
             else
@@ -148,7 +156,7 @@ public partial class DetailOrderViewModel : ObservableObject
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.ApplyVoucher: {ex.Message}");
-            VoucherInfo = "Đã xảy ra lỗi khi áp dụng voucher.";
+            VoucherInfo = "Error applying voucher.";
         }
     }
 
@@ -159,10 +167,10 @@ public partial class DetailOrderViewModel : ObservableObject
         {
             var dialog = new ContentDialog
             {
-                Title = "Xác nhận thanh toán",
-                Content = $"Tổng giá tiền: {TotalPrice:C}. Bạn có muốn thanh toán không?",
-                PrimaryButtonText = "Có",
-                CloseButtonText = "Không"
+                Title = "Confirm Payment",
+                CloseButtonText = "Cancel",
+                Content = $"Total Price: {TotalPrice:C}. Do you want to proceed?",
+                PrimaryButtonText = "Pay",
             };
 
             dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
@@ -286,5 +294,25 @@ public partial class DetailOrderViewModel : ObservableObject
     partial void OnSearchQueryChanged(string value)
     {
         Search();
+    }
+
+    // Add handler for PageSize changes
+    partial void OnPageSizeChanged(int value)
+    {
+        // Enforce minimum and maximum PageSize
+        if (value < 1)
+        {
+            PageSize = 1;
+            return;
+        }
+        if (value > 50)
+        {
+            PageSize = 50;
+            return;
+        }
+
+        System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.OnPageSizeChanged: PageSize changed to {value}");
+        currentPage = 1; // Reset to the first page when PageSize changes
+        UpdateSourceWithPagination();
     }
 }

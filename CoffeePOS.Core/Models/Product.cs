@@ -26,7 +26,7 @@ public class Product
     {
         get; set;
     }
-    public string ImageURL
+    public string Image
     {
         get; set;
     }

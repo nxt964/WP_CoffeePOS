@@ -9,9 +9,71 @@
             <!-- Converters -->
             <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:AbsolutePathConverter x:Key="AbsolutePathConverter"/>
-            <converter:CurrencyFormatter x:Key="CurrencyFormatter"/>
+            <converter:CurrencyFormatter x:Key="CurrencyConverter"/>
+            <converter:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+            <converter:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
             <converter:BoolToStockStatusConverter x:Key="BoolToStockStatusConverter"/>
             <converter:BoolToColorConverter x:Key="BoolToColorConverter"/>
+
+
+            <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+                <Setter Property="TextBoxStyle">
+                    <Setter.Value>
+                        <Style TargetType="TextBox">
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundBaseLowBrush}"/>
+                            <Setter Property="Padding" Value="8"/>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
+                <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="12,4" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    Padding="{TemplateBinding Padding}"
+                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                    ContentTransitions="{TemplateBinding ContentTransitions}" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="AccentButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="Background" Value="{ThemeResource SystemAccentColor}" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="BorderBrush" Value="{ThemeResource SystemAccentColor}" />
+            </Style>
+
+            <Style x:Key="TitleTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            </Style>
 
 
             <!-- Merged Resource Dictionaries -->

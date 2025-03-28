@@ -82,8 +82,8 @@
                                     Tag="{Binding Id}"
                                     Click="DeleteButton_Click">
                                     <TextBlock
-                                    Text=""
-                                    FontFamily="Segoe MDL2 Assets"/>
+                                        Text=""
+                                        FontFamily="Segoe MDL2 Assets"/>
                                 </Button>
                             </DataTemplate>
                         </controls:DataGridTemplateColumn.CellTemplate>
@@ -147,9 +147,11 @@
                         VerticalAlignment="Center"
                         Text="Order per page:"/>
                     <TextBox
+                        x:Name="PageSizeTextBox"
                         Width="50"
                         Margin="10,0,0,0"
-                        Text="{Binding PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        Text="{Binding PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextChanged="PageSizeTextBox_TextChanged"/>
                 </StackPanel>
                 <StackPanel
                     Grid.Column="1"
