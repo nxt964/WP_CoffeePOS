@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Data;
-using System;
+﻿using System;
 using System.Globalization;
+using Microsoft.UI.Xaml.Data;
 
 namespace CoffeePOS.Converters
 {
@@ -8,20 +8,17 @@ namespace CoffeePOS.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is double price)
+            if (value is decimal decimalValue)
             {
-                return price.ToString("C", CultureInfo.GetCultureInfo("en-US"));
+                // Định dạng thành tiền tệ dựa trên culture hiện tại
+                return decimalValue.ToString("C", CultureInfo.CurrentCulture);
             }
-            return "$0.00"; // Default fallback value
+            return value?.ToString() ?? string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            if (value is string priceString && double.TryParse(priceString, NumberStyles.Currency, CultureInfo.GetCultureInfo("en-US"), out double price))
-            {
-                return price;
-            }
-            return 0.0; // Default fallback value
+            throw new NotImplementedException();
         }
     }
 }

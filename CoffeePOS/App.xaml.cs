@@ -115,10 +115,8 @@ public partial class App : Application
             services.AddTransient<OrderViewModel>();
             services.AddTransient<AddOrderPage>();
             services.AddTransient<AddOrderViewModel>();
-
-
-            //services.AddTransient<DetailOrderPage>(); 
-            //services.AddTransient<DetailOrderViewModel>();
+            services.AddTransient<DetailOrderPage>();
+            services.AddTransient<DetailOrderViewModel>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

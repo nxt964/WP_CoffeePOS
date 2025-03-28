@@ -31,7 +31,7 @@ public class PageService : IPageService
         Configure<UpdateProductViewModel, UpdateProductPage>();
         Configure<OrderViewModel, OrderPage>();
         Configure<AddOrderViewModel, AddOrderPage>();
-        //Configure<DetailOrderViewModel, DetailOrderPage>();
+        Configure<DetailOrderViewModel, DetailOrderPage>();
     }
 
     public Type GetPageType(string key)
