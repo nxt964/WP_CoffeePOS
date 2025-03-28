@@ -40,7 +40,7 @@ public sealed partial class DetailOrderPage : Page
         {
             if (int.TryParse(button.Tag.ToString(), out int orderDetailId))
             {
-                await ViewModel.DeleteOrderDetailCommand.ExecuteAsync(orderDetailId);
+                await ViewModel.DeleteOrderDetailCommand?.ExecuteAsync(orderDetailId);
             }
         }
     }

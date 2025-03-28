@@ -1,4 +1,5 @@
-﻿using CoffeePOS.Core.Interfaces;
+﻿using CoffeePOS.Core.Daos;
+using CoffeePOS.Core.Interfaces;
 using CoffeePOS.Core.Models;
 using CoffeePOS.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -31,8 +32,8 @@ public partial class DetailOrderViewModel : ObservableObject
     [ObservableProperty]
     private string voucherCode;
 
-    [ObservableProperty] // Khai báo dưới dạng field
-    private decimal totalPrice; // Không cần getter/setter tùy chỉnh
+    [ObservableProperty]
+    private decimal totalPrice;
 
     [ObservableProperty]
     private string voucherInfo;
@@ -211,6 +212,22 @@ public partial class DetailOrderViewModel : ObservableObject
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.NextPage: {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteOrderDetail(int orderDetailId)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.DeleteOrderDetail: Deleting OrderDetailId = {orderDetailId}");
+            await _dao.OrderDetails.Delete(orderDetailId);
+            await _dao.SaveChangesAsync();
+            await LoadOrderDetails();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.DeleteOrderDetail: {ex.Message}");
         }
     }
 
