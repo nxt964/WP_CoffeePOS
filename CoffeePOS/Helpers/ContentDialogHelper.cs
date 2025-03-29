@@ -177,9 +177,7 @@ public class ContentDialogHelper
             Source = new BitmapImage(new Uri(
                 string.IsNullOrEmpty(product.Image) 
                 ? "ms-appx:///Assets/ProductImageDefault.png"
-                : (product.Image.StartsWith("C:\\Users"))
-                ? $"file:///{product.Image}"
-                : $"ms-appx:///Assets/{product.Image}"))
+                : product.Image))
         };
 
         var pickImageButton = new Button

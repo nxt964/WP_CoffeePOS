@@ -13,12 +13,12 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="10" Margin="0, 0, 0, 15">
                     <FontIcon Glyph="&#xE946;" FontSize="18"/>
-                    <TextBlock Text="Detail:" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Text="Product detail:" FontSize="24" FontWeight="Bold"/>
                 </StackPanel>
                 
                 <StackPanel x:Name="ProductDetail" Orientation="Horizontal">
                     <Image
-                        Source="{x:Bind ViewModel.Item.Image, Converter={StaticResource AbsolutePathConverter}, Mode=OneWay}"
+                        Source="{x:Bind ViewModel.Item.Image, Converter={StaticResource ImageSourceConverter}, Mode=OneWay}"
                         Height="250" Width="250"
                         Stretch="UniformToFill"
                         HorizontalAlignment="Center"/>
@@ -32,17 +32,19 @@
                                 TextAlignment="Left"/>
 
                             <Button Margin="20, 0, 0, 0"
+                                    Visibility="{x:Bind ViewModel.IsNotFromProducts, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Command="{x:Bind ViewModel.EditProductCommand}">
                                 <FontIcon Glyph="&#xE104;" FontSize="24" Foreground="MediumSpringGreen"/>
                             </Button>
                             <Button Margin="10, 0, 0, 0"
+                                    Visibility="{x:Bind ViewModel.IsNotFromProducts, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Command="{x:Bind ViewModel.DeleteProductCommand}">
                                 <FontIcon Glyph="&#xE74D;" FontSize="24" Foreground="Red"/>
                             </Button>
                         </StackPanel>
 
                         <TextBlock
-                            Text="{x:Bind ViewModel.Item.Price, Converter={StaticResource CurrencyFormatter}, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.Item.Price, Converter={StaticResource PriceFormatter}, Mode=OneWay}"
                             FontSize="28"
                             Foreground="DarkOrange"
                             FontWeight="SemiBold"
@@ -98,13 +100,13 @@
                                     <Border Padding="10" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
                                         <StackPanel HorizontalAlignment="Center">
                                             <!-- Product Image -->
-                                            <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource AbsolutePathConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
+                                            <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource ImageSourceConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
 
                                             <!-- Product Name -->
                                             <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="5,10,5,0"/>
 
                                             <!-- Product Price -->
-                                            <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" FontSize="14" Foreground="DarkOrange" TextAlignment="Center"/>
+                                            <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource PriceFormatter}}" FontSize="14" Foreground="DarkOrange" TextAlignment="Center"/>
 
                                             <!-- Stock Availability Indicator -->
                                             <TextBlock Text="Out of Stock"

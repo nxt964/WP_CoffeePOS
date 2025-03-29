@@ -193,7 +193,8 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
         if (clickedItem != null)
         {
             _navigationService.SetListDataItemForNextConnectedAnimation(clickedItem);
-            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName!, clickedItem.Id);
+            var parameter = (clickedItem.Id, false);
+            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName!, parameter);
         }
     }
 
