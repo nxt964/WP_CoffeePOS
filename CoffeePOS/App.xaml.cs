@@ -2,6 +2,7 @@
 using CoffeePOS.Contracts.Services;
 using CoffeePOS.Core.Contracts.Services;
 using CoffeePOS.Core.Daos;
+using CoffeePOS.Core.Data;
 using CoffeePOS.Core.Interfaces;
 using CoffeePOS.Core.Services;
 using CoffeePOS.Helpers;
@@ -71,8 +72,10 @@ public partial class App : Application
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<INavigationService, NavigationService>();
 
+            services.AddSingleton<SqliteConnectionFactory>();
             // Core Dao
-            services.AddSingleton<IDao, MockDao>();
+            //services.AddSingleton<IDao, MockDao>();
+            services.AddSingleton<IDao, SqliteManualDao>();
 
             // Core Services
             services.AddSingleton<ISampleDataService, SampleDataService>();
@@ -141,6 +144,16 @@ public partial class App : Application
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
+
+        // Khởi tạo database
+        using (var scope = Host.Services.CreateScope())
+        {
+            var dao = scope.ServiceProvider.GetRequiredService<IDao>();
+            if (dao is SqliteManualDao sqliteManualDao)
+            {
+                await sqliteManualDao.InitializeDatabaseAsync();
+            }
+        }
 
         App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
 
