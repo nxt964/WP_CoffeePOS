@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Data;
 using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CoffeePOS.Converters;
 
@@ -12,16 +13,16 @@ public class ImageSourceConverter : IValueConverter
         {
             try
             {
-                return new Uri(imageUrl);
+                return new BitmapImage(new Uri(imageUrl));
             }
             catch
             {
                 // Trả về một hình ảnh mặc định nếu URL không hợp lệ
-                return new Uri("ms-appx:///Assets/ProductImage.jpg");
+                return new BitmapImage(new Uri("ms-appx:///Assets/ProductImage.jpg"));
             }
         }
         // Trả về hình ảnh mặc định nếu giá trị không hợp lệ
-        return new Uri("ms-appx:///Assets/ProductImage.jpg");
+        return new BitmapImage(new Uri("ms-appx:///Assets/ProductImageDefault.png"));
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language)

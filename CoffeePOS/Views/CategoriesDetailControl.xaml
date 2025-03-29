@@ -36,18 +36,19 @@
                         <DataTemplate x:DataType="models:Product">
                             <Button Background="Transparent" 
                                     Click="OnProductClicked"
+                                    Tag="{x:Bind Id}"
                                     BorderThickness="0" 
                                     Padding="0">
                                 <Border Padding="10" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
                                     <StackPanel HorizontalAlignment="Center">
                                         <!-- Product Image -->
-                                        <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource AbsolutePathConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
+                                        <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource ImageSourceConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
 
                                         <!-- Product Name -->
                                         <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="5,10,5,0"/>
 
                                         <!-- Product Price -->
-                                        <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" FontSize="14" Foreground="DarkOrange" TextAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource PriceFormatter}}" FontSize="14" Foreground="DarkOrange" TextAlignment="Center"/>
 
                                         <!-- Stock Availability Indicator -->
                                         <TextBlock Text="Out of Stock"

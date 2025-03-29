@@ -1,6 +1,10 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+using System.Numerics;
+using CoffeePOS.Contracts.Services;
+using CoffeePOS.Contracts.ViewModels;
 using CoffeePOS.Core.Models;
 using CoffeePOS.Models;
+using CoffeePOS.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
@@ -9,6 +13,7 @@ namespace CoffeePOS.Views;
 
 public sealed partial class CategoriesDetailControl : UserControl
 {
+    private readonly INavigationService _navigationService = App.GetService<INavigationService>();
     public CategoryProducts? CategoryWithProducts
     {
         get => GetValue(CategoryWithProductsProperty) as CategoryProducts;
@@ -56,17 +61,13 @@ public sealed partial class CategoriesDetailControl : UserControl
 
     private void OnProductClicked(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && button.DataContext is CoffeePOS.Core.Models.Product product)
+        if (sender is Button button)
         {
-            ContentDialog dialog = new ContentDialog
+            if (button.Tag is int productId)
             {
-                Title = "Product Selected",
-                Content = $"You selected {product.Name}, priced at {product.Price:C}.",
-                CloseButtonText = "OK",
-                XamlRoot = App.MainWindow.Content.XamlRoot
-            };
-
-            _ = dialog.ShowAsync();
+                var parameter = (productId, true);
+                _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, parameter);
+            }
         }
     }
 

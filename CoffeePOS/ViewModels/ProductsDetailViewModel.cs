@@ -20,6 +20,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
     private readonly IDao _dao;
     private readonly INavigationService _navigationService;
     private ContentDialogHelper ContentDialogHelper { get; } = new ContentDialogHelper();
+    public bool IsNotFromProducts=false;
 
     [ObservableProperty]
     private Product? item;
@@ -36,8 +37,9 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
 
     public async void OnNavigatedTo(object parameter)
     {
-        if (parameter is int productId)
+        if (parameter is (int productId, bool isNotFromProducts))
         {
+            IsNotFromProducts = isNotFromProducts;
             item = await _dao.Products.GetById(productId);
             ProductCategory = (await _dao.Categories.GetById(item.CategoryId)).Name;
 
@@ -55,8 +57,9 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
     }
 
     public void OnProductClicked(int productId)
-    {        
-        _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, productId);
+    {   
+        var parameter = (productId, false);
+        _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, parameter);
     }
 
     [RelayCommand]
@@ -114,11 +117,9 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
                 Height = 150,
                 Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill,
                 Source = new BitmapImage(new Uri(
-                    string.IsNullOrEmpty(item.Image)
-                    ? "ms-appx:///Assets/ProductImageDefault.png"
-                    : (item.Image.StartsWith("C:\\Users"))
-                    ? $"file:///{item.Image}"
-                    : $"ms-appx:///Assets/{item.Image}"))
+                    !string.IsNullOrEmpty(item.Image)
+                    ? item.Image
+                    : "ms-appx:///Assets/ProductImageDefault.png"))
             }
         );
 
