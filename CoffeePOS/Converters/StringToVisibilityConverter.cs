@@ -12,7 +12,7 @@ public class StringToVisibilityConverter : IValueConverter
     {
         try
         {
-            if (string.IsNullOrEmpty(value as string))
+            if (string.IsNullOrWhiteSpace(value as string))
             {
                 return Visibility.Collapsed;
             }

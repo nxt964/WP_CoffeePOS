@@ -19,6 +19,7 @@
     <None Remove="Views\AddProductPage.xaml" />
     <None Remove="Views\AddProductToOrderDetailPage.xaml" />
     <None Remove="Views\DetailOrderPage.xaml" />
+    <None Remove="Views\LoginPage.xaml" />
     <None Remove="Views\OrderPage.xaml" />
     <None Remove="Views\UpdateProductPage.xaml" />
   </ItemGroup>
@@ -55,6 +56,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\AddProductToOrderDetailPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,7 +8,7 @@ using CoffeePOS.Core.Models;
 namespace CoffeePOS.Core.Interfaces;
 public interface IDao
 {
-    IRepository<User> Users { get; }
+    IUserRepository Users { get; }
     IRepository<Employee> Employees { get; }
     IRepository<Category> Categories { get; }
     IRepository<Product> Products { get; }

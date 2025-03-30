@@ -27,10 +27,21 @@ public class ActivationService : IActivationService
         await InitializeAsync();
 
         // Set the MainWindow Content.
-        if (App.MainWindow.Content == null)
+        //if (App.MainWindow.Content == null)
+        //{
+        //    _shell = App.GetService<LoginPage>();
+            //App.MainWindow.Content = _shell ?? new Frame();
+        //}
+        //if (App.MainWindow.Content == null)
+        //{
+        //    var frame = new Frame();
+        //    App.MainWindow.Content = frame;
+        //    frame.Navigate(typeof(LoginPage));
+        //}
+
+        if (App.MainWindow.Content is Frame frame)
         {
-            _shell = App.GetService<ShellPage>();
-            App.MainWindow.Content = _shell ?? new Frame();
+            frame.Navigate(typeof(LoginPage));
         }
 
         // Handle activation via ActivationHandlers.

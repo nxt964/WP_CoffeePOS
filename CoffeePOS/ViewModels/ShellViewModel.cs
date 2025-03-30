@@ -48,4 +48,20 @@ public partial class ShellViewModel : ObservableRecipient
             Selected = selectedItem;
         }
     }
+
+    // Perform logout actions
+    public void PerformLogout()
+    {
+        // Clear any user data, authentication tokens, etc.
+        // For example:
+        // App.Current.Properties["IsLoggedIn"] = false;
+        // App.Current.Properties["UserToken"] = null;
+
+        // If you have a user service or authentication service, use it here
+        // For example:
+        // var authService = App.GetService<IAuthenticationService>();
+        // authService.Logout();
+
+        // You could add any additional logout logic here
+    }
 }

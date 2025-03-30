@@ -21,6 +21,27 @@ public class NavigationService : INavigationService
 
     public event NavigatedEventHandler? Navigated;
 
+    //public Frame? Frame
+    //{
+    //    get
+    //    {
+    //        if (_frame == null)
+    //        {
+    //            _frame = App.MainWindow.Content as Frame;
+    //            RegisterFrameEvents();
+    //        }
+
+    //        return _frame;
+    //    }
+
+    //    set
+    //    {
+    //        UnregisterFrameEvents();
+    //        _frame = value;
+    //        RegisterFrameEvents();
+    //    }
+    //}
+
     public Frame? Frame
     {
         get
@@ -28,12 +49,17 @@ public class NavigationService : INavigationService
             if (_frame == null)
             {
                 _frame = App.MainWindow.Content as Frame;
-                RegisterFrameEvents();
+                if (_frame == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Cảnh báo: App.MainWindow.Content không phải là Frame hoặc chưa được khởi tạo.");
+                }
+                else
+                {
+                    RegisterFrameEvents();
+                }
             }
-
             return _frame;
         }
-
         set
         {
             UnregisterFrameEvents();
@@ -87,7 +113,13 @@ public class NavigationService : INavigationService
     {
         var pageType = _pageService.GetPageType(pageKey);
 
-        if (_frame != null && (_frame.Content?.GetType() != pageType || (parameter != null && !parameter.Equals(_lastParameterUsed))))
+        if (_frame == null)
+        {
+            System.Diagnostics.Debug.WriteLine("Lỗi: Frame là null. Không thể điều hướng.");
+            return false; // Thoát khỏi phương thức nếu _frame chưa được khởi tạo
+        }
+
+        if (_frame.Content?.GetType() != pageType || (parameter != null && !parameter.Equals(_lastParameterUsed)))
         {
             _frame.Tag = clearNavigation;
             var vmBeforeNavigation = _frame.GetPageViewModel();
@@ -100,7 +132,6 @@ public class NavigationService : INavigationService
                     navigationAware.OnNavigatedFrom();
                 }
             }
-
             return navigated;
         }
 

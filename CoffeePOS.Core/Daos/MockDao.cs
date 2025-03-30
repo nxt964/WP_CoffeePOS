@@ -10,12 +10,14 @@ using CoffeePOS.Core.Repositories;
 namespace CoffeePOS.Core.Daos;
 public class MockDao : IDao
 {
-    public IRepository<User> Users { get; } = new MockRepository<User>(new List<User>() {
-        new User { Id = 1, Username = "admin", Password = "admin1234" },
-        new User { Id = 2, Username = "employee1", Password = "employee1234" },
-        new User { Id = 3, Username = "employee2", Password = "employee1234"}
-    });
 
+
+    //public IRepository<User> Users { get; } = new MockRepository<User>(new List<User>() {
+    //    new User { Id = 1, Username = "admin", Password = "admin1234" },
+    //    new User { Id = 2, Username = "employee1", Password = "employee1234" },
+    //    new User { Id = 3, Username = "employee2", Password = "employee1234"}
+    //});
+    public IUserRepository Users => throw new NotImplementedException("MockDao.Users is not implemented.");
     public IRepository<Employee> Employees { get; } = new MockRepository<Employee>(new List<Employee>() {
         new Employee { Id = 1, EmployeeName = "John Doe", Email = "john@example.com", Phone = "123-456-7890", Salary = 2000 },
         new Employee { Id = 2, EmployeeName = "Jane Smith", Email = "jane@example.com", Phone = "234-567-8901", Salary = 2200 }
