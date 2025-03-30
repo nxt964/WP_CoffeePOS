@@ -131,7 +131,7 @@ public class SqliteManualRepository<T> : IRepository<T> where T : class
         return null;
     }
 
-    private T MapToEntity(SqliteDataReader reader)
+    protected T MapToEntity(SqliteDataReader reader)
     {
         var entity = Activator.CreateInstance<T>();
         var properties = typeof(T).GetProperties();

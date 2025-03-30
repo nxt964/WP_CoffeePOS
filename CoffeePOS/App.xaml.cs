@@ -39,7 +39,7 @@ public partial class App : Application
             throw new ArgumentException($"{typeof(T)} needs to be registered in ConfigureServices within App.xaml.cs.");
         }
 
-        return service;
+        return service; 
     }
 
     public static WindowEx MainWindow { get; } = new MainWindow();
@@ -122,6 +122,10 @@ public partial class App : Application
             services.AddTransient<DetailOrderViewModel>();
             services.AddTransient<AddProductToOrderDetailPage>();
             services.AddTransient<AddProductToOrderDetailViewModel>();
+            services.AddTransient<LoginViewModel>();
+            services.AddTransient<LoginPage>();
+            
+
 
 
 

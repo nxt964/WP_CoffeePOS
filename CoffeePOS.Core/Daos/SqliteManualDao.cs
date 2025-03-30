@@ -11,13 +11,16 @@ namespace CoffeePOS.Core.Daos;
 public class SqliteManualDao : IDao
 {
     private readonly SqliteConnectionFactory _connectionFactory;
+    private readonly IUserRepository _userRepository;
+
 
     public SqliteManualDao(SqliteConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
+        _userRepository = new UserRepository(_connectionFactory);
     }
 
-    public IRepository<User> Users => new SqliteManualRepository<User>(_connectionFactory);
+    public IUserRepository Users => _userRepository;
     public IRepository<Employee> Employees => new SqliteManualRepository<Employee>(_connectionFactory);
     public IRepository<Category> Categories => new SqliteManualRepository<Category>(_connectionFactory);
     public IRepository<Product> Products => new SqliteManualRepository<Product>(_connectionFactory);

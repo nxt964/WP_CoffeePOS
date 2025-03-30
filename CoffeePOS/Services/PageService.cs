@@ -14,6 +14,7 @@ public class PageService : IPageService
 
     public PageService()
     {
+        Configure<ShellViewModel, ShellPage>();
         Configure<DashboardViewModel, DashboardPage>();
         Configure<CategoriesViewModel, CategoriesPage>();
         Configure<ProductsViewModel, ProductsPage>();
@@ -32,6 +33,7 @@ public class PageService : IPageService
         Configure<OrderViewModel, OrderPage>();
         Configure<AddOrderViewModel, AddOrderPage>();
         Configure<DetailOrderViewModel, DetailOrderPage>();
+        Configure<LoginViewModel, LoginPage>();
 
         Configure<AddProductToOrderDetailViewModel, AddProductToOrderDetailPage>();
     }
