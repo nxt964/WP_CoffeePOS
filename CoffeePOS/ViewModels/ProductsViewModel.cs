@@ -34,8 +34,7 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
 
     private async Task LoadData()
     {
-        _allProducts.Clear();
-        (await _dao.Products.GetAll()).ToList().ForEach(_allProducts.Add);
+        await LoadProducts();
 
         CategorySelection.Clear();
         CategorySelection.Add("All");
@@ -65,6 +64,12 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
         SearchName = Price = Category = Sort = string.Empty;
 
         
+    }
+
+    private async Task LoadProducts()
+    {
+        _allProducts.Clear();
+        (await _dao.Products.GetAll()).ToList().ForEach(_allProducts.Add);
     }
 
     public async void OnNavigatedTo(object parameter)
@@ -221,7 +226,7 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
             product.IsStocked = true;
 
             await _dao.Products.Add(product);
-            _allProducts.Add(product);
+            await LoadProducts();
             ApplyFilters();
         }
     }
