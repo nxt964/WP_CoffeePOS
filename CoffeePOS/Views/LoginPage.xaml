@@ -22,13 +22,13 @@
         </Grid.RowDefinitions>
 
         <!-- Tiêu đề -->
-        <TextBlock Text="Đăng nhập" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+        <TextBlock Text="Log In" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center" Margin="0,20,0,0"/>
 
         <!-- Form đăng nhập -->
         <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
-            <TextBox Header="Tên đăng nhập" Text="{Binding Username, Mode=TwoWay}" Margin="0,0,0,10"/>
-            <PasswordBox Header="Mật khẩu" Password="{Binding Password, Mode=TwoWay}" Margin="0,0,0,20"/>
-            <Button Content="Đăng nhập" Command="{Binding LoginCommand}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
+            <TextBox Header="Username" Text="{Binding Username, Mode=TwoWay}" Margin="0,0,0,10"/>
+            <PasswordBox Header="Password" Password="{Binding Password, Mode=TwoWay}" Margin="0,0,0,20"/>
+            <Button Content="Login" Command="{Binding LoginCommand}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
             <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Margin="0,10,0,0" Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
         </StackPanel>
     </Grid>

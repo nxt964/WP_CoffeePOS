@@ -38,7 +38,7 @@ public partial class LoginViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
         {
-            ErrorMessage = "Vui lòng nhập tên đăng nhập và mật khẩu.";
+            ErrorMessage = "Please input Username and Password";
             return;
         }
 
@@ -62,12 +62,12 @@ public partial class LoginViewModel : ObservableObject
             }
             else
             {
-                ErrorMessage = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                ErrorMessage = "Invalid Username or Password!";
             }
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Lỗi xảy ra: {ex.Message}";
+            ErrorMessage = $"Somethings went wrong: {ex.Message}";
         }
     }
 }

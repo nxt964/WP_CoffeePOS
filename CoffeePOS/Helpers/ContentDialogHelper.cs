@@ -136,7 +136,7 @@ public class ContentDialogHelper
             Margin = new Thickness(0, 0, 0, 15),
             Children = {
                 new TextBlock { Text = "Price ($):", Width = 80, VerticalAlignment = VerticalAlignment.Center },
-                new TextBox { Name = "PriceBox", Text=product.Price.ToString(), PlaceholderText = "Ex: 2.5", Width = 200 }
+                new TextBox { Name = "PriceBox", Text = product.Price != 0 ? product.Price.ToString() : "", PlaceholderText = "Ex: 2.5", Width = 200 }
             }
         });
         
@@ -149,7 +149,7 @@ public class ContentDialogHelper
             }
         });
 
-        var categoryBox = new ComboBox { Name = "CategoryBox", Width = 200 };
+        var categoryBox = new ComboBox { Name = "CategoryBox", Width = 200, PlaceholderText="Select category"};
         var categories = _dao.Categories.GetAll().Result.ToList();
         categories.ForEach(c => categoryBox.Items.Add(c.Name));
         if (!string.IsNullOrEmpty(product.CategoryId.ToString()))

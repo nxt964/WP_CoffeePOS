@@ -49,13 +49,19 @@
                 Grid.Column="1"
                 Margin="10,0,0,0"
                 HorizontalAlignment="Left"
-                Content="Search"
-                Command="{x:Bind ViewModel.ApplyFiltersCommand}"/>
+                Command="{x:Bind ViewModel.ApplyFiltersCommand}">
+
+                <FontIcon Glyph="&#xE721;" FontSize="16"/>
+            </Button>
             <Button
                 Grid.Column="2"
                 HorizontalAlignment="Right"
-                Content="Add"
-                Command="{x:Bind ViewModel.AddProductCommand}"/>
+                Command="{x:Bind ViewModel.AddProductCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xECC8;"/>
+                    <TextBlock Text="Add Product" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
         </Grid>
 
         <!-- Row 1: Filter and Sort -->

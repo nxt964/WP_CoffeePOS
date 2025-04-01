@@ -91,10 +91,10 @@ public sealed partial class ShellPage : Page
         // Create and configure the confirmation dialog
         ContentDialog logoutDialog = new ContentDialog
         {
-            Title = "Xác nhận đăng xuất",
-            Content = "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?",
-            PrimaryButtonText = "Đăng xuất",
-            CloseButtonText = "Hủy",
+            Title = "Logout Confirmation",
+            Content = "Are you sure you want to log out of the system?",
+            PrimaryButtonText = "Logout",
+            CloseButtonText = "Cancel",
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.XamlRoot
         };

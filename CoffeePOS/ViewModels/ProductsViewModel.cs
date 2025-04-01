@@ -242,12 +242,12 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
             filtered = filtered.Where(p => p.Name.Contains(SearchName, StringComparison.OrdinalIgnoreCase));
         }
 
-        if (Category != "All" && Category != "")
+        if (Category != "All" && !String.IsNullOrEmpty(Category))
         {
             filtered = filtered.Where(p => CategoryMap.ContainsKey(p.CategoryId) && CategoryMap[p.CategoryId] == Category);
         }
 
-        if (Price != "All" && Price != "")
+        if (Price != "All" && !String.IsNullOrEmpty(Price))
         {
             filtered = filtered.Where(p => CheckPriceFilter(p.Price));
         }
@@ -270,7 +270,7 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
     private void RemoveFilter()
     {
         SearchName = "";
-        Price = Category = Sort = "All";
+        Price = Category = Sort = null;
         ApplyFilters();
     }
 

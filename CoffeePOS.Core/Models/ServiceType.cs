@@ -20,8 +20,8 @@ public class ServiceType
         get; set;
     }
 
-    public string Description
-    {
-        get; set;
-    }
+    //public string Description
+    //{
+    //    get; set;
+    //}
 }
