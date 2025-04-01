@@ -180,9 +180,10 @@ public class SqliteManualDao : IDao
 
             // Insert initial data
             // Users
-            "INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (1, 'admin', 'admin1234')",
-            "INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (2, 'employee1', 'employee1234')",
-            "INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (3, 'employee2', 'employee1234')",
+            // Insert initial data with hashed passwords
+        $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (1, 'admin', '{BCrypt.Net.BCrypt.HashPassword("admin1234")}')",
+        $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (2, 'employee1', '{BCrypt.Net.BCrypt.HashPassword("employee1234")}')",
+        $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (3, 'employee2', '{BCrypt.Net.BCrypt.HashPassword("employee1234")}')",
             // Employees
             "INSERT OR IGNORE INTO Employees (Id, EmployeeName, Email, Phone, Salary) VALUES (1, 'John Doe', 'john@example.com', '123-456-7890', 2000)",
             "INSERT OR IGNORE INTO Employees (Id, EmployeeName, Email, Phone, Salary) VALUES (2, 'Jane Smith', 'jane@example.com', '234-567-8901', 2200)",

@@ -241,7 +241,7 @@ public class ContentDialogHelper
             new TextBox { Text = table.TableNumber, PlaceholderText = "Enter table number", Width = 200 }
         }
         });
-
+          
         // Status selection
         var statusCombo = new ComboBox
         {

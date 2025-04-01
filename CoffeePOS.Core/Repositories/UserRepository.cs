@@ -24,15 +24,28 @@ public class UserRepository : SqliteManualRepository<User>, IUserRepository
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT * FROM Users WHERE Username = @Username AND Password = @Password";
+        //command.CommandText = "SELECT * FROM Users WHERE Username = @Username AND Password = @Password";
+        //command.Parameters.AddWithValue("@Username", username);
+        //command.Parameters.AddWithValue("@Password", password);
+
+        //using var reader = await command.ExecuteReaderAsync();
+        //if (await reader.ReadAsync())
+        //{
+        //    _currentUser = MapToEntity(reader);
+        //    return _currentUser;
+        //}
+        command.CommandText = "SELECT * FROM Users WHERE Username = @Username";
         command.Parameters.AddWithValue("@Username", username);
-        command.Parameters.AddWithValue("@Password", password);
 
         using var reader = await command.ExecuteReaderAsync();
         if (await reader.ReadAsync())
         {
-            _currentUser = MapToEntity(reader);
-            return _currentUser;
+            var storedHash = reader.GetString(reader.GetOrdinal("Password"));
+            if (BCrypt.Net.BCrypt.Verify(password, storedHash))
+            {
+                _currentUser = MapToEntity(reader);
+                return _currentUser;
+            }
         }
 
         return null;
