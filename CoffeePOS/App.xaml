@@ -16,6 +16,7 @@
             <converter:BoolToColorConverter x:Key="BoolToColorConverter"/>
             <converter:PriceFormatter x:Key="PriceFormatter"/>
             <converter:ImageSourceConverter x:Key="ImageSourceConverter"/>
+            <converter:TableStatusColorConverter x:Key="TableStatusColorConverter"/>
 
 
             <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">

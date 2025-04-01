@@ -43,7 +43,7 @@ public sealed partial class ShellPage : Page
         KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.GoBack));
 
         // Điều hướng đến DashboardPage mặc định
-        //ViewModel.NavigationService.NavigateTo(typeof(DashboardViewModel).FullName!);
+        ViewModel.NavigationService.NavigateTo(typeof(DashboardViewModel).FullName!);
     }
 
     private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
