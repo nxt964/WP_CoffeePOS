@@ -224,5 +224,126 @@ public class ContentDialogHelper
         };
     }
 
+    public ContentDialog CreateTableDialog(Table table = null, bool isNew = true)
+    {
+        table ??= new Table { Status = "Available" };
+
+        var contentPanel = new StackPanel { Spacing = 10 };
+
+        // Table Number input
+        contentPanel.Children.Add(new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Margin = new Thickness(0, 0, 0, 10),
+            Children =
+        {
+            new TextBlock { Text = "Table Number:", Width = 100, VerticalAlignment = VerticalAlignment.Center },
+            new TextBox { Text = table.TableNumber, PlaceholderText = "Enter table number", Width = 200 }
+        }
+        });
+
+        // Status selection
+        var statusCombo = new ComboBox
+        {
+            Width = 200,
+            ItemsSource = new List<string> { "Available", "Occupied", "Reserved", "Maintenance" }
+        };
+
+        if (!string.IsNullOrEmpty(table.Status))
+        {
+            statusCombo.SelectedItem = table.Status;
+        }
+        else
+        {
+            statusCombo.SelectedIndex = 0;
+        }
+
+        contentPanel.Children.Add(new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Children =
+        {
+            new TextBlock { Text = "Status:", Width = 100, VerticalAlignment = VerticalAlignment.Center },
+            statusCombo
+        }
+        });
+
+        return new ContentDialog
+        {
+            Title = isNew ? "Add New Table" : "Edit Table",
+            PrimaryButtonText = isNew ? "Add" : "Save",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = App.MainWindow.Content.XamlRoot,
+            Content = contentPanel
+        };
+    }
+
+    public ContentDialog CreateTableStatusDialog(Table table)
+    {
+        var contentPanel = new StackPanel { Spacing = 10 };
+
+        contentPanel.Children.Add(new TextBlock { Text = $"Current Status: {table.Status}" });
+
+        var statusCombo = new ComboBox
+        {
+            ItemsSource = new List<string> { "Available", "Occupied", "Reserved", "Maintenance" },
+            SelectedItem = table.Status,
+            Width = 200,
+            Margin = new Thickness(0, 5, 0, 0)
+        };
+
+        contentPanel.Children.Add(new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Children =
+        {
+            new TextBlock { Text = "New Status:", Width = 100, VerticalAlignment = VerticalAlignment.Center },
+            statusCombo
+        }
+        });
+
+        return new ContentDialog
+        {
+            Title = "Change Table Status",
+            PrimaryButtonText = "Save",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = App.MainWindow.Content.XamlRoot,
+            Content = contentPanel
+        };
+    }
+
+    public ContentDialog CreateDeleteTableConfirmationDialog(Table table)
+    {
+        return new ContentDialog
+        {
+            Title = "Confirm Deletion",
+            Content = $"Are you sure you want to delete table {table.TableNumber}?",
+            PrimaryButtonText = "Delete",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = App.MainWindow.Content.XamlRoot
+        };
+    }
+
+    public ContentDialog CreateErrorDialog(string message)
+    {
+        return new ContentDialog
+        {
+            Title = "Error",
+            Content = message,
+            CloseButtonText = "OK",
+            XamlRoot = App.MainWindow.Content.XamlRoot
+        };
+    }
+
 
 }
+
+
+
+
+
+
+
