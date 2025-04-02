@@ -1,5 +1,4 @@
 ﻿using CoffeePOS.Helpers;
-
 using Windows.UI.ViewManagement;
 
 namespace CoffeePOS;
@@ -15,7 +14,7 @@ public sealed partial class MainWindow : WindowEx
         InitializeComponent();
 
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico"));
-        Content = null;
+        Content = new Microsoft.UI.Xaml.Controls.Frame();
         Title = "AppDisplayName".GetLocalized();
 
         // Theme change code picked from https://github.com/microsoft/WinUI-Gallery/pull/1239

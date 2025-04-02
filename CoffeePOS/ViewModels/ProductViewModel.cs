@@ -20,21 +20,21 @@ public partial class ProductViewModel : ObservableRecipient, INavigationAware
         // Giả lập dữ liệu sản phẩm
         source.Add(new Product
         {
-            Id = "P001",
+            Id = 001,
             Name = "Sample Product 1",
             Price = 100.0,
             Image = "/Assets/StoreLogo.png"
         });
         source.Add(new Product
         {
-            Id = "P002",
+            Id = 002,
             Name = "Sample Product 2",
             Price = 200.0,
             Image = "/Assets/StoreLogo.png"
         });
         source.Add(new Product
         {
-            Id = "P003",
+            Id = 003,
             Name = "Sample Product 3",
             Price = 300.0,
             Image = "/Assets/StoreLogo.png"
@@ -45,7 +45,7 @@ public partial class ProductViewModel : ObservableRecipient, INavigationAware
     {
     }
 
-    public void DeleteProduct(string productId)
+    public void DeleteProduct(int productId)
     {
         var productToRemove = source.FirstOrDefault(p => p.Id == productId);
         if (productToRemove != null)

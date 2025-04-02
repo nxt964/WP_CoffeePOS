@@ -15,7 +15,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Row 0: Tiêu đề -->
+            <!-- Tiêu đề -->
             <TextBlock
                 Grid.Row="0"
                 Text="Add New Order"
@@ -23,51 +23,37 @@
                 HorizontalAlignment="Center"
                 Margin="0,0,0,20"/>
 
-            <!-- Row 1: Form nhập liệu -->
+            <!-- Form nhập liệu -->
             <StackPanel Grid.Row="1" Spacing="10" Margin="20,0">
-                <ComboBox
-                    Header="Customer"
-                    ItemsSource="{x:Bind ViewModel.Customers, Mode=OneWay}"
-                    SelectedItem="{x:Bind ViewModel.SelectedCustomer, Mode=TwoWay}"
-                    DisplayMemberPath="Name"
+                <DatePicker
+                    Header="Order Date"
+                    Date="{x:Bind ViewModel.OrderDate, Mode=TwoWay}"
                     Width="300"
                     HorizontalAlignment="Left"/>
-                <ComboBox
-                    Header="Voucher (Optional)"
-                    ItemsSource="{x:Bind ViewModel.Vouchers, Mode=OneWay}"
-                    SelectedItem="{x:Bind ViewModel.SelectedVoucher, Mode=TwoWay}"
-                    DisplayMemberPath="Code"
+                <AutoSuggestBox
+                    Header="Customer Name"
                     Width="300"
-                    HorizontalAlignment="Left"/>
+                    HorizontalAlignment="Left"
+                    Text="{x:Bind ViewModel.CustomerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    ItemsSource="{x:Bind ViewModel.CustomerSuggestions, Mode=OneWay}"
+                    TextChanged="AutoSuggestBox_TextChanged"
+                    SuggestionChosen="AutoSuggestBox_SuggestionChosen"/>
                 <TextBox
-                    Header="Total Amount"
-                    Text="{x:Bind ViewModel.TotalAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Customer Phone"
                     Width="300"
-                    HorizontalAlignment="Left"/>
-                <ComboBox
-                    Header="Payment Method"
-                    ItemsSource="{x:Bind ViewModel.PaymentMethods, Mode=OneWay}"
-                    SelectedItem="{x:Bind ViewModel.SelectedPaymentMethod, Mode=TwoWay}"
-                    DisplayMemberPath="Name"
-                    Width="300"
-                    HorizontalAlignment="Left"/>
-                <ComboBox
-                    Header="Service Type"
-                    ItemsSource="{x:Bind ViewModel.ServiceTypes, Mode=OneWay}"
-                    SelectedItem="{x:Bind ViewModel.SelectedServiceType, Mode=TwoWay}"
-                    DisplayMemberPath="Name"
-                    Width="300"
-                    HorizontalAlignment="Left"/>
-                <ComboBox
-                    Header="Table"
-                    ItemsSource="{x:Bind ViewModel.Tables, Mode=OneWay}"
-                    SelectedItem="{x:Bind ViewModel.SelectedTable, Mode=TwoWay}"
-                    DisplayMemberPath="Name"
-                    Width="300"
-                    HorizontalAlignment="Left"/>
+                    HorizontalAlignment="Left"
+                    Text="{x:Bind ViewModel.CustomerPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <!-- Service Type RadioButtons -->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Service Type" Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <RadioButton Content="Dine-in" GroupName="ServiceType" IsChecked="{x:Bind ViewModel.IsDineIn, Mode=TwoWay}"/>
+                        <RadioButton Content="Take-away" GroupName="ServiceType" IsChecked="{x:Bind ViewModel.IsTakeAway, Mode=TwoWay}"/>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
 
-            <!-- Row 2: Nút Save và Cancel -->
+            <!-- Nút Add và Cancel -->
             <StackPanel
                 Grid.Row="2"
                 Orientation="Horizontal"
@@ -75,8 +61,8 @@
                 Spacing="10"
                 Margin="0,20,20,0">
                 <Button
-                    Content="Save"
-                    Command="{x:Bind ViewModel.SaveOrderCommand}"/>
+                    Content="Add"
+                    Command="{x:Bind ViewModel.AddOrderCommand}"/>
                 <Button
                     Content="Cancel"
                     Command="{x:Bind ViewModel.CancelCommand}"/>

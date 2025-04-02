@@ -1,6 +1,9 @@
 ﻿using CoffeePOS.Activation;
 using CoffeePOS.Contracts.Services;
 using CoffeePOS.Core.Contracts.Services;
+using CoffeePOS.Core.Daos;
+using CoffeePOS.Core.Data;
+using CoffeePOS.Core.Interfaces;
 using CoffeePOS.Core.Services;
 using CoffeePOS.Helpers;
 using CoffeePOS.Models;
@@ -36,7 +39,7 @@ public partial class App : Application
             throw new ArgumentException($"{typeof(T)} needs to be registered in ConfigureServices within App.xaml.cs.");
         }
 
-        return service;
+        return service; 
     }
 
     public static WindowEx MainWindow { get; } = new MainWindow();
@@ -69,6 +72,11 @@ public partial class App : Application
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<INavigationService, NavigationService>();
 
+            services.AddSingleton<SqliteConnectionFactory>();
+            // Core Dao
+            //services.AddSingleton<IDao, MockDao>();
+            services.AddSingleton<IDao, SqliteManualDao>();
+
             // Core Services
             services.AddSingleton<ISampleDataService, SampleDataService>();
             services.AddSingleton<IFileService, FileService>();
@@ -88,8 +96,6 @@ public partial class App : Application
             services.AddTransient<MaterialPage>();
             services.AddTransient<InventoryViewModel>();
             services.AddTransient<InventoryPage>();
-            services.AddTransient<OrdersViewModel>();
-            services.AddTransient<OrdersPage>();
             services.AddTransient<CustomersViewModel>();
             services.AddTransient<CustomersPage>();
             services.AddTransient<ProductsDetailViewModel>();
@@ -112,8 +118,16 @@ public partial class App : Application
             services.AddTransient<OrderViewModel>();
             services.AddTransient<AddOrderPage>();
             services.AddTransient<AddOrderViewModel>();
-            services.AddTransient<DetailOrderPage>(); 
+            services.AddTransient<DetailOrderPage>();
             services.AddTransient<DetailOrderViewModel>();
+            services.AddTransient<AddProductToOrderDetailPage>();
+            services.AddTransient<AddProductToOrderDetailViewModel>();
+            services.AddTransient<LoginViewModel>();
+            services.AddTransient<LoginPage>();
+            
+
+
+
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
@@ -134,6 +148,16 @@ public partial class App : Application
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
+
+        // Khởi tạo database
+        using (var scope = Host.Services.CreateScope())
+        {
+            var dao = scope.ServiceProvider.GetRequiredService<IDao>();
+            if (dao is SqliteManualDao sqliteManualDao)
+            {
+                await sqliteManualDao.InitializeDatabaseAsync();
+            }
+        }
 
         App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
 

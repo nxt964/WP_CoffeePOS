@@ -14,12 +14,12 @@ public class PageService : IPageService
 
     public PageService()
     {
+        Configure<ShellViewModel, ShellPage>();
         Configure<DashboardViewModel, DashboardPage>();
         Configure<CategoriesViewModel, CategoriesPage>();
         Configure<ProductsViewModel, ProductsPage>();
         Configure<ProductsDetailViewModel, ProductsDetailPage>();
         Configure<CustomersViewModel, CustomersPage>();
-        Configure<OrdersViewModel, OrdersPage>();
         Configure<InventoryViewModel, InventoryPage>();
         Configure<MaterialViewModel, MaterialPage>();
         Configure<TableViewModel, TablePage>();
@@ -33,6 +33,9 @@ public class PageService : IPageService
         Configure<OrderViewModel, OrderPage>();
         Configure<AddOrderViewModel, AddOrderPage>();
         Configure<DetailOrderViewModel, DetailOrderPage>();
+        Configure<LoginViewModel, LoginPage>();
+
+        Configure<AddProductToOrderDetailViewModel, AddProductToOrderDetailPage>();
     }
 
     public Type GetPageType(string key)
@@ -42,7 +45,7 @@ public class PageService : IPageService
         {
             if (!_pages.TryGetValue(key, out pageType))
             {
-                throw new ArgumentException($"Page not found: {key}. Did you forget to call PageService.Configure?");
+                throw new ArgumentException($"Page not found: {key}. Forget to call PageService.Configure?");
             }
         }
 

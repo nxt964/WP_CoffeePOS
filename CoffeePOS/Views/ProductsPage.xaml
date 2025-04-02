@@ -10,34 +10,191 @@
     mc:Ignorable="d">
 
     <Grid x:Name="ContentArea">
-        <controls:AdaptiveGridView
-            animations:Connected.ListItemElementName="itemThumbnail"
-            animations:Connected.ListItemKey="animationKeyContentGrid"
-            DesiredWidth="180"
-            ItemHeight="160"
-            IsItemClickEnabled="True"
-            ItemClickCommand="{x:Bind ViewModel.ItemClickCommand}"
-            ItemsSource="{x:Bind ViewModel.Source,Mode=OneWay}"
-            SelectionMode="None"
-            StretchContentForSingleRow="False">
-            <controls:AdaptiveGridView.ItemTemplate>
-                <DataTemplate x:DataType="models:SampleOrder">
-                    <Grid
-                        x:Name="itemThumbnail"
-                        Padding="{StaticResource XSmallLeftTopRightBottomMargin}">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <FontIcon
-                                Glyph="{x:Bind Symbol}"
-                                AutomationProperties.Name="{x:Bind SymbolName}" />
-                            <TextBlock
-                                Margin="{StaticResource XXSmallTopMargin}"
-                                HorizontalAlignment="Center"
-                                Style="{ThemeResource BodyTextStyle}"
-                                Text="{x:Bind Company}" />
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </controls:AdaptiveGridView.ItemTemplate>
-        </controls:AdaptiveGridView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Search Bar and Add Buttons -->
+        <Grid Grid.Row="0"
+              Margin="20,20,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <RelativePanel Grid.Column="0" Width="300" Height="30">
+                <TextBox x:Name="SearchTextBox"
+                         Width="300"
+                         Height="30"
+                         PlaceholderText="Product name"
+                         Text="{x:Bind ViewModel.SearchName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                         Padding="10,5,5,0"/>
+
+                <Button x:Name="ClearButton"
+                        Content="✖"
+                        Width="24"
+                        Height="24"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Visibility="{x:Bind ViewModel.IsClearButtonVisible, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.ClearSearchCommand}"
+                        RelativePanel.RightOf="SearchTextBox"
+                        VerticalAlignment="Center"/>
+            </RelativePanel>
+            <Button
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                Command="{x:Bind ViewModel.ApplyFiltersCommand}">
+
+                <FontIcon Glyph="&#xE721;" FontSize="16"/>
+            </Button>
+            <Button
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                Command="{x:Bind ViewModel.AddProductCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xECC8;"/>
+                    <TextBlock Text="Add Product" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Row 1: Filter and Sort -->
+        <Grid Grid.Row="1"
+              Margin="20,0,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox
+                Grid.Column="0"
+                Width="200"
+                ItemsSource="{x:Bind ViewModel.PriceSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{x:Bind ViewModel.Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                PlaceholderText="Pick a Price range"/>
+            <ComboBox
+                Grid.Column="1"
+                Width="200"
+                Margin="10,0,0,0"
+                ItemsSource="{x:Bind ViewModel.CategorySelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{x:Bind ViewModel.Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                PlaceholderText="Pick a Category"/>
+            <ComboBox
+                Grid.Column="2"
+                Width="200"
+                Margin="10,0,0,0"
+                ItemsSource="{x:Bind ViewModel.SortSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{x:Bind ViewModel.Sort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                PlaceholderText="Sort by"/>
+            <Button
+                Grid.Column="4"
+                Margin="0,0,10,0"
+                Content="Filter"
+                Command="{x:Bind ViewModel.ApplyFiltersCommand}"/>
+            <Button
+                Grid.Column="5"
+                Content="Remove Filter"
+                Command="{x:Bind ViewModel.RemoveFilterCommand}"/>
+        </Grid>
+
+        <!-- Row 2: Product Grid -->
+        <Grid Grid.Row="2"
+              Margin="20,0,20,20">
+            <controls:AdaptiveGridView
+                animations:Connected.ListItemElementName="itemThumbnail"
+                animations:Connected.ListItemKey="animationKeyContentGrid"
+                DesiredWidth="200"
+                ItemHeight="250"
+                IsItemClickEnabled="True"
+                ItemClickCommand="{x:Bind ViewModel.ItemClickCommand}"
+                ItemsSource="{x:Bind ViewModel.Products,Mode=OneWay}"
+                SelectionMode="None"
+                StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Product">
+                        <Grid
+                            x:Name="itemThumbnail">
+                            <Border Padding="{StaticResource XSmallLeftTopRightBottomMargin}" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <!-- Product Image -->
+                                    <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource ImageSourceConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
+
+                                    <!-- Product Name -->
+                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
+                                               FontSize="16" 
+                                               FontWeight="Bold" 
+                                               TextAlignment="Center" 
+                                               Margin="5,10,5,0"/>
+
+                                    <!-- Product Price -->
+                                    <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource PriceFormatter}}" 
+                                               FontSize="14" 
+                                               Foreground="DarkOrange" 
+                                               TextAlignment="Center"
+                                               Margin="0, 3, 0, 0"/>
+
+                                    <!-- Stock Availability Indicator -->
+                                    <TextBlock Text="Out of Stock"
+                                               Foreground="Red"
+                                               FontWeight="Bold"
+                                               Visibility="{x:Bind IsStocked, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
+                                               TextAlignment="Center"
+                                               Margin="0, 12, 0, 0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
+        </Grid>
+
+        <!-- Row 3: Pagination -->
+        <Grid Grid.Row="3"
+              Margin="20,0,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Text="Products per page"/>
+                <TextBox
+                    Width="50"
+                    Margin="10,0,0,0"
+                    Text="{x:Bind ViewModel.ItemsPerPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextAlignment="Center"/>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                Orientation="Horizontal">
+                <Button
+                    Width="80"
+                    Margin="10,0"
+                    Content="Previous"
+                    Command="{x:Bind ViewModel.PreviousPageCommand}"/>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Text="{x:Bind ViewModel.PageIndicator, Mode=OneWay}"
+                    TextAlignment="Center"/>
+                <Button
+                    Width="80"
+                    Margin="10,0"
+                    Content="Next"
+                    Command="{x:Bind ViewModel.NextPageCommand}"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

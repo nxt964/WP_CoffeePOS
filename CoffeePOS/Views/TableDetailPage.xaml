@@ -4,104 +4,148 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:models="using:CoffeePOS.Core.Models"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea">
+    <Grid x:Name="ContentArea" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <!--641 is the default CompactModeThresholdWidth in NavigationView -->
-                        <AdaptiveTrigger MinWindowWidth="641" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="propertiesGroup1.(RelativePanel.RightOf)" Value="itemHero" />
-                        <Setter Target="propertiesGroup1.(RelativePanel.Below)" Value="title" />
-                        <Setter Target="propertiesGroup2.(RelativePanel.RightOf)" Value="propertiesGroup1" />
-                        <Setter Target="propertiesGroup2.(RelativePanel.Below)" Value="title" />
-                        <Setter Target="propertiesGroup1.Width" Value="200" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+        <!-- Row 0: Table Information Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Table Details" 
+                       Style="{StaticResource TitleTextBlockStyle}"
+                       Margin="0,0,0,10"/>
+            <Rectangle Height="1" Fill="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" Margin="0,5,0,0"/>
+        </StackPanel>
 
-        <ScrollViewer
-            IsTabStop="True">
-            <StackPanel
-                x:Name="contentPanel">
-                <RelativePanel>
-                    <Grid
-                        x:Name="itemHero"
-                        Width="200"
-                        Height="200"
-                        Margin="{StaticResource SmallRightMargin}"
-                        Padding="{StaticResource XSmallLeftTopRightBottomMargin}"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        RelativePanel.AlignTopWithPanel="True"
-                        RelativePanel.AlignLeftWithPanel="True">
-                        <FontIcon
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="70"
-                            Glyph="{x:Bind ViewModel.Item.Symbol}"
-                            AutomationProperties.Name="{x:Bind ViewModel.Item.SymbolName}" />
-                    </Grid>
+        <!-- Row 1: Table Details -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                    <TextBlock
-                        x:Name="title"
-                        Margin="{StaticResource XXSmallTopMargin}"
-                        RelativePanel.AlignTopWithPanel="True"
-                        RelativePanel.RightOf="itemHero"
-                        Style="{ThemeResource TitleTextBlockStyle}"
-                        Text="{x:Bind ViewModel.Item.Company, Mode=OneWay}" />
-
-                    <StackPanel x:Name="propertiesGroup1" RelativePanel.Below="itemHero">
-                        <StackPanel x:Name="statusGroup" Margin="{StaticResource SmallTopMargin}">
-                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Status" />
-                            <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Item.Status}" />
-                        </StackPanel>
-
-                        <StackPanel x:Name="orderDateGroup" Margin="{StaticResource SmallTopMargin}">
-                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Order date" />
-                            <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Item.OrderDate}" />
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel x:Name="propertiesGroup2" RelativePanel.Below="propertiesGroup1">
-                        <StackPanel x:Name="shipToGroup" Margin="{StaticResource SmallTopMargin}">
-                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Ship to" />
-                            <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Item.ShipTo}" />
-                        </StackPanel>
-
-                        <StackPanel x:Name="orderTotalGroup" Margin="{StaticResource SmallTopMargin}">
-                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Order total" />
-                            <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.Item.OrderTotal}" />
-                        </StackPanel>
-                    </StackPanel>
-
-                </RelativePanel>
-
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="Note 1" />
-                <TextBlock
-                    Style="{ThemeResource BodyTextBlockStyle}"
-                    Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis hendrerit nulla, vel molestie libero. In nec ultricies magna, ultricies molestie ipsum. Mauris non dignissim velit. Etiam malesuada blandit mauris eu maximus. Quisque ornare, felis nec scelerisque mollis, risus dolor posuere magna, in gravida quam mi id nisi. Nullam mattis consequat ex. Cras nulla neque, dictum ac urna et, vestibulum feugiat ex. Pellentesque malesuada accumsan ligula, vel fringilla lacus facilisis sit amet. Proin convallis tempor arcu, ac placerat libero pretium ut. Praesent hendrerit nisl at lobortis viverra. Fusce vitae velit odio. Nam ut tortor sed purus finibus sollicitudin quis at ante. Ut sodales dolor vel eros mollis suscipit. Donec eu nulla id urna ultricies consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;" />
-
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="Note 2" />
-                <TextBlock
-                    Margin="{StaticResource MediumBottomMargin}"
-                    Style="{ThemeResource BodyTextBlockStyle}"
-                    Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis hendrerit nulla, vel molestie libero. In nec ultricies magna, ultricies molestie ipsum. Mauris non dignissim velit. Etiam malesuada blandit mauris eu maximus. Quisque ornare, felis nec scelerisque mollis, risus dolor posuere magna, in gravida quam mi id nisi. Nullam mattis consequat ex. Cras nulla neque, dictum ac urna et, vestibulum feugiat ex. Pellentesque malesuada accumsan ligula, vel fringilla lacus facilisis sit amet. Proin convallis tempor arcu, ac placerat libero pretium ut. Praesent hendrerit nisl at lobortis viverra. Fusce vitae velit odio. Nam ut tortor sed purus finibus sollicitudin quis at ante. Ut sodales dolor vel eros mollis suscipit. Donec eu nulla id urna ultricies consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;" />
+            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,10,10">
+                <TextBlock Text="Table Number" 
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           Margin="0,0,0,5"/>
+                <TextBlock Text="{x:Bind ViewModel.Table.TableNumber, Mode=OneWay}" 
+                           Style="{StaticResource BodyTextBlockStyle}"
+                           FontSize="16"/>
             </StackPanel>
-        </ScrollViewer>
+
+            <StackPanel Grid.Column="1" Grid.Row="0" Margin="10,0,0,10">
+                <TextBlock Text="Table ID" 
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           Margin="0,0,0,5"/>
+                <TextBlock Text="{x:Bind ViewModel.Table.Id, Mode=OneWay}" 
+                           Style="{StaticResource BodyTextBlockStyle}"
+                           FontSize="16"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,10,10">
+                <TextBlock Text="Current Status" 
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           Margin="0,0,0,5"/>
+                <TextBlock Text="{x:Bind ViewModel.Table.Status, Mode=OneWay}" 
+                           Foreground="{x:Bind ViewModel.Table.Status, Mode=OneWay, Converter={StaticResource TableStatusColorConverter}}"
+                           Style="{StaticResource BodyTextBlockStyle}"
+                           FontWeight="SemiBold"
+                           FontSize="16"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Row 2: Status Change Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock Text="Change Table Status:" 
+                       VerticalAlignment="Center" 
+                       Margin="0,0,10,0"/>
+            <Button Content="Available" 
+                    Foreground="White"
+                    Background="Green"
+                    Margin="5,0"
+                    Command="{x:Bind ViewModel.ChangeStatusCommand}"
+                    CommandParameter="Available"/>
+            <Button Content="Occupied" 
+                    Foreground="White"
+                    Background="Red"
+                    Margin="5,0"
+                    Command="{x:Bind ViewModel.ChangeStatusCommand}"
+                    CommandParameter="Occupied"/>
+            <Button Content="Reserved" 
+                    Foreground="White"
+                    Background="Orange"
+                    Margin="5,0"
+                    Command="{x:Bind ViewModel.ChangeStatusCommand}"
+                    CommandParameter="Reserved"/>
+            <Button Content="Maintenance" 
+                    Foreground="White"
+                    Background="Gray"
+                    Margin="5,0"
+                    Command="{x:Bind ViewModel.ChangeStatusCommand}"
+                    CommandParameter="Maintenance"/>
+        </StackPanel>
+
+        <!-- Row 3: Reservations -->
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" 
+                       Text="Table Reservations" 
+                       Style="{StaticResource SubtitleTextBlockStyle}"
+                       Margin="0,0,0,10"/>
+
+            <controls:DataGrid Grid.Row="1"
+                              AutoGenerateColumns="False"
+                              GridLinesVisibility="Horizontal"
+                              IsReadOnly="True"
+                              ItemsSource="{x:Bind ViewModel.Reservations, Mode=OneWay}"
+                              SelectionMode="Single">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn 
+                        Header="Reservation ID" 
+                        Width="Auto"
+                        Binding="{Binding Id}" />
+                    <controls:DataGridTextColumn 
+                        Header="Customer Name" 
+                        Width="*"
+                        Binding="{Binding CustomerName}" />
+                    <controls:DataGridTextColumn 
+                        Header="Date" 
+                        Width="*"
+                        Binding="{Binding Date}" />
+                    <controls:DataGridTextColumn 
+                        Header="Time" 
+                        Width="*"
+                        Binding="{Binding Time}" />
+                    <controls:DataGridTextColumn 
+                        Header="Party Size" 
+                        Width="Auto"
+                        Binding="{Binding PartySize}" />
+                    <controls:DataGridTextColumn 
+                        Header="Status" 
+                        Width="*"
+                        Binding="{Binding Status}" />
+                </controls:DataGrid.Columns>
+                <controls:DataGrid.Resources>
+                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="{ThemeResource SystemAccentColor}"/>
+                </controls:DataGrid.Resources>
+            </controls:DataGrid>
+        </Grid>
     </Grid>
 </Page>

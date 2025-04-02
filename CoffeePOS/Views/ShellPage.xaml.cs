@@ -11,7 +11,6 @@ using Windows.System;
 
 namespace CoffeePOS.Views;
 
-// TODO: Update NavigationViewItem titles and icons in ShellPage.xaml.
 public sealed partial class ShellPage : Page
 {
     public ShellViewModel ViewModel
@@ -42,6 +41,9 @@ public sealed partial class ShellPage : Page
 
         KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu));
         KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.GoBack));
+
+        // Điều hướng đến DashboardPage mặc định
+        ViewModel.NavigationService.NavigateTo(typeof(DashboardViewModel).FullName!);
     }
 
     private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
@@ -81,5 +83,40 @@ public sealed partial class ShellPage : Page
         var result = navigationService.GoBack();
 
         args.Handled = result;
+    }
+
+    // Handler for the logout button tap event
+    private async void LogoutButton_Tapped(object sender, TappedRoutedEventArgs e)
+    {
+        // Create and configure the confirmation dialog
+        ContentDialog logoutDialog = new ContentDialog
+        {
+            Title = "Logout Confirmation",
+            Content = "Are you sure you want to log out of the system?",
+            PrimaryButtonText = "Logout",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = this.XamlRoot
+        };
+
+        // Show the dialog and get the result
+        ContentDialogResult result = await logoutDialog.ShowAsync();
+
+        // If the user confirmed, proceed with logout
+        if (result == ContentDialogResult.Primary)
+        {
+            // Perform logout actions
+            // For example, clear credentials, user session, etc.
+            ViewModel.PerformLogout();
+
+            // Navigate to login page
+            // Assuming you have a LoginViewModel or similar
+            //ViewModel.NavigationService.NavigateTo("CoffeePOS.ViewModels.LoginViewModel");
+            App.MainWindow.Content = new Frame();
+            if (App.MainWindow.Content is Frame frame)
+            {
+                frame.Navigate(typeof(LoginPage));
+            }
+        }
     }
 }

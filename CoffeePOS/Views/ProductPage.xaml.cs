@@ -23,19 +23,19 @@ public sealed partial class ProductPage : Page
 
     private void EditButton_Click(object sender, RoutedEventArgs e)
     {
-        var button = sender as Button;
-        var productId = button?.Tag?.ToString();
-        var navigationService = App.GetService<INavigationService>();
-        navigationService.NavigateTo(typeof(UpdateProductViewModel).FullName, productId);
+        if (sender is Button button && button.Tag is int productId)
+        {
+            var navigationService = App.GetService<INavigationService>();
+            navigationService.NavigateTo(typeof(UpdateProductViewModel).FullName, productId);
+        }
     }
 
     private void DeleteButton_Click(object sender, RoutedEventArgs e)
     {
-        var button = sender as Button;
-        var productId = button?.Tag?.ToString();
-        if (!string.IsNullOrEmpty(productId))
+        if (sender is Button button && button.Tag is int productId)
         {
             ViewModel.DeleteProduct(productId);
         }
     }
+
 }

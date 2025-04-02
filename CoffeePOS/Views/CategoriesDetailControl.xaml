@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:CoffeePOS.Core.Models"
     mc:Ignorable="d">
     <ScrollViewer
         Name="ForegroundElement"
@@ -11,63 +12,57 @@
         VerticalScrollMode="Enabled"
         IsTabStop="True">
         <StackPanel HorizontalAlignment="Left">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <FontIcon
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="48"
-                    Glyph="{x:Bind ListDetailsMenuItem.Symbol, Mode=OneWay}"
-                    AutomationProperties.Name="{x:Bind ListDetailsMenuItem.SymbolName, Mode=OneWay}"  />
+            <StackPanel Orientation="Vertical" Margin="0, 0, 0, 30">
                 <TextBlock
                     Margin="{StaticResource SmallLeftMargin}"
                     VerticalAlignment="Center"
-                    Text="{x:Bind ListDetailsMenuItem.Company, Mode=OneWay}"
+                    Text="{x:Bind CategoryWithProducts.Name, Mode=OneWay}"
                     Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock
+                    Margin="{StaticResource SmallLeftMargin}"
+                    VerticalAlignment="Center"
+                    Text="{x:Bind CategoryWithProducts.Description, Mode=OneWay}"
+                    Style="{StaticResource DetailBodyBaseMediumStyle}" />
             </StackPanel>
-            <StackPanel Padding="0,15,0,0">
-                <TextBlock Text="Status" Style="{StaticResource DetailSubTitleStyle}" />
+            <Grid>
+                <ItemsRepeater ItemsSource="{x:Bind CategoryWithProducts.Products, Mode=OneWay}">
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout MinItemWidth="200"
+                                           MinItemHeight="250"
+                                           MinRowSpacing="5"
+                                           MinColumnSpacing="5"/>
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="models:Product">
+                            <Button Background="Transparent" 
+                                    Click="OnProductClicked"
+                                    Tag="{x:Bind Id}"
+                                    BorderThickness="0" 
+                                    Padding="0">
+                                <Border Padding="10" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <!-- Product Image -->
+                                        <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource ImageSourceConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
 
-                <TextBlock Text="{x:Bind ListDetailsMenuItem.Status, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
+                                        <!-- Product Name -->
+                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="5,10,5,0"/>
 
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Text="Order date"
-                    Style="{StaticResource DetailSubTitleStyle}" />
-                <TextBlock Text="{x:Bind ListDetailsMenuItem.OrderDate, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Text="Company"
-                    Style="{StaticResource DetailSubTitleStyle}" />
-                <TextBlock Text="{x:Bind ListDetailsMenuItem.Company, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
+                                        <!-- Product Price -->
+                                        <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource PriceFormatter}}" FontSize="14" Foreground="DarkOrange" TextAlignment="Center"/>
 
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Text="Ship to"
-                    Style="{StaticResource DetailSubTitleStyle}" />
-                <TextBlock Text="{x:Bind ListDetailsMenuItem.ShipTo, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Text="Order total"
-                    Style="{StaticResource DetailSubTitleStyle}" />
-                <TextBlock Text="{x:Bind ListDetailsMenuItem.OrderTotal, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
-
-                <TextBlock
-                    Margin="{StaticResource MediumTopMargin}"
-                    Text="Note 1"
-                    Style="{StaticResource DetailSubTitleStyle}" />
-                <TextBlock
-                    Style="{StaticResource DetailBodyStyle}"
-                    Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis hendrerit nulla, vel molestie libero. In nec ultricies magna, ultricies molestie ipsum. Mauris non dignissim velit. Etiam malesuada blandit mauris eu maximus. Quisque ornare, felis nec scelerisque mollis, risus dolor posuere magna, in gravida quam mi id nisi. Nullam mattis consequat ex. Cras nulla neque, dictum ac urna et, vestibulum feugiat ex. Pellentesque malesuada accumsan ligula, vel fringilla lacus facilisis sit amet. Proin convallis tempor arcu, ac placerat libero pretium ut. Praesent hendrerit nisl at lobortis viverra. Fusce vitae velit odio. Nam ut tortor sed purus finibus sollicitudin quis at ante. Ut sodales dolor vel eros mollis suscipit. Donec eu nulla id urna ultricies consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;" />
-
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Text="Note 2"
-                    Style="{StaticResource DetailSubTitleStyle}" />
-                <TextBlock
-                    Margin="{StaticResource MediumBottomMargin}"
-                    Style="{StaticResource DetailBodyStyle}"
-                    Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis hendrerit nulla, vel molestie libero. In nec ultricies magna, ultricies molestie ipsum. Mauris non dignissim velit. Etiam malesuada blandit mauris eu maximus. Quisque ornare, felis nec scelerisque mollis, risus dolor posuere magna, in gravida quam mi id nisi. Nullam mattis consequat ex. Cras nulla neque, dictum ac urna et, vestibulum feugiat ex. Pellentesque malesuada accumsan ligula, vel fringilla lacus facilisis sit amet. Proin convallis tempor arcu, ac placerat libero pretium ut. Praesent hendrerit nisl at lobortis viverra. Fusce vitae velit odio. Nam ut tortor sed purus finibus sollicitudin quis at ante. Ut sodales dolor vel eros mollis suscipit. Donec eu nulla id urna ultricies consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;" />
-            </StackPanel>
+                                        <!-- Stock Availability Indicator -->
+                                        <TextBlock Text="Out of Stock"
+                                       Foreground="Red"
+                                       FontWeight="Bold"
+                                       Visibility="{x:Bind IsStocked, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
+                                       TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

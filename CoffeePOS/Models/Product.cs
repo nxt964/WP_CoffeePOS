@@ -2,8 +2,22 @@
 
 public class Product
 {
-    public string Id { get; set; } = string.Empty;
+    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
+
+    public bool IsStocked
+    {
+        get; set;
+    }
+    public int CategoryId
+    {
+        get; set;
+    }
+
+    public bool IsSelected
+    {
+        get; set;
+    }
     public double Price
     {
         get; set;
