@@ -72,6 +72,9 @@ public partial class App : Application
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<INavigationService, NavigationService>();
 
+
+            services.AddSingleton<ContentDialogHelper>();
+            services.AddSingleton<CloudinaryService>();
             services.AddSingleton<SqliteConnectionFactory>();
             // Core Dao
             //services.AddSingleton<IDao, MockDao>();
@@ -131,6 +134,7 @@ public partial class App : Application
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
+            services.Configure<CloudinarySettings>(context.Configuration.GetSection("Cloudinary"));
         }).
         Build();
 
