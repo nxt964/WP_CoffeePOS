@@ -13,15 +13,18 @@ using Windows.Storage;
 using Microsoft.UI.Xaml.Media.Imaging;
 using CoffeePOS.Core.Interfaces;
 using System.Diagnostics;
+using CoffeePOS.Services;
 
 namespace CoffeePOS.Helpers;
 public class ContentDialogHelper
 {
     private readonly IDao _dao;
+    private readonly CloudinaryService _cloudinaryService;
 
     public ContentDialogHelper()
     {
         _dao = App.GetService<IDao>();
+        _cloudinaryService = App.GetService<CloudinaryService>();
     }
     
     public async Task<ContentDialogResult> ShowDialogWithSlideIn(ContentDialog dialog)
@@ -93,7 +96,7 @@ public class ContentDialogHelper
         };
     }
 
-    private async Task<string> PickImageAsync()
+    private async Task<StorageFile?> PickImageAsync()
     {
         var picker = new FileOpenPicker
         {
@@ -107,16 +110,19 @@ public class ContentDialogHelper
         var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
         WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
 
-        StorageFile file = await picker.PickSingleFileAsync();
-        if (file != null)
-        {
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var copiedFile = await file.CopyAsync(localFolder, file.Name, NameCollisionOption.ReplaceExisting);
-            return copiedFile.Path;
-        }
-
-        return string.Empty;
+        return await picker.PickSingleFileAsync();
     }
+
+    private async Task<string> UploadToCloudinaryAsync(StorageFile file)
+    {
+        if (file == null) return string.Empty;
+
+        // Cloudinary cần đường dẫn vật lý, nên copy file tạm
+        var tempFile = await file.CopyAsync(ApplicationData.Current.TemporaryFolder, file.Name, NameCollisionOption.GenerateUniqueName);
+
+        return await _cloudinaryService.UploadImageAsync(tempFile.Path);
+    }
+
 
     public ContentDialog CreateProductDialog(Product product, bool isNew = true)
     {  
@@ -187,11 +193,15 @@ public class ContentDialogHelper
 
         pickImageButton.Click += async (s, e) =>
         {
-            var selectedImagePath = await PickImageAsync();
-            if (!string.IsNullOrEmpty(selectedImagePath))
+            var file = await PickImageAsync();
+            if (file != null)
             {
-                imagePreview.Source = new BitmapImage(new Uri($"file:///{selectedImagePath}"));
-                product.Image = selectedImagePath;
+                var imageUrl = await UploadToCloudinaryAsync(file);
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    imagePreview.Source = new BitmapImage(new Uri(imageUrl));
+                    product.Image = imageUrl;
+                }
             }
         };
 
