@@ -40,11 +40,6 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
         if (parameter is (int productId, bool isNotFromProducts))
         {
             IsNotFromProducts = isNotFromProducts;
-            Debug.WriteLine($"Product ID: {productId}");
-            (await _dao.Products.GetAll()).ToList().ForEach(p =>
-            {
-                Debug.WriteLine($"Product: {p.Id}");
-            });
             item = await _dao.Products.GetById(productId);
             ProductCategory = (await _dao.Categories.GetById(item.CategoryId)).Name;
 
@@ -124,7 +119,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
                 Source = new BitmapImage(new Uri(
                     !string.IsNullOrEmpty(item.Image)
                     ? item.Image
-                    : "ms-appx:///Assets/ProductImageDefault.png"))
+                    : "ms-appx:///Assets/ProductImage.jpg"))
             }
         );
 

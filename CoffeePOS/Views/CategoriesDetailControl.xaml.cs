@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 using CoffeePOS.Contracts.Services;
-using CoffeePOS.Contracts.ViewModels;
 using CoffeePOS.Core.Models;
 using CoffeePOS.Models;
 using CoffeePOS.ViewModels;
@@ -59,16 +58,12 @@ public sealed partial class CategoriesDetailControl : UserControl
         visual.StartAnimation("Opacity", fadeAnimation);
     }
 
-    private void OnProductClicked(object sender, RoutedEventArgs e)
+    private void OnProductClicked(object sender, ItemClickEventArgs e)
     {
-        if (sender is Button button)
+        if (e.ClickedItem is CoffeePOS.Core.Models.Product product)
         {
-            if (button.Tag is int productId)
-            {
-                var parameter = (productId, true);
-                _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, parameter);
-            }
+            var parameter = (product.Id, true);
+            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, parameter);
         }
     }
-
 }

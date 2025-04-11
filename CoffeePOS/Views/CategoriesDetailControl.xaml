@@ -4,65 +4,71 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:CoffeePOS.Core.Models"
+    xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
-    <ScrollViewer
-        Name="ForegroundElement"
-        HorizontalAlignment="Stretch"
-        VerticalScrollMode="Enabled"
-        IsTabStop="True">
-        <StackPanel HorizontalAlignment="Left">
-            <StackPanel Orientation="Vertical" Margin="0, 0, 0, 30">
-                <TextBlock
-                    Margin="{StaticResource SmallLeftMargin}"
-                    VerticalAlignment="Center"
-                    Text="{x:Bind CategoryWithProducts.Name, Mode=OneWay}"
-                    Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock
-                    Margin="{StaticResource SmallLeftMargin}"
-                    VerticalAlignment="Center"
-                    Text="{x:Bind CategoryWithProducts.Description, Mode=OneWay}"
-                    Style="{StaticResource DetailBodyBaseMediumStyle}" />
-            </StackPanel>
-            <Grid>
-                <ItemsRepeater ItemsSource="{x:Bind CategoryWithProducts.Products, Mode=OneWay}">
-                    <ItemsRepeater.Layout>
-                        <UniformGridLayout MinItemWidth="200"
-                                           MinItemHeight="250"
-                                           MinRowSpacing="5"
-                                           MinColumnSpacing="5"/>
-                    </ItemsRepeater.Layout>
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="models:Product">
-                            <Button Background="Transparent" 
-                                    Click="OnProductClicked"
-                                    Tag="{x:Bind Id}"
-                                    BorderThickness="0" 
-                                    Padding="0">
-                                <Border Padding="10" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
-                                    <StackPanel HorizontalAlignment="Center">
-                                        <!-- Product Image -->
-                                        <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource ImageSourceConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
-
-                                        <!-- Product Name -->
-                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="5,10,5,0"/>
-
-                                        <!-- Product Price -->
-                                        <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource PriceFormatter}}" FontSize="14" Foreground="DarkOrange" TextAlignment="Center"/>
-
-                                        <!-- Stock Availability Indicator -->
-                                        <TextBlock Text="Out of Stock"
-                                       Foreground="Red"
-                                       FontWeight="Bold"
-                                       Visibility="{x:Bind IsStocked, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
-                                       TextAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-            </Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Margin="0, 0, 0, 30" Grid.Row="0">
+            <TextBlock
+                Margin="{StaticResource SmallLeftMargin}"
+                VerticalAlignment="Center"
+                Text="{x:Bind CategoryWithProducts.Name, Mode=OneWay}"
+                Style="{ThemeResource TitleTextBlockStyle}" />
+            <TextBlock
+                Margin="{StaticResource SmallLeftMargin}"
+                VerticalAlignment="Center"
+                Text="{x:Bind CategoryWithProducts.Description, Mode=OneWay}"
+                Style="{StaticResource DetailBodyBaseMediumStyle}" />
         </StackPanel>
-    </ScrollViewer>
+        <ScrollViewer Grid.Row="1"
+              Margin="0,0,0,20"
+              VerticalScrollBarVisibility="Auto"
+              Height="600">
+            <controls:AdaptiveGridView
+                animations:Connected.ListItemElementName="itemThumbnail"
+                animations:Connected.ListItemKey="animationKeyContentGrid"
+                DesiredWidth="200"
+                ItemHeight="255"
+                IsItemClickEnabled="True"
+                ItemClick="OnProductClicked"
+                ItemsSource="{x:Bind CategoryWithProducts.Products, Mode=OneWay}"
+                SelectionMode="None"
+                StretchContentForSingleRow="False">
+
+                <controls:AdaptiveGridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="Margin" Value="15"/>
+                    </Style>
+                </controls:AdaptiveGridView.ItemContainerStyle>
+
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <StaticResource ResourceKey="ProductItemTemplate"/>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
+        </ScrollViewer>
+
+        <!--<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1"  Height="600">
+            <ItemsRepeater ItemsSource="{x:Bind CategoryWithProducts.Products, Mode=OneWay}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout MinItemWidth="200"
+                       MinItemHeight="260"/>
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="models:Product">
+                        <Button Background="Transparent" 
+                                Click="OnProductClicked"
+                                Tag="{x:Bind Id}"
+                                BorderThickness="0" 
+                                Padding="0">
+                            <ContentControl ContentTemplate="{StaticResource ProductItemTemplate}" Content="{x:Bind}"/>
+                        </Button>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </ScrollViewer>-->
+    </Grid>
 </UserControl>

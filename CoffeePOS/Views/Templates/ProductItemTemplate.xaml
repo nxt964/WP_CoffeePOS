@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:CoffeePOS.Core.Models">
+
+    <DataTemplate x:Key="ProductItemTemplate">
+        <Border Padding="{StaticResource XSmallLeftTopRightBottomMargin}" 
+                CornerRadius="8" 
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" 
+                BorderThickness="1"
+                >
+            <StackPanel HorizontalAlignment="Center">
+                <!-- Product Image -->
+                <Image Source="{Binding Image, Mode=OneWay, Converter={StaticResource ImageSourceConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
+
+                <!-- Product Name -->
+                <TextBlock Text="{Binding Name, Mode=OneWay}" 
+                   FontSize="16" 
+                   FontWeight="Bold" 
+                   TextAlignment="Center" 
+                   Margin="5,10,5,0"
+                   TextTrimming="CharacterEllipsis"
+                   TextWrapping="NoWrap"
+                   MaxLines="1"/>
+
+                <!-- Product Price -->
+                <TextBlock Text="{Binding Price, Mode=OneWay, Converter={StaticResource PriceFormatter}}" 
+                   FontSize="14" 
+                   Foreground="DarkOrange" 
+                   TextAlignment="Center"
+                   Margin="0, 3, 0, 0"/>
+
+                <!-- Stock Availability Indicator -->
+                <TextBlock Text="Out of Stock"
+                   Foreground="Red"
+                   FontWeight="Bold"
+                   Visibility="{Binding IsStocked, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
+                   TextAlignment="Center"
+                   Margin="0, 12, 0, 0"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>
+

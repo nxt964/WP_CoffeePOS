@@ -18,7 +18,6 @@
             <converter:ImageSourceConverter x:Key="ImageSourceConverter"/>
             <converter:TableStatusColorConverter x:Key="TableStatusColorConverter"/>
 
-
             <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="Margin" Value="0,0,0,10"/>
@@ -85,6 +84,7 @@
                 <ResourceDictionary Source="/Styles/FontSizes.xaml" />
                 <ResourceDictionary Source="/Styles/Thickness.xaml" />
                 <ResourceDictionary Source="/Styles/TextBlock.xaml" />
+                <ResourceDictionary Source="/Views/Templates/ProductItemTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

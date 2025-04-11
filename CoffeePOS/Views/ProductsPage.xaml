@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:models="using:CoffeePOS.Core.Models"
     mc:Ignorable="d">
 
     <Grid x:Name="ContentArea">
@@ -113,46 +112,19 @@
                 animations:Connected.ListItemElementName="itemThumbnail"
                 animations:Connected.ListItemKey="animationKeyContentGrid"
                 DesiredWidth="200"
-                ItemHeight="250"
+                ItemHeight="255"
                 IsItemClickEnabled="True"
                 ItemClickCommand="{x:Bind ViewModel.ItemClickCommand}"
                 ItemsSource="{x:Bind ViewModel.Products,Mode=OneWay}"
                 SelectionMode="None"
                 StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="Margin" Value="15"/>
+                    </Style>
+                </controls:AdaptiveGridView.ItemContainerStyle>
                 <controls:AdaptiveGridView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Product">
-                        <Grid
-                            x:Name="itemThumbnail">
-                            <Border Padding="{StaticResource XSmallLeftTopRightBottomMargin}" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
-                                <StackPanel HorizontalAlignment="Center">
-                                    <!-- Product Image -->
-                                    <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource ImageSourceConverter}}" Width="150" Height="150" Stretch="UniformToFill"/>
-
-                                    <!-- Product Name -->
-                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
-                                               FontSize="16" 
-                                               FontWeight="Bold" 
-                                               TextAlignment="Center" 
-                                               Margin="5,10,5,0"/>
-
-                                    <!-- Product Price -->
-                                    <TextBlock Text="{x:Bind Price, Mode=OneWay, Converter={StaticResource PriceFormatter}}" 
-                                               FontSize="14" 
-                                               Foreground="DarkOrange" 
-                                               TextAlignment="Center"
-                                               Margin="0, 3, 0, 0"/>
-
-                                    <!-- Stock Availability Indicator -->
-                                    <TextBlock Text="Out of Stock"
-                                               Foreground="Red"
-                                               FontWeight="Bold"
-                                               Visibility="{x:Bind IsStocked, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
-                                               TextAlignment="Center"
-                                               Margin="0, 12, 0, 0"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </DataTemplate>
+                    <StaticResource ResourceKey="ProductItemTemplate"/>
                 </controls:AdaptiveGridView.ItemTemplate>
             </controls:AdaptiveGridView>
         </Grid>
