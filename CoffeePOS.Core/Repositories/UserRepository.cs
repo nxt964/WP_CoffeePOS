@@ -18,6 +18,33 @@ public class UserRepository : SqliteManualRepository<User>, IUserRepository
         _connectionFactory = connectionFactory;
     }
 
+    public async Task<User?> AddTrialUser(User user)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        // Check if the user already exists
+        var checkCmd = connection.CreateCommand();
+        checkCmd.CommandText = "SELECT COUNT(*) FROM Users WHERE Username = @Username";
+        checkCmd.Parameters.AddWithValue("@Username", user.Username);
+
+        var count = (long)await checkCmd.ExecuteScalarAsync();
+        if (count > 0)
+        {
+            return null;
+        }
+
+        // Insert the new user
+        var command = connection.CreateCommand();
+        command.CommandText = "INSERT INTO Users (Username, Password, ExpireAt) VALUES (@Username, @Password, @ExpireAt)";
+        command.Parameters.AddWithValue("@Username", user.Username);
+        command.Parameters.AddWithValue("@Password", BCrypt.Net.BCrypt.HashPassword(user.Password));
+        command.Parameters.AddWithValue("@ExpireAt", user.ExpireAt?.ToString("O"));
+        await command.ExecuteNonQueryAsync();
+
+        return user;
+    }
+
     public async Task<User> Login(string username, string password)
     {
         using var connection = _connectionFactory.CreateConnection();

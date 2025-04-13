@@ -15,21 +15,18 @@
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Page.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
+        <TextBlock Text="Log In" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center" Margin="0,0,0,40" FontSize="36"/>
+        
+        <TextBox Header="Username" Text="{Binding Username, Mode=TwoWay}" Margin="0,0,0,10"/>
+        <PasswordBox Header="Password" Password="{Binding Password, Mode=TwoWay}" Margin="0,0,0,5"/>
 
-        <!-- Tiêu đề -->
-        <TextBlock Text="Log In" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+        <CheckBox Content="Remember me" IsChecked="{Binding RememberMe, Mode=TwoWay}" Margin="0, 0, 0, 10"/>
 
-        <!-- Form đăng nhập -->
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
-            <TextBox Header="Username" Text="{Binding Username, Mode=TwoWay}" Margin="0,0,0,10"/>
-            <PasswordBox Header="Password" Password="{Binding Password, Mode=TwoWay}" Margin="0,0,0,20"/>
-            <Button Content="Login" Command="{Binding LoginCommand}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
-            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Margin="0,10,0,0" Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
-        </StackPanel>
-    </Grid>
+        <Button Content="Login" Command="{Binding LoginCommand}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
+        <Button Content="Continue with free trial mode" Command="{Binding TrialCommand }" Style="{StaticResource ButtonRevealStyle}" Margin="0,10,0,0" HorizontalAlignment="Stretch"/>
+        
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Margin="0,10,0,0" Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+        <TextBlock Text="{Binding SuccessMessage}" Foreground="Green" Margin="0, 10, 0, 0" Visibility="{Binding SuccessMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+    </StackPanel>
 </Page>
