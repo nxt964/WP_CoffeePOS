@@ -23,4 +23,9 @@ public class User
     {
         get; set;
     }
+
+    public DateTime? ExpireAt
+    {
+        get; set;
+    }
 }

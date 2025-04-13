@@ -52,8 +52,9 @@ public class SqliteManualDao : IDao
             // Users Table
             @"CREATE TABLE IF NOT EXISTS Users (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Username TEXT NOT NULL,
-                Password TEXT NOT NULL
+                Username TEXT NOT NULL UNIQUE,
+                Password TEXT NOT NULL,
+                ExpireAt TEXT
             )",
             // Employees Table
             @"CREATE TABLE IF NOT EXISTS Employees (
