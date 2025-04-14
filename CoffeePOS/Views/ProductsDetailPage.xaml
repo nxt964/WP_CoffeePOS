@@ -32,12 +32,10 @@
                                 TextAlignment="Left"/>
 
                             <Button Margin="20, 0, 0, 0"
-                                    Visibility="{x:Bind ViewModel.IsNotFromProducts, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Command="{x:Bind ViewModel.EditProductCommand}">
                                 <FontIcon Glyph="&#xE104;" FontSize="24" Foreground="MediumSpringGreen"/>
                             </Button>
                             <Button Margin="10, 0, 0, 0"
-                                    Visibility="{x:Bind ViewModel.IsNotFromProducts, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Command="{x:Bind ViewModel.DeleteProductCommand}">
                                 <FontIcon Glyph="&#xE74D;" FontSize="24" Foreground="Red"/>
                             </Button>

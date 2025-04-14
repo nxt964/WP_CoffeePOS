@@ -17,6 +17,7 @@
             <converter:PriceFormatter x:Key="PriceFormatter"/>
             <converter:ImageSourceConverter x:Key="ImageSourceConverter"/>
             <converter:TableStatusColorConverter x:Key="TableStatusColorConverter"/>
+            <converter:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter"/>
 
             <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>

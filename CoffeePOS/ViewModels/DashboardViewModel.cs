@@ -1,16 +1,25 @@
 ﻿using System.ComponentModel;
+using CoffeePOS.Contracts.Services;
 using CoffeePOS.Core.Interfaces;
 using CoffeePOS.Core.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace CoffeePOS.ViewModels;
 
 public partial class DashboardViewModel : ObservableRecipient
 {
     private readonly IDao _dao;
-    public DashboardViewModel(IDao dao)
+    private readonly INavigationService _navigationService;
+    public class OrderData : Order
+    {
+        public string CustomerName { get; set; } = string.Empty;
+        public string ServiceTypeName { get; set; } = string.Empty;
+    }
+    public DashboardViewModel(IDao dao, INavigationService navigationService)
     {
         _dao = dao;
+        _navigationService = navigationService;
         LoadData();
     }
 
@@ -71,8 +80,8 @@ public partial class DashboardViewModel : ObservableRecipient
         }
     }
 
-    private BindingList<Order> _latestOrders = new();
-    public BindingList<Order> LatestOrders
+    private BindingList<OrderData> _latestOrders = new();
+    public BindingList<OrderData> LatestOrders
     {
     
         get => _latestOrders;
@@ -130,6 +139,32 @@ public partial class DashboardViewModel : ObservableRecipient
         var latestOrders = orders.OrderByDescending(o => o.OrderDate)
                                   .Take(10)
                                   .ToList();
-        LatestOrders = new BindingList<Order>(latestOrders);
+        foreach (var order in latestOrders)
+        {
+            var customer = await _dao.Customers.GetById((int)order.CustomerId);
+            var customerName = customer != null ? customer.Name : "Unknown";
+
+            var serviceType = await _dao.ServiceTypes.GetById((int)order.ServiceTypeId);
+            var serviceTypeName = serviceType != null ? serviceType.Name : "Unknown";
+
+            LatestOrders.Add(new OrderData
+            {
+                Id = order.Id,
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                CustomerName = customerName,
+                ServiceTypeName = serviceTypeName,
+                Status = order.Status
+            });
+        }
+    }
+
+    [RelayCommand]
+    private void ProductClicked(Product product)
+    {
+        if (product != null && product.Id > 0)
+        {
+            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName!, product.Id);
+        }
     }
 }

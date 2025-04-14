@@ -176,6 +176,25 @@ public class ContentDialogHelper
             }
         });
 
+        var inStockCheckBox = new CheckBox
+        {
+            Name = "InStockBox",
+            IsChecked = product.IsStocked,
+            Content = product.IsStocked ? "Available" : "Unavailable"
+        };
+        inStockCheckBox.Checked += (s, e) => inStockCheckBox.Content = "Available";
+        inStockCheckBox.Unchecked += (s, e) => inStockCheckBox.Content = "Unavailable";
+
+        contentPanel.Children.Add(new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Margin = new Thickness(0, 0, 0, 15),
+            Children = {
+                new TextBlock { Text = "In Stock:", Width = 80, VerticalAlignment = VerticalAlignment.Center },
+                inStockCheckBox
+            }   
+        });
+
         var imagePreview = new Image { 
             Width = 150, 
             Height = 150,

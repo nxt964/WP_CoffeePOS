@@ -32,12 +32,12 @@
                     </Grid.ColumnDefinitions>
                     <!--  Items in stock  -->
                     <Border
-            Grid.Column="0"
-            Height="125"
-            CornerRadius="10"
-            BorderThickness="1"
-            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-            Translation="0,0,30">
+                        Grid.Column="0"
+                        Height="125"
+                        CornerRadius="10"
+                        BorderThickness="1"
+                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                        Translation="0,0,30">
                         <Border.Shadow>
                             <ThemeShadow/>
                         </Border.Shadow>
@@ -48,35 +48,34 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel>
                                 <TextBlock
-                        Margin="10,0,10,0"
-                        FontWeight="SemiBold"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="Instock" />
+                                    Margin="10,0,10,0"
+                                    FontWeight="SemiBold"
+                                    Style="{StaticResource SubtitleTextBlockStyle}"
+                                    Text="Instock" />
                                 <TextBlock
-                        Margin="10,20,10,0"
-                        FontWeight="Medium"
-                        Style="{StaticResource BodyTextBlockStyle}"
-                        Text="{x:Bind ViewModel.InStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    />
+                                    Margin="10,20,10,0"
+                                    FontWeight="Medium"
+                                    Style="{StaticResource BodyTextBlockStyle}"
+                                    Text="{x:Bind ViewModel.InStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <Image
-                    Grid.Column="1"
-                    Width="50"
-                    Height="50"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Source="ms-appx:///Assets/product.png" />
+                                Grid.Column="1"
+                                Width="50"
+                                Height="50"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Source="ms-appx:///Assets/product.png" />
                         </Grid>
                     </Border>
 
                     <!--  today revenue  -->
                     <Border
-            Grid.Column="1"
-            Margin="30,0,0,0"
-            CornerRadius="10"
-            BorderThickness="1"
-            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-            Translation="0,0,30">
+                        Grid.Column="1"
+                        Margin="30,0,0,0"
+                        CornerRadius="10"
+                        BorderThickness="1"
+                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                        Translation="0,0,30">
                         <Border.Shadow>
                             <ThemeShadow/>
                         </Border.Shadow>
@@ -87,36 +86,33 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel>
                                 <TextBlock
-                        Margin="10,0,10,0"
-                        FontWeight="SemiBold"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="Today Revenue" />
+                                    Margin="10,0,10,0"
+                                    FontWeight="SemiBold"
+                                    Style="{StaticResource SubtitleTextBlockStyle}"
+                                    Text="Today Revenue" />
                                 <TextBlock
-                        Margin="10,20,10,0"
-                        FontWeight="Medium"
-                        Style="{StaticResource BodyTextBlockStyle}"
-                        Text="{x:Bind ViewModel.TodayRevenue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PriceFormatter}}"
-                         />
-
+                                    Margin="10,20,10,0"
+                                    FontWeight="Medium"
+                                    Style="{StaticResource BodyTextBlockStyle}"
+                                    Text="{x:Bind ViewModel.TodayRevenue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PriceFormatter}}"/>
                             </StackPanel>
                             <Image
-                    Grid.Column="1"
-                    Width="50"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Source="ms-appx:///Assets/money.png" />
+                                Grid.Column="1"
+                                Width="50"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Source="ms-appx:///Assets/money.png" /> 
                         </Grid>
-
                     </Border>
 
                     <!--  Total Orders  -->
                     <Border
-            Grid.Column="2"
-            Margin="30,0,0,0"
-            CornerRadius="10"
-            BorderThickness="1"
-            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-            Translation="0,0,30">
+                        Grid.Column="2"
+                        Margin="30,0,0,0"
+                        CornerRadius="10"
+                        BorderThickness="1"
+                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                        Translation="0,0,30">
                         <Border.Shadow>
                             <ThemeShadow/>
                         </Border.Shadow>
@@ -127,48 +123,47 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel>
                                 <TextBlock
-                        Name="newOrderTitle"
-                        Margin="10,0,10,0"
-                        FontWeight="SemiBold"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="Today Order" />
+                                    Name="newOrderTitle"
+                                    Margin="10,0,10,0"
+                                    FontWeight="SemiBold"
+                                    Style="{StaticResource SubtitleTextBlockStyle}"
+                                    Text="Today Order" />
                                 <TextBlock
-                        Margin="10,20,10,0"
-                        FontWeight="Medium"
-                        Style="{StaticResource BodyTextBlockStyle}"
-                        Text="{x:Bind ViewModel.TodayOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
+                                    Margin="10,20,10,0"
+                                    FontWeight="Medium"
+                                    Style="{StaticResource BodyTextBlockStyle}"
+                                    Text="{x:Bind ViewModel.TodayOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <Image
-                    Grid.Column="1"
-                    Width="50"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Source="ms-appx:///Assets/order.png" />
+                                Grid.Column="1"
+                                Width="50"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Source="ms-appx:///Assets/order.png" />
                         </Grid>
                     </Border>
 
                 </Grid>
 
-                <!--  Top 5 products best sellers and out of stock -->
+                <!--  Top 7 products best sellers and out of stock products -->
                 <TabView
-       IsAddTabButtonVisible="False"
-       Grid.Row="1">
+                   IsAddTabButtonVisible="False"
+                   Grid.Row="1">    
                     <TabView.TabItems>
                         <TabViewItem 
-                Header="Best Seller"
-                IsClosable="False">
+                            Header="Best Seller"
+                            IsClosable="False">
                             <TabViewItem.IconSource>
                                 <FontIconSource FontFamily="Segoe MDL2 Assets" Glyph="&#xE735;" Foreground="#d9c80d"/>
                             </TabViewItem.IconSource>
                             <Border
-                    Width="auto"
-                    Margin="0, 10"
-                    Padding="0, 0, 0, 20"
-                    BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                    CornerRadius="10"
-                    Translation="0, 0, 30">
+                                Width="auto"
+                                Margin="0, 10"
+                                Padding="0, 0, 0, 20"
+                                BorderThickness="1"
+                                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                CornerRadius="10"
+                                Translation="0, 0, 30">
                                 <Border.Shadow>
                                     <ThemeShadow/>
                                 </Border.Shadow>
@@ -208,20 +203,20 @@
                             </Border>
                         </TabViewItem>
                         <TabViewItem
-                 Header="Out Of Stock"
-                 IsClosable="False">
+                             Header="Out Of Stock"
+                             IsClosable="False">
                             <TabViewItem.IconSource>
                                 <FontIconSource FontFamily="Segoe MDL2 Assets" Glyph="&#xEA39;" Foreground="Red"/>
                             </TabViewItem.IconSource>
                             <Border
-                    Width="auto"
-                    Height="Auto"
-                    Margin="0, 10"
-                    Padding="0, 0, 0, 20"
-                    BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                    CornerRadius="10"
-                    Translation="0, 0, 30">
+                                Width="auto"
+                                Height="Auto"
+                                Margin="0, 10"
+                                Padding="0, 0, 0, 20"
+                                BorderThickness="1"
+                                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                CornerRadius="10"
+                                Translation="0, 0, 30">
                                 <Border.Shadow>
                                     <ThemeShadow/>
                                 </Border.Shadow>
@@ -244,6 +239,7 @@
                                         DesiredWidth="200"
                                         ItemHeight="255"
                                         IsItemClickEnabled="True"
+                                        ItemClickCommand="{x:Bind ViewModel.ProductClickedCommand}"
                                         ItemsSource="{x:Bind ViewModel.OutOfStockProducts, Mode=OneWay}"
                                         SelectionMode="None"
                                         StretchContentForSingleRow="False">
@@ -294,7 +290,7 @@
                                 <controls:DataGrid.Columns>
                                     <controls:DataGridTextColumn
                                         Header="Order ID"
-                                        Width="*"
+                                        Width="100"
                                         Binding="{Binding Id}"/>
                                     <controls:DataGridTextColumn
                                         Header="Date"
@@ -306,12 +302,28 @@
                                         Binding="{Binding CustomerName}"/>
                                     <controls:DataGridTextColumn
                                         Header="Service Type"
-                                        Width="*"
+                                        Width="*"   
                                         Binding="{Binding ServiceTypeName}"/>
                                     <controls:DataGridTextColumn
                                         Header="Total Price"
                                         Width="*"
                                         Binding="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}"/>
+                                    <controls:DataGridTemplateColumn Header="Status" Width="*">
+                                        <controls:DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <TextBlock 
+                                                        Text="{Binding Status}"
+                                                        Foreground="{Binding Status, Converter={StaticResource OrderStatusToColorConverter}}"
+                                                        FontWeight="SemiBold"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="8,0" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </controls:DataGridTemplateColumn.CellTemplate>
+                                    </controls:DataGridTemplateColumn>
+
                                 </controls:DataGrid.Columns>
                             </controls:DataGrid>
                         </Grid>

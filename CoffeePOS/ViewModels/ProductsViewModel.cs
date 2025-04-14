@@ -198,8 +198,7 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
         if (clickedItem != null)
         {
             _navigationService.SetListDataItemForNextConnectedAnimation(clickedItem);
-            var parameter = (clickedItem.Id, false);
-            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName!, parameter);
+            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName!, clickedItem.Id);
         }
     }
 
@@ -218,12 +217,13 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
             var priceBox = (TextBox)((StackPanel)contentPanel.Children[1]).Children[1];
             var descriptionBox = (TextBox)((StackPanel)contentPanel.Children[2]).Children[1];
             var categoryBox = (ComboBox)((StackPanel)contentPanel.Children[3]).Children[1];
+            var inStockBox = (CheckBox)((StackPanel)contentPanel.Children[4]).Children[1];
 
             product.Name = nameBox.Text;
             product.Price = double.TryParse(priceBox.Text, out double price) ? price : 0;
             product.Description = descriptionBox.Text;
             product.CategoryId = CategoryMap.FirstOrDefault(x => x.Value == categoryBox.SelectedItem.ToString()).Key;
-            product.IsStocked = true;
+            product.IsStocked = inStockBox.IsChecked ?? false;
 
             await _dao.Products.Add(product);
             await LoadProducts();

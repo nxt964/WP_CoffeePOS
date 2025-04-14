@@ -62,8 +62,7 @@ public sealed partial class CategoriesDetailControl : UserControl
     {
         if (e.ClickedItem is CoffeePOS.Core.Models.Product product)
         {
-            var parameter = (product.Id, true);
-            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, parameter);
+            _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, product.Id);
         }
     }
 }
