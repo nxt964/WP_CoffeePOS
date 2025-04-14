@@ -20,14 +20,14 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
     private readonly IDao _dao;
     private readonly INavigationService _navigationService;
     private ContentDialogHelper ContentDialogHelper { get; } = new ContentDialogHelper();
-    public bool IsNotFromProducts=false;
 
     [ObservableProperty]
     private Product? item;
 
     public ObservableCollection<Product> RelateProducts { get; } = new();
 
-    public string ProductCategory { get; private set; } = string.Empty;
+    [ObservableProperty]
+    private string productCategory = string.Empty;
 
     public ProductsDetailViewModel(IDao dao, INavigationService navigationService)
     {
@@ -37,19 +37,33 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
 
     public async void OnNavigatedTo(object parameter)
     {
-        if (parameter is (int productId, bool isNotFromProducts))
-        {
-            IsNotFromProducts = isNotFromProducts;
-            item = await _dao.Products.GetById(productId);
-            ProductCategory = (await _dao.Categories.GetById(item.CategoryId)).Name;
+        int productId;
 
-            RelateProducts.Clear();
-            (await _dao.Products.GetAll()).ToList().ForEach(p =>
-            {
-                if (p.Id != item.Id && p.CategoryId == item.CategoryId)
-                    RelateProducts.Add(p);
-            });
+        if (parameter is string str && int.TryParse(str.Split('-')[0], out int parsedId))
+        {
+            productId = parsedId;
         }
+        else if (parameter is int id)
+        {
+            productId = id;
+        }
+        else return;
+
+        await LoadData(productId);
+    }
+
+    private async Task LoadData(int productId)
+    {
+        Item = null;
+        Item = await _dao.Products.GetById(productId);
+        ProductCategory = (await _dao.Categories.GetById(Item.CategoryId)).Name;
+
+        RelateProducts.Clear();
+        (await _dao.Products.GetAll()).ToList().ForEach(p =>
+        {
+            if (p.Id != Item.Id && p.CategoryId == Item.CategoryId)
+                RelateProducts.Add(p);
+        });
     }
 
     public void OnNavigatedFrom()
@@ -58,8 +72,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
 
     public void OnProductClicked(int productId)
     {   
-        var parameter = (productId, false);
-        _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, parameter);
+        _navigationService.NavigateTo(typeof(ProductsDetailViewModel).FullName, productId);
     }
 
     [RelayCommand]
@@ -77,6 +90,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
             var priceBox = (TextBox)((StackPanel)contentPanel.Children[1]).Children[1];
             var descriptionBox = (TextBox)((StackPanel)contentPanel.Children[2]).Children[1];
             var categoryBox = (ComboBox)((StackPanel)contentPanel.Children[3]).Children[1];
+            var inStockBox = (CheckBox)((StackPanel)contentPanel.Children[4]).Children[1];
 
             var updatedItem = new Product
             {
@@ -84,7 +98,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
                 Name = nameBox.Text,
                 Price = double.TryParse(priceBox.Text, out double price) ? price : 0,
                 Image = item.Image,
-                IsStocked = item.IsStocked,
+                IsStocked = inStockBox.IsChecked ?? false,
                 Description = descriptionBox.Text,
                 CategoryId = (await _dao.Categories.GetAll())
                 .FirstOrDefault(c => c.Name == categoryBox.SelectedItem.ToString())?.Id ?? 0
@@ -92,7 +106,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
 
             await _dao.Products.Update(updatedItem);
 
-            _navigationService.NavigateTo(typeof(ProductsViewModel).FullName);
+            await LoadData(updatedItem.Id);
         }
     }
 
@@ -119,7 +133,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
                 Source = new BitmapImage(new Uri(
                     !string.IsNullOrEmpty(item.Image)
                     ? item.Image
-                    : "ms-appx:///Assets/ProductImage.jpg"))
+                    : "ms-appx:///Assets/ProductImageDefault.png"))
             }
         );
 
@@ -137,7 +151,7 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
         if (result == ContentDialogResult.Primary)
         {            
             await _dao.Products.Delete(item.Id);
-            _navigationService.NavigateTo(typeof(ProductsViewModel).FullName);
+            _navigationService.GoBack();
         }
     }
 }
