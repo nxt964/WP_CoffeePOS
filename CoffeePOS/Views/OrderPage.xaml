@@ -93,7 +93,7 @@
                             Binding="{Binding Id}"/>
                         <controls:DataGridTextColumn
                             Header="Date"
-                            Width="*"
+                            Width="2*"
                             Binding="{Binding OrderDate}"/>
                         <controls:DataGridTextColumn
                             Header="Customer Name"
@@ -104,8 +104,13 @@
                             Width="*"
                             Binding="{Binding ServiceTypeName}"/>
                         <controls:DataGridTextColumn
+                            Header="Status"
+                            Width="*"
+                            Binding="{Binding Status}"/>
+                        <controls:DataGridTextColumn
                             Header="Total Price"
                             Width="*"
+                            IsReadOnly="True"
                             Binding="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}"/>
                         <controls:DataGridTemplateColumn
                             Header="Actions"
