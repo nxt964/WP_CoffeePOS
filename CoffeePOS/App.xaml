@@ -25,9 +25,12 @@
             <converter:EmptyCollectionVisibilityConverter x:Key="EmptyCollectionVisibilityConverter"/>
             <converter:UnixTimestampConverter x:Key="UnixTimestampConverter"/>
             <converter:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter"/>
-                <converter:TransactionTotalConverter x:Key="TransactionTotalConverter"/>
+            <converter:TransactionTotalConverter x:Key="TransactionTotalConverter"/>
+            <converter:BoolToStockBackgroundConverter x:Key="BoolToStockBackgroundConverter"/>
+            <converter:StockIndicatorConverter x:Key="StockIndicatorConverter"/>
+            <converter:ProductDetailCountToVisibilityConverter x:Key="ProductDetailCountToVisibilityConverter"/>
 
-                <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
+            <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="Margin" Value="0,0,0,10"/>
                 <Setter Property="TextBoxStyle">
