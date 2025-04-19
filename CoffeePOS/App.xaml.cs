@@ -65,7 +65,6 @@ public partial class App : Application
             services.AddSingleton<IAppNotificationService, AppNotificationService>();
             services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
             services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
-            services.AddTransient<IWebViewService, WebViewService>();
             services.AddTransient<INavigationViewService, NavigationViewService>();
 
             services.AddSingleton<IActivationService, ActivationService>();
@@ -130,7 +129,11 @@ public partial class App : Application
             services.AddTransient<AddEmployeeViewModel>();
             services.AddTransient<AddEmployeePage>();
             services.AddTransient<EditEmployeePage>();
-            services.AddTransient<EditEmployeeViewModel>(); 
+            services.AddTransient<EditEmployeeViewModel>();
+            services.AddTransient<AddCustomerPage>();
+            services.AddTransient<AddCustomerViewModel>();
+            services.AddTransient<EditCustomerPage>();
+            services.AddTransient<EditCustomerViewModel>();
 
 
 
