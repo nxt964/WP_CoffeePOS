@@ -24,25 +24,19 @@
                 Margin="0,0,0,20"/>
 
             <!-- Form nhập liệu -->
-            <StackPanel Grid.Row="1" Spacing="10" Margin="20,0">
+            <StackPanel 
+                Grid.Row="1" 
+                Spacing="10" 
+                Margin="20,0"
+                HorizontalAlignment="Center">
                 <TextBox
                     Header="Customer Name"
                     Width="300"
-                    HorizontalAlignment="Left"
                     Text="{x:Bind ViewModel.CustomerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     Header="Phone"
                     Width="300"
-                    HorizontalAlignment="Left"
                     Text="{x:Bind ViewModel.Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <CheckBox
-                    Content="Is Membership"
-                    IsChecked="{x:Bind ViewModel.IsMembership, Mode=TwoWay}"/>
-                <TextBox
-                    Header="Points"
-                    Width="300"
-                    HorizontalAlignment="Left"
-                    Text="{x:Bind ViewModel.PointsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <!-- Nút Save và Cancel -->
