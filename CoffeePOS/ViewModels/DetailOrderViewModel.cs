@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 
 namespace CoffeePOS.ViewModels;
 
@@ -37,6 +38,9 @@ public partial class DetailOrderViewModel : ObservableObject
 
     [ObservableProperty]
     private string voucherInfo;
+
+    [ObservableProperty]
+    private bool isOrderEditable = true;
 
     private int currentPage = 1;
     private int totalPages = 1;
@@ -70,6 +74,9 @@ public partial class DetailOrderViewModel : ObservableObject
             _allOrderDetails.Clear();
             Source.Clear();
 
+            var order = await _dao.Orders.GetById(orderId);
+            IsOrderEditable = order?.Status != "Complete";
+
             var orderDetails = (await _dao.OrderDetails.GetAll()).Where(od => od.OrderId == orderId).ToList();
             var products = await _dao.Products.GetAll();
 
@@ -86,7 +93,9 @@ public partial class DetailOrderViewModel : ObservableObject
                         ProductId = detail.ProductId,
                         ProductName = product.Name,
                         Quantity = detail.Quantity,
-                        Price = detail.Price
+                        Price = detail.Price,
+                        Image = product.Image,
+                        IsEditable = IsOrderEditable
                     };
                     orderDetailDisplay.PropertyChanged += OrderDetailDisplay_PropertyChanged;
                     _allOrderDetails.Add(orderDetailDisplay);
@@ -105,11 +114,36 @@ public partial class DetailOrderViewModel : ObservableObject
         }
     }
 
-    private void OrderDetailDisplay_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private async void OrderDetailDisplay_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(OrderDetailDisplay.Quantity))
+        if (e.PropertyName == nameof(OrderDetailDisplay.Quantity) && IsOrderEditable)
         {
-            CalculateTotalPrice();
+            var orderDetailDisplay = sender as OrderDetailDisplay;
+            if (orderDetailDisplay != null && orderDetailDisplay.IsEditable)
+            {
+                try
+                {
+                    var orderDetail = (await _dao.OrderDetails.GetAll()).FirstOrDefault(od => od.Id == orderDetailDisplay.Id);
+                    if (orderDetail != null)
+                    {
+                        orderDetail.Quantity = orderDetailDisplay.Quantity;
+                        await _dao.OrderDetails.Update(orderDetail);
+                        await _dao.SaveChangesAsync();
+                        System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.OrderDetailDisplay_PropertyChanged: Updated OrderDetail {orderDetail.Id} with Quantity = {orderDetail.Quantity}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.OrderDetailDisplay_PropertyChanged: OrderDetail {orderDetailDisplay.Id} not found");
+                    }
+
+                    CalculateTotalPrice();
+                    await UpdateOrderTotalAmount();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.OrderDetailDisplay_PropertyChanged: {ex.Message}");
+                }
+            }
         }
     }
 
@@ -127,7 +161,7 @@ public partial class DetailOrderViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(IsOrderEditable))]
     private async Task ApplyVoucher()
     {
         try
@@ -152,6 +186,7 @@ public partial class DetailOrderViewModel : ObservableObject
                 VoucherInfo = null;
             }
             CalculateTotalPrice();
+            await UpdateOrderTotalAmount();
         }
         catch (Exception ex)
         {
@@ -160,7 +195,12 @@ public partial class DetailOrderViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    private bool CanCheckout()
+    {
+        return IsOrderEditable && TotalPrice > 0;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanCheckout))]
     private async Task Pay()
     {
         try
@@ -177,10 +217,38 @@ public partial class DetailOrderViewModel : ObservableObject
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // Logic thanh toán: cập nhật trạng thái đơn hàng, đánh dấu voucher đã sử dụng, v.v.
+                var order = await _dao.Orders.GetById(orderId);
+                if (order != null)
+                {
+                    order.Status = "Complete";
+                    order.TotalAmount = TotalPrice;
+                    await _dao.Orders.Update(order);
+                    await _dao.SaveChangesAsync();
+                    IsOrderEditable = false;
+                    foreach (var detail in _allOrderDetails)
+                    {
+                        detail.IsEditable = false;
+                    }
+                    UpdateSourceWithPagination();
+                    ApplyVoucherCommand.NotifyCanExecuteChanged();
+                    PayCommand.NotifyCanExecuteChanged();
+                    DeleteOrderDetailCommand.NotifyCanExecuteChanged();
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: Order {orderId} marked as Complete, TotalAmount = {TotalPrice}");
+
+                    // Điều hướng về trang OrderPage sau khi thanh toán thành công
+                    var frame = App.MainWindow.Content as Frame;
+                    frame?.Navigate(typeof(CoffeePOS.Views.OrderPage));
+                }
+
+                if (appliedVoucher != null)
+                {
+                    appliedVoucher.IsUsed = true;
+                    await _dao.Vouchers.Update(appliedVoucher);
+                    await _dao.SaveChangesAsync();
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: Voucher {appliedVoucher.Code} marked as used");
+                }
+
                 System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: Payment confirmed. TotalPrice = {TotalPrice}");
-                TotalPrice += 1.00m; // Tăng TotalPrice để kiểm tra binding
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: TotalPrice updated to {TotalPrice}");
             }
         }
         catch (Exception ex)
@@ -223,7 +291,7 @@ public partial class DetailOrderViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(IsOrderEditable))]
     private async Task DeleteOrderDetail(int orderDetailId)
     {
         try
@@ -232,10 +300,30 @@ public partial class DetailOrderViewModel : ObservableObject
             await _dao.OrderDetails.Delete(orderDetailId);
             await _dao.SaveChangesAsync();
             await LoadOrderDetails();
+            await UpdateOrderTotalAmount();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.DeleteOrderDetail: {ex.Message}");
+        }
+    }
+
+    private async Task UpdateOrderTotalAmount()
+    {
+        try
+        {
+            var order = await _dao.Orders.GetById(orderId);
+            if (order != null)
+            {
+                order.TotalAmount = TotalPrice;
+                await _dao.Orders.Update(order);
+                await _dao.SaveChangesAsync();
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.UpdateOrderTotalAmount: Updated Order {orderId} with TotalAmount = {TotalPrice}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.UpdateOrderTotalAmount: {ex.Message}");
         }
     }
 
@@ -247,6 +335,17 @@ public partial class DetailOrderViewModel : ObservableObject
             if (!string.IsNullOrWhiteSpace(SearchQuery))
             {
                 filteredDetails = filteredDetails.Where(d => d.ProductName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+                foreach (var detail in _allOrderDetails)
+                {
+                    detail.IsEditable = detail.ProductName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) && IsOrderEditable;
+                }
+            }
+            else
+            {
+                foreach (var detail in _allOrderDetails)
+                {
+                    detail.IsEditable = IsOrderEditable;
+                }
             }
 
             var filteredList = filteredDetails.ToList();
@@ -283,6 +382,7 @@ public partial class DetailOrderViewModel : ObservableObject
                 total -= total * (appliedVoucher.DiscountPercentage / 100);
             }
             TotalPrice = total;
+            PayCommand.NotifyCanExecuteChanged(); // Cập nhật trạng thái của nút checkout khi tổng tiền thay đổi
             System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.CalculateTotalPrice: TotalPrice = {TotalPrice}");
         }
         catch (Exception ex)
@@ -296,10 +396,8 @@ public partial class DetailOrderViewModel : ObservableObject
         Search();
     }
 
-    // Add handler for PageSize changes
     partial void OnPageSizeChanged(int value)
     {
-        // Enforce minimum and maximum PageSize
         if (value < 1)
         {
             PageSize = 1;
@@ -312,7 +410,7 @@ public partial class DetailOrderViewModel : ObservableObject
         }
 
         System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.OnPageSizeChanged: PageSize changed to {value}");
-        currentPage = 1; // Reset to the first page when PageSize changes
+        currentPage = 1;
         UpdateSourceWithPagination();
     }
 }
