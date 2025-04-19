@@ -47,7 +47,16 @@ public class SqliteManualDao : IDao
         using var connection = _connectionFactory.CreateConnection();
         await connection.OpenAsync();
 
-        var commands = new[]
+        // Check if the Users table already exists
+        bool needToSeedData = false;
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='Users'";
+            var result = await command.ExecuteScalarAsync();
+            needToSeedData = result == null; // If Users table doesn't exist, we need to seed data
+        }
+
+        var tableCreationCommands = new[]
         {
             // Users Table
             @"CREATE TABLE IF NOT EXISTS Users (
@@ -195,10 +204,41 @@ public class SqliteManualDao : IDao
                 Price REAL,
                 FOREIGN KEY (OrderId) REFERENCES Orders(Id),
                 FOREIGN KEY (ProductId) REFERENCES Products(Id)
-            )",
+            )"
+        };
 
-            // Insert initial data
-            // Users
+        // Create tables
+        foreach (var commandText in tableCreationCommands)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = commandText;
+            await command.ExecuteNonQueryAsync();
+        }
+
+
+        // Only seed data if necessary
+        if (needToSeedData)
+        {
+            // Double-check to make sure Users doesn't already have data
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM Users";
+                var count = Convert.ToInt32(await command.ExecuteScalarAsync());
+                if (count > 0)
+                {
+                    // If data already exists, no need to seed
+                    needToSeedData = false;
+                }
+            }
+
+            if (needToSeedData)
+            {
+                Console.WriteLine("Seeding initial data...");
+                var seedCommands = new[]
+                {
+
+        // Insert initial data
+        // Users
             $"INSERT OR IGNORE INTO Users (Id, Username, Password, ExpireAt) VALUES (1, 'admin', '{BCrypt.Net.BCrypt.HashPassword("admin1234")}', '{DateTime.UtcNow.AddDays(5).ToString("O")}')",
             $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (2, 'employee1', '{BCrypt.Net.BCrypt.HashPassword("employee1234")}')",
             $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (3, 'employee2', '{BCrypt.Net.BCrypt.HashPassword("employee1234")}')",
@@ -585,12 +625,25 @@ public class SqliteManualDao : IDao
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 42, 0.04)", // 40g Cream Cheese
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 26, 0.02)"  // 20g Sugar
         };
+                
+                foreach (var commandText in seedCommands)
+                {
+                    using var command = connection.CreateCommand();
+                    command.CommandText = commandText;
+                    await command.ExecuteNonQueryAsync();
+                }
 
-        foreach (var commandText in commands)
+                Console.WriteLine("Data seeding completed!");
+            }
+            else
+            {
+                Console.WriteLine("Data already exists, skipping seed.");
+            }
+        }
+        else
         {
-            using var command = connection.CreateCommand();
-            command.CommandText = commandText;
-            await command.ExecuteNonQueryAsync();
+            Console.WriteLine("Database already exists, no need to seed data.");
         }
     }
+
 }
