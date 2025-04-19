@@ -1,45 +1,47 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace CoffeePOS.Models;
 
-public class OrderDetailDisplay : INotifyPropertyChanged
+public partial class OrderDetailDisplay : ObservableObject
 {
-    private int _quantity;
+    [ObservableProperty]
+    private int id;
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    [ObservableProperty]
+    private int productId;
 
-    public int Id
+    [ObservableProperty]
+    private string productName;
+
+    [ObservableProperty]
+    private int quantity;
+
+    [ObservableProperty]
+    private decimal price;
+
+    [ObservableProperty]
+    private string image;
+
+    [ObservableProperty]
+    private bool isEditable;
+
+    [RelayCommand]
+    private void IncrementQuantity()
     {
-        get; set;
-    }
-    public int ProductId
-    {
-        get; set;
-    }
-    public string ProductName
-    {
-        get; set;
-    }
-    public int Quantity
-    {
-        get => _quantity;
-        set
+        if (IsEditable)
         {
-            if (_quantity != value)
-            {
-                _quantity = value;
-                OnPropertyChanged();
-            }
+            Quantity++;
         }
     }
-    public decimal Price
-    {
-        get; set;
-    }
 
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    [RelayCommand]
+    private void DecrementQuantity()
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        if (IsEditable && Quantity > 1)
+        {
+            Quantity--;
+        }
     }
 }
