@@ -25,7 +25,7 @@ public class PageService : IPageService
         Configure<TableViewModel, TablePage>();
         Configure<TableDetailViewModel, TableDetailPage>();
         Configure<StatisticsViewModel, StatisticsPage>();
-        Configure<WebViewViewModel, WebViewPage>();
+        //Configure<WebViewViewModel, WebViewPage>();
         Configure<SettingsViewModel, SettingsPage>();
         Configure<ProductViewModel, ProductPage>();
         Configure<AddProductViewModel, AddProductPage>();
