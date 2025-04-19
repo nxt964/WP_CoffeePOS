@@ -15,19 +15,13 @@ public partial class EditCustomerViewModel : ObservableRecipient
     private readonly INavigationService _navigation_service;
     private readonly IDao _dao;
     private int _customerId;
-    private XamlRoot _xamlRoot; // Lưu XamlRoot từ trang
+    private XamlRoot _xamlRoot;
 
     [ObservableProperty]
     private string customerName;
 
     [ObservableProperty]
     private string phone;
-
-    [ObservableProperty]
-    private bool isMembership;
-
-    [ObservableProperty]
-    private string pointsText;
 
     public EditCustomerViewModel(INavigationService navigationService, IDao dao)
     {
@@ -59,9 +53,7 @@ public partial class EditCustomerViewModel : ObservableRecipient
             {
                 CustomerName = customer.Name;
                 Phone = customer.Phone;
-                IsMembership = customer.IsMembership;
-                PointsText = customer.Points.ToString();
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] EditCustomerViewModel.LoadCustomer: Loaded customer - Name: {customer.Name}, Phone: {customer.Phone}, IsMembership: {customer.IsMembership}");
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] EditCustomerViewModel.LoadCustomer: Loaded customer - Name: {customer.Name}, Phone: {customer.Phone}");
             }
             else
             {
@@ -117,21 +109,6 @@ public partial class EditCustomerViewModel : ObservableRecipient
                 return;
             }
 
-            // Chuyển đổi PointsText thành int
-            if (!int.TryParse(PointsText, out int points) || points < 0)
-            {
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] EditCustomerViewModel.SaveCustomer: Invalid Points - PointsText: {PointsText}");
-                var dialog = new ContentDialog
-                {
-                    Title = "Error",
-                    Content = "Points must be a valid non-negative number.",
-                    CloseButtonText = "OK",
-                    XamlRoot = _xamlRoot
-                };
-                await dialog.ShowAsync();
-                return;
-            }
-
             // Kiểm tra số điện thoại trùng lặp (trừ chính khách hàng đang chỉnh sửa)
             var customers = await _dao.Customers.GetAll();
             var existingCustomer = customers.FirstOrDefault(c => c.Phone == Phone && c.Id != _customerId);
@@ -149,21 +126,27 @@ public partial class EditCustomerViewModel : ObservableRecipient
                 return;
             }
 
-            // Tự động đánh giá IsMembership dựa trên Points
-            bool calculatedMembership = points >= 100;
-            IsMembership = calculatedMembership;
-
-            // Cập nhật thông tin khách hàng
-            var customer = new Customer
+            // Lấy khách hàng hiện tại từ cơ sở dữ liệu để giữ nguyên Points và IsMembership
+            var customer = await _dao.Customers.GetById(_customerId);
+            if (customer == null)
             {
-                Id = _customerId,
-                Name = CustomerName,
-                Phone = Phone,
-                IsMembership = IsMembership,
-                Points = points
-            };
+                System.Diagnostics.Debug.WriteLine($"[ERROR] EditCustomerViewModel.SaveCustomer: Customer with ID {_customerId} not found");
+                var dialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = $"Customer with ID {_customerId} not found.",
+                    CloseButtonText = "OK",
+                    XamlRoot = _xamlRoot
+                };
+                await dialog.ShowAsync();
+                return;
+            }
 
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] EditCustomerViewModel.SaveCustomer: Updating customer - ID: {_customerId}, Name: {customer.Name}, Phone: {customer.Phone}, IsMembership: {customer.IsMembership}");
+            // Chỉ cập nhật Name và Phone
+            customer.Name = CustomerName;
+            customer.Phone = Phone;
+
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] EditCustomerViewModel.SaveCustomer: Updating customer - ID: {_customerId}, Name: {customer.Name}, Phone: {customer.Phone}");
             await _dao.Customers.Update(customer);
             await _dao.SaveChangesAsync();
             System.Diagnostics.Debug.WriteLine($"[DEBUG] EditCustomerViewModel.SaveCustomer: Customer updated successfully - ID: {_customerId}");
@@ -183,7 +166,6 @@ public partial class EditCustomerViewModel : ObservableRecipient
                 XamlRoot = _xamlRoot
             };
             await dialog.ShowAsync();
-            // Không chuyển hướng, để người dùng sửa lại thông tin
         }
     }
 
