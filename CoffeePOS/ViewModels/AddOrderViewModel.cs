@@ -8,8 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
-using CoffeePOS.Core.Daos;
-using CoffeePOS.Services;
+using Microsoft.UI.Xaml;
 
 namespace CoffeePOS.ViewModels;
 
@@ -24,6 +23,7 @@ public partial class AddOrderViewModel : ObservableRecipient
     private readonly INavigationService _navigationService;
     private readonly IDao _dao;
     private ObservableCollection<Customer> _allCustomers = new ObservableCollection<Customer>();
+    private XamlRoot _xamlRoot; // Thêm để quản lý dialog
 
     [ObservableProperty]
     private ObservableCollection<Customer> customerSuggestions = new ObservableCollection<Customer>();
@@ -70,6 +70,11 @@ public partial class AddOrderViewModel : ObservableRecipient
         }
     }
 
+    public void SetXamlRoot(XamlRoot xamlRoot)
+    {
+        _xamlRoot = xamlRoot;
+    }
+
     partial void OnIsDineInChanged(bool value)
     {
         System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnIsDineInChanged: IsDineIn = {value}");
@@ -100,7 +105,6 @@ public partial class AddOrderViewModel : ObservableRecipient
         if (SelectedServiceType == null)
         {
             System.Diagnostics.Debug.WriteLine($"[WARNING] AddOrderViewModel.UpdateSelectedServiceType: ServiceType '{serviceTypeName}' not found in ServiceTypes. Creating new ServiceType...");
-            // Tạo ServiceType mới nếu không tìm thấy
             var newServiceType = new ServiceType
             {
                 Name = serviceTypeName
@@ -126,7 +130,6 @@ public partial class AddOrderViewModel : ObservableRecipient
         }
         System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnNavigatedTo: Loaded {customersList.Count()} customers");
 
-        // Tải danh sách ServiceTypes
         ServiceTypes.Clear();
         var serviceTypesList = await _dao.ServiceTypes.GetAll();
         foreach (var serviceType in serviceTypesList)
@@ -135,7 +138,6 @@ public partial class AddOrderViewModel : ObservableRecipient
             System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnNavigatedTo: Added ServiceType - Id = {serviceType.Id}, Name = {serviceType.Name}");
         }
 
-        // Đặt giá trị mặc định
         if (ServiceTypes.Any(st => st.Name.Equals("Dine-in", StringComparison.OrdinalIgnoreCase)))
         {
             IsDineIn = true;
@@ -146,7 +148,6 @@ public partial class AddOrderViewModel : ObservableRecipient
         }
         else
         {
-            // Nếu không có ServiceType nào, mặc định chọn Dine-in và sẽ tạo mới
             IsDineIn = true;
         }
 
@@ -190,47 +191,49 @@ public partial class AddOrderViewModel : ObservableRecipient
             if (string.IsNullOrWhiteSpace(CustomerName) || string.IsNullOrWhiteSpace(CustomerPhone) || SelectedServiceType == null)
             {
                 System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Missing required fields - CustomerName: {CustomerName}, CustomerPhone: {CustomerPhone}, SelectedServiceType: {SelectedServiceType?.Name}");
-                var dialog = new ContentDialog
-                {
-                    Title = "Error",
-                    Content = "Please fill in all required fields (Customer Name, Customer Phone, and Service Type).",
-                    CloseButtonText = "OK"
-                };
-                dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
-                await dialog.ShowAsync();
+                await ShowDialogAsync("Error", "Please fill in all required fields (Customer Name, Customer Phone, and Service Type).", "OK");
                 return;
             }
 
+            // Kiểm tra khách hàng trùng lặp
             var customers = await _dao.Customers.GetAll();
             var existingCustomer = customers.FirstOrDefault(c => c.Phone == CustomerPhone);
 
             if (existingCustomer != null)
             {
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Phone {CustomerPhone} already used by customer {existingCustomer.Name}");
-                var dialog = new ContentDialog
+                // Nếu số điện thoại trùng, kiểm tra tên
+                if (existingCustomer.Name.Equals(CustomerName, StringComparison.OrdinalIgnoreCase))
                 {
-                    Title = "Error",
-                    Content = "This phone number is already used by another customer. Please enter a different phone number.",
-                    CloseButtonText = "OK"
+                    // Số điện thoại và tên trùng, sử dụng khách hàng hiện có
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Phone {CustomerPhone} and Name {CustomerName} match existing customer {existingCustomer.Name} (ID: {existingCustomer.Id})");
+                    SelectedCustomer = existingCustomer;
+                }
+                else
+                {
+                    // Số điện thoại trùng nhưng tên không trùng, báo lỗi
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Phone {CustomerPhone} already used by customer {existingCustomer.Name} (ID: {existingCustomer.Id}) with different name");
+                    await ShowDialogAsync("Error", "This phone number is already used by another customer with a different name. Please use a different phone number.", "OK");
+                    return;
+                }
+            }
+            else
+            {
+                // Số điện thoại không trùng, tạo khách hàng mới
+                var newCustomer = new Customer
+                {
+                    Name = CustomerName,
+                    Phone = CustomerPhone,
+                    IsMembership = false,
+                    Points = 0
                 };
-                dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
-                await dialog.ShowAsync();
-                return;
+                var addedCustomer = await _dao.Customers.Add(newCustomer);
+                await _dao.SaveChangesAsync();
+                _allCustomers.Add(addedCustomer);
+                SelectedCustomer = addedCustomer;
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Created new customer with Id = {SelectedCustomer.Id}");
             }
 
-            var newCustomer = new Customer
-            {
-                Name = CustomerName,
-                Phone = CustomerPhone,
-                IsMembership = false,
-                Points = 0
-            };
-            var addedCustomer = await _dao.Customers.Add(newCustomer);
-            await _dao.SaveChangesAsync();
-            _allCustomers.Add(addedCustomer);
-            SelectedCustomer = addedCustomer;
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Created new customer with Id = {SelectedCustomer.Id}");
-
+            // Tạo đơn hàng mới
             var newOrder = new Order
             {
                 OrderDate = OrderDate.DateTime,
@@ -251,14 +254,27 @@ public partial class AddOrderViewModel : ObservableRecipient
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] AddOrderViewModel.AddOrder: {ex.Message}");
+            await ShowDialogAsync("Error", $"Failed to add order: {ex.Message}", "OK");
+        }
+    }
+
+    // Phương thức helper để hiển thị dialog
+    private async Task ShowDialogAsync(string title, string content, string closeButtonText)
+    {
+        try
+        {
             var dialog = new ContentDialog
             {
-                Title = "Error",
-                Content = $"Failed to add order: {ex.Message}",
-                CloseButtonText = "OK"
+                Title = title,
+                Content = content,
+                CloseButtonText = closeButtonText,
+                XamlRoot = _xamlRoot
             };
-            dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
             await dialog.ShowAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] AddOrderViewModel.ShowDialogAsync: Failed to show dialog. Exception: {ex.Message}");
         }
     }
 

@@ -16,6 +16,7 @@ public sealed partial class AddOrderPage : Page
     {
         ViewModel = App.GetService<AddOrderViewModel>();
         InitializeComponent();
+        ViewModel.SetXamlRoot(this.XamlRoot);
     }
 
     private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)

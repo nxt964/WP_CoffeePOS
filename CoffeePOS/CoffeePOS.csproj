@@ -15,11 +15,13 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Views\AddCustomerPage.xaml" />
     <None Remove="Views\AddEmployeePage.xaml" />
     <None Remove="Views\AddOrderPage.xaml" />
     <None Remove="Views\AddProductPage.xaml" />
     <None Remove="Views\AddProductToOrderDetailPage.xaml" />
     <None Remove="Views\DetailOrderPage.xaml" />
+    <None Remove="Views\EditCustomerPage.xaml" />
     <None Remove="Views\EditEmployeePage.xaml" />
     <None Remove="Views\EmployeesPage.xaml" />
     <None Remove="Views\LoginPage.xaml" />
@@ -61,6 +63,12 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\EditCustomerPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\AddCustomerPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\EditEmployeePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

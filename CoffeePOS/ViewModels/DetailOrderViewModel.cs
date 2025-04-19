@@ -224,6 +224,23 @@ public partial class DetailOrderViewModel : ObservableObject
                     order.TotalAmount = TotalPrice;
                     await _dao.Orders.Update(order);
                     await _dao.SaveChangesAsync();
+
+                    // Cộng điểm cho khách hàng nếu là thành viên
+                    if (order.CustomerId.HasValue)
+                    {
+                        var customer = await _dao.Customers.GetById(order.CustomerId.Value);
+                        if (customer != null)
+                        {
+                            int pointsToAdd = (int)TotalPrice; // 1 đô = 1 điểm
+                            customer.Points += pointsToAdd;
+                            // Cập nhật trạng thái IsMembership dựa trên điểm mới
+                            customer.IsMembership = customer.Points >= 100;
+                            await _dao.Customers.Update(customer);
+                            await _dao.SaveChangesAsync();
+                            System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: Added {pointsToAdd} points to Customer {customer.Id}. New Points: {customer.Points}, IsMembership: {customer.IsMembership}");
+                        }
+                    }
+
                     IsOrderEditable = false;
                     foreach (var detail in _allOrderDetails)
                     {
@@ -327,6 +344,38 @@ public partial class DetailOrderViewModel : ObservableObject
         }
     }
 
+    private async Task CalculateTotalPrice()
+    {
+        try
+        {
+            decimal total = _allOrderDetails.Sum(od => od.Price * od.Quantity);
+            if (appliedVoucher != null)
+            {
+                total -= total * (appliedVoucher.DiscountPercentage / 100);
+            }
+
+            // Kiểm tra nếu khách hàng là thành viên thì giảm thêm 5%
+            var order = await _dao.Orders.GetById(orderId);
+            if (order != null && order.CustomerId.HasValue)
+            {
+                var customer = await _dao.Customers.GetById(order.CustomerId.Value);
+                if (customer != null && customer.IsMembership)
+                {
+                    total -= total * 0.05m; // Giảm thêm 5% nếu là thành viên
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.CalculateTotalPrice: Applied 5% membership discount for Customer {customer.Id}. New Total: {total}");
+                }
+            }
+
+            TotalPrice = total;
+            PayCommand.NotifyCanExecuteChanged(); // Cập nhật trạng thái của nút checkout khi tổng tiền thay đổi
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.CalculateTotalPrice: TotalPrice = {TotalPrice}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.CalculateTotalPrice: {ex.Message}");
+        }
+    }
+
     private void UpdateSourceWithPagination()
     {
         try
@@ -369,25 +418,6 @@ public partial class DetailOrderViewModel : ObservableObject
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.UpdateSourceWithPagination: {ex.Message}");
-        }
-    }
-
-    private void CalculateTotalPrice()
-    {
-        try
-        {
-            decimal total = _allOrderDetails.Sum(od => od.Price * od.Quantity);
-            if (appliedVoucher != null)
-            {
-                total -= total * (appliedVoucher.DiscountPercentage / 100);
-            }
-            TotalPrice = total;
-            PayCommand.NotifyCanExecuteChanged(); // Cập nhật trạng thái của nút checkout khi tổng tiền thay đổi
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.CalculateTotalPrice: TotalPrice = {TotalPrice}");
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.CalculateTotalPrice: {ex.Message}");
         }
     }
 
