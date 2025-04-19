@@ -87,8 +87,6 @@ public partial class App : Application
             // Views and ViewModels
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<SettingsPage>();
-            //services.AddTransient<WebViewViewModel>();
-            //services.AddTransient<WebViewPage>();
             services.AddTransient<StatisticsViewModel>();
             services.AddTransient<StatisticsPage>();
             services.AddTransient<TableDetailViewModel>();
@@ -127,7 +125,13 @@ public partial class App : Application
             services.AddTransient<AddProductToOrderDetailViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<LoginPage>();
-            
+            services.AddTransient<EmployeesPage>();
+            services.AddTransient<EmployeesViewModel>();
+            services.AddTransient<AddEmployeeViewModel>();
+            services.AddTransient<AddEmployeePage>();
+            services.AddTransient<EditEmployeePage>();
+            services.AddTransient<EditEmployeeViewModel>(); 
+
 
 
 
