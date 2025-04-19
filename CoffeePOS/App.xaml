@@ -24,7 +24,9 @@
                 <converter:ObjectToVisibilityConverterInverted x:Key="ObjectToVisibilityConverterInverted"/>
                 <converter:EmptyCollectionVisibilityConverter x:Key="EmptyCollectionVisibilityConverter"/>
                 <converter:StockBackgroundConverter x:Key="StockBackgroundConverter"/>
-                <converter:TransactionTypeBackgroundConverter x:Key="TransactionTypeBackgroundConverter"/>
+            <converter:IngredientStockConverter x:Key="IngredientStockConverter"/>
+
+            <converter:TransactionTypeBackgroundConverter x:Key="TransactionTypeBackgroundConverter"/>
                 <converter:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter"/>
                 <converter:UnixTimestampConverter x:Key="UnixTimestampConverter"/>
                 <converter:TransactionTotalConverter x:Key="TransactionTotalConverter"/>
