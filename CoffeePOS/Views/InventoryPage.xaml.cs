@@ -18,7 +18,7 @@ public sealed partial class InventoryPage : Page
     {
         ViewModel = App.GetService<InventoryViewModel>();
         this.DataContext = ViewModel;
-        this.InitializeComponent();
+        InitializeComponent();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -62,10 +62,19 @@ public sealed partial class InventoryPage : Page
 
     private void AddTransaction_Click(object sender, RoutedEventArgs e)
     {
-        Debug.WriteLine("[DEBUG] InventoryPage.AddTransaction_Click: Adding transaction");
+        Debug.WriteLine("[DEBUG] InventoryPage.AddTransaction_Click: Adding transaction from grid");
         if (sender is Button button && button.Tag is Ingredient ingredient)
         {
             ViewModel.AddTransactionCommand.Execute(ingredient);
+        }
+    }
+
+    private void AddTransactionSelected_Click(object sender, RoutedEventArgs e)
+    {
+        Debug.WriteLine("[DEBUG] InventoryPage.AddTransactionSelected_Click: Adding transaction for selected ingredient");
+        if (ViewModel.SelectedIngredient != null)
+        {
+            ViewModel.AddTransactionCommand.Execute(ViewModel.SelectedIngredient);
         }
     }
 

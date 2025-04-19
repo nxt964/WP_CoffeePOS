@@ -84,16 +84,39 @@ public class EmptyCollectionVisibilityConverter : IValueConverter
     }
 }
 
-public class UnixTimestampConverter : IValueConverter
+public class StockBackgroundConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        if (value is long timestamp)
+        if (value is int quantity && parameter is int threshold)
         {
-            var dateTime = DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
-            return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+            if (quantity <= 0)
+                return new SolidColorBrush(Color.FromArgb(255, 224, 67, 67)); // Red
+            else if (quantity <= threshold)
+                return new SolidColorBrush(Color.FromArgb(255, 255, 159, 0)); // Orange
+            else
+                return new SolidColorBrush(Color.FromArgb(255, 46, 204, 113)); // Green
         }
-        return string.Empty;
+        return new SolidColorBrush(Color.FromArgb(255, 158, 158, 158)); // Gray
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, string language)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class TransactionTypeBackgroundConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        if (value is string type)
+        {
+            return type.ToUpper() == "IMPORT"
+                ? new SolidColorBrush(Color.FromArgb(255, 46, 204, 113)) // Green
+                : new SolidColorBrush(Color.FromArgb(255, 224, 67, 67)); // Red
+        }
+        return new SolidColorBrush(Color.FromArgb(255, 158, 158, 158)); // Gray
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language)
@@ -108,11 +131,29 @@ public class TransactionTypeColorConverter : IValueConverter
     {
         if (value is string type)
         {
-            return type == "IMPORT"
-                ? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 128, 0)) // Green
-                : new SolidColorBrush(Windows.UI.Color.FromArgb(255, 192, 0, 0)); // Red
+            return type.ToUpper() == "IMPORT"
+                ? new SolidColorBrush(Color.FromArgb(255, 46, 204, 113)) // Green
+                : new SolidColorBrush(Color.FromArgb(255, 224, 67, 67)); // Red
         }
-        return new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 0, 0)); // Black
+        return new SolidColorBrush(Color.FromArgb(255, 0, 0, 0)); // Black
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, string language)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class UnixTimestampConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        if (value is long timestamp)
+        {
+            var dateTime = DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
+            return dateTime.ToString("MMM dd, yyyy HH:mm");
+        }
+        return string.Empty;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language)
