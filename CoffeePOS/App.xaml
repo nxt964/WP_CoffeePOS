@@ -18,8 +18,16 @@
             <converter:ImageSourceConverter x:Key="ImageSourceConverter"/>
             <converter:TableStatusColorConverter x:Key="TableStatusColorConverter"/>
             <converter:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter"/>
+            <converter:LowStockVisibilityConverter x:Key="LowStockVisibilityConverter"/>
+            <converter:NormalStockVisibilityConverter x:Key="NormalStockVisibilityConverter"/>
+            <converter:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
+            <converter:ObjectToVisibilityConverterInverted x:Key="ObjectToVisibilityConverterInverted"/>
+            <converter:EmptyCollectionVisibilityConverter x:Key="EmptyCollectionVisibilityConverter"/>
+            <converter:UnixTimestampConverter x:Key="UnixTimestampConverter"/>
+            <converter:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter"/>
+                <converter:TransactionTotalConverter x:Key="TransactionTotalConverter"/>
 
-            <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
+                <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="Margin" Value="0,0,0,10"/>
                 <Setter Property="TextBoxStyle">

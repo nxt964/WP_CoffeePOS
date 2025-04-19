@@ -89,12 +89,6 @@ public class SqliteManualDao : IDao
                 IsMembership INTEGER,
                 Points INTEGER
             )",
-            // Ingredients Table
-            @"CREATE TABLE IF NOT EXISTS Ingredients (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Name TEXT NOT NULL,
-                Unit TEXT NOT NULL
-            )",
             // ProductIngredients Table
             @"CREATE TABLE IF NOT EXISTS ProductIngredients (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -102,15 +96,6 @@ public class SqliteManualDao : IDao
                 IngredientId INTEGER,
                 QuantityUsed REAL,
                 FOREIGN KEY (ProductId) REFERENCES Products(Id),
-                FOREIGN KEY (IngredientId) REFERENCES Ingredients(Id)
-            )",
-            // IngredientInventoryTransactions Table
-            @"CREATE TABLE IF NOT EXISTS IngredientInventoryTransactions (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                IngredientId INTEGER,
-                QuantityChange INTEGER,
-                TransactionDate TEXT,
-                TransactionType TEXT,
                 FOREIGN KEY (IngredientId) REFERENCES Ingredients(Id)
             )",
             // ServiceTypes Table
@@ -178,10 +163,30 @@ public class SqliteManualDao : IDao
                 FOREIGN KEY (OrderId) REFERENCES Orders(Id),
                 FOREIGN KEY (ProductId) REFERENCES Products(Id)
             )",
+            @"CREATE TABLE IF NOT EXISTS Ingredients (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Name TEXT NOT NULL,
+                Unit TEXT NOT NULL,
+                Quantity INTEGER NOT NULL DEFAULT 0,
+                Threshold INTEGER NOT NULL DEFAULT 0
+            );",
 
-            // Insert initial data
-            // Users
-            // Insert initial data with hashed passwords
+        // Create IngredientInventoryTransactions table
+            @"CREATE TABLE IF NOT EXISTS IngredientInventoryTransactions (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                IngredientId INTEGER NOT NULL,
+                Timestamp INTEGER NOT NULL,
+                Quantity INTEGER NOT NULL,
+                Unit TEXT NOT NULL,
+                TransactionType TEXT NOT NULL,
+                UnitPrice REAL NOT NULL DEFAULT 0,
+                FOREIGN KEY (IngredientId) REFERENCES Ingredients(Id)
+            );",
+
+
+        // Insert initial data
+        // Users
+        // Insert initial data with hashed passwords
         $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (1, 'admin', '{BCrypt.Net.BCrypt.HashPassword("admin1234")}')",
         $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (2, 'employee1', '{BCrypt.Net.BCrypt.HashPassword("employee1234")}')",
         $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (3, 'employee2', '{BCrypt.Net.BCrypt.HashPassword("employee1234")}')",
@@ -242,16 +247,23 @@ public class SqliteManualDao : IDao
             "INSERT OR IGNORE INTO Customers (Id, Name, Phone, IsMembership, Points) VALUES (1, 'Alice', '0123456789', 1, 100)",
             "INSERT OR IGNORE INTO Customers (Id, Name, Phone, IsMembership, Points) VALUES (2, 'Bob', '222-333-4444', 0, 50)",
             // Ingredients
-            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit) VALUES (1, 'Espresso', 'shot')",
-            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit) VALUES (2, 'Milk', 'cup')",
-            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit) VALUES (3, 'Sugar', 'tsp')",
+            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit, Quantity, Threshold) VALUES (1, 'Espresso Coffee', 'bag', 50, 10)",
+            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit, Quantity, Threshold) VALUES (2, 'Milk', 'cup', 60, 15)",
+            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit, Quantity, Threshold) VALUES (3, 'Sugar', 'tsp', 100, 20)",
+            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit, Quantity, Threshold) VALUES (4, 'Ground Coffee', 'bag', 40, 10)",
+            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit, Quantity, Threshold) VALUES (5, 'Steamed Milk', 'liter', 30, 10)",
+            "INSERT OR IGNORE INTO Ingredients (Id, Name, Unit, Quantity, Threshold) VALUES (6, 'Milk Foam', 'liter', 20, 5)",
             // ProductIngredients
             "INSERT OR IGNORE INTO ProductIngredients (Id, ProductId, IngredientId, QuantityUsed) VALUES (1, 1, 1, 1)",
             "INSERT OR IGNORE INTO ProductIngredients (Id, ProductId, IngredientId, QuantityUsed) VALUES (2, 2, 1, 1)",
             "INSERT OR IGNORE INTO ProductIngredients (Id, ProductId, IngredientId, QuantityUsed) VALUES (3, 2, 2, 1)",
             // IngredientInventoryTransactions
-            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, QuantityChange, TransactionDate, TransactionType) VALUES (1, 1, 50, '2025-03-01 10:00:00', 'Purchase')",
-            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, QuantityChange, TransactionDate, TransactionType) VALUES (2, 2, -10, '2025-03-02 14:30:00', 'Usage')",
+            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, Timestamp, Quantity, Unit, TransactionType, UnitPrice) VALUES (1, 1, 1672531199000, 50, 'bag', 'IMPORT', 10.00)",
+            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, Timestamp, Quantity, Unit, TransactionType, UnitPrice) VALUES (2, 2, 1672531199000, -10, 'cup', 'EXPORT', 0.50)",
+            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, Timestamp, Quantity, Unit, TransactionType, UnitPrice) VALUES (3, 3, 1672531199000, 100, 'tsp', 'IMPORT', 0.05)",
+            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, Timestamp, Quantity, Unit, TransactionType, UnitPrice) VALUES (4, 4, 1672531199000, -20, 'bag', 'EXPORT', 5.00)",
+            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, Timestamp, Quantity, Unit, TransactionType, UnitPrice) VALUES (5, 5, 1672531199000, 30, 'liter', 'IMPORT', 2.00)",
+            "INSERT OR IGNORE INTO IngredientInventoryTransactions (Id, IngredientId, Timestamp, Quantity, Unit, TransactionType, UnitPrice) VALUES (6, 6, 1672531199000, -5, 'liter', 'EXPORT', 1.00)",
             // ServiceTypes
             "INSERT OR IGNORE INTO ServiceTypes (Id, Name) VALUES (1, 'Dine-in')",
             "INSERT OR IGNORE INTO ServiceTypes (Id, Name) VALUES (2, 'Take-away')",
@@ -273,6 +285,8 @@ public class SqliteManualDao : IDao
             //"INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES (1, 1, 1, 2, 2.50)",
             //"INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES (2, 1, 11, 1, 3.00)"
         };
+
+
 
         foreach (var commandText in commands)
         {

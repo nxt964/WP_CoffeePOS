@@ -133,20 +133,20 @@ public class MockDao : IDao
         new ProductIngredient { Id = 18, ProductId = 13, IngredientId = 7, QuantityUsed = 1 },
     });
 
+   
+
     public IRepository<IngredientInventoryTransaction> IngredientInventoryTransactions
     {
         get;
     } = new MockRepository<IngredientInventoryTransaction>(new List<IngredientInventoryTransaction>() {
-    new IngredientInventoryTransaction { Id = 1, IngredientId = 1, QuantityChange = 50, TransactionDate = DateTime.Parse("2025-03-01 10:00:00"), TransactionType = "Purchase" },
-    new IngredientInventoryTransaction { Id = 2, IngredientId = 2, QuantityChange = -10, TransactionDate = DateTime.Parse("2025-03-02 14:30:00"), TransactionType = "Usage" },
-    new IngredientInventoryTransaction { Id = 3, IngredientId = 3, QuantityChange = 100, TransactionDate = DateTime.Parse("2025-03-03 09:15:00"), TransactionType = "Purchase" },
-    new IngredientInventoryTransaction { Id = 4, IngredientId = 4, QuantityChange = -5, TransactionDate = DateTime.Parse("2025-03-04 16:00:00"), TransactionType = "Usage" },
-    new IngredientInventoryTransaction { Id = 5, IngredientId = 5, QuantityChange = 20, TransactionDate = DateTime.Parse("2025-03-05 11:45:00"), TransactionType = "Purchase" },
-    new IngredientInventoryTransaction { Id = 6, IngredientId = 6, QuantityChange = -15, TransactionDate = DateTime.Parse("2025-03-06 13:20:00"), TransactionType = "Usage" },
-    new IngredientInventoryTransaction { Id = 7, IngredientId = 7, QuantityChange = 30, TransactionDate = DateTime.Parse("2025-03-07 08:30:00"), TransactionType = "Purchase" },
-    new IngredientInventoryTransaction { Id = 8, IngredientId = 8, QuantityChange = -8, TransactionDate = DateTime.Parse("2025-03-08 15:10:00"), TransactionType = "Usage" },
-    new IngredientInventoryTransaction { Id = 9, IngredientId = 9, QuantityChange = 25, TransactionDate = DateTime.Parse("2025-03-09 12:00:00"), TransactionType = "Purchase" },
-    new IngredientInventoryTransaction { Id = 10, IngredientId = 10, QuantityChange = -12, TransactionDate = DateTime.Parse("2025-03-10 17:00:00"), TransactionType = "Usage" }
+    new IngredientInventoryTransaction { Id = 1, IngredientId = 1, Timestamp = 1672531200000, Quantity = 50, Unit = "shot", TransactionType = "IMPORT", UnitPrice = 2.50 },
+    new IngredientInventoryTransaction { Id = 2, IngredientId = 2, Timestamp = 1672617600000, Quantity = 100, Unit = "cup", TransactionType = "IMPORT", UnitPrice = 1.00 },
+    new IngredientInventoryTransaction { Id = 3, IngredientId = 3, Timestamp = 1672704000000, Quantity = 200, Unit = "tsp", TransactionType = "IMPORT", UnitPrice = 0.10 },
+    new IngredientInventoryTransaction { Id = 4, IngredientId = 4, Timestamp = 1672790400000, Quantity = 30, Unit = "oz", TransactionType = "IMPORT", UnitPrice = 3.00 },
+    new IngredientInventoryTransaction { Id = 5, IngredientId = 5, Timestamp = 1672876800000, Quantity = 150, Unit = "oz", TransactionType = "IMPORT", UnitPrice = 2.00 },
+    new IngredientInventoryTransaction { Id = 6, IngredientId = 6, Timestamp = 1672963200000, Quantity = 500, Unit = "cup", TransactionType = "IMPORT", UnitPrice = 0.05 },
+    new IngredientInventoryTransaction { Id = 7, IngredientId = 7, Timestamp = 1673049600000, Quantity = 200, Unit = "cup", TransactionType = "IMPORT", UnitPrice = 0.50 },
+    new IngredientInventoryTransaction { Id = 8, IngredientId = 8, Timestamp = 1673136000000, Quantity = 100, Unit = "tbsp", TransactionType = "IMPORT", UnitPrice = 0.20 },
 });
 
     public IRepository<Customer> Customers { get; } = new MockRepository<Customer>(new List<Customer>() {
