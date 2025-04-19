@@ -25,7 +25,6 @@ public class PageService : IPageService
         Configure<TableViewModel, TablePage>();
         Configure<TableDetailViewModel, TableDetailPage>();
         Configure<StatisticsViewModel, StatisticsPage>();
-        //Configure<WebViewViewModel, WebViewPage>();
         Configure<SettingsViewModel, SettingsPage>();
         Configure<ProductViewModel, ProductPage>();
         Configure<AddProductViewModel, AddProductPage>();
@@ -34,6 +33,7 @@ public class PageService : IPageService
         Configure<AddOrderViewModel, AddOrderPage>();
         Configure<DetailOrderViewModel, DetailOrderPage>();
         Configure<LoginViewModel, LoginPage>();
+        Configure<EmployeesViewModel, EmployeesPage>(); 
 
         Configure<AddProductToOrderDetailViewModel, AddProductToOrderDetailPage>();
     }

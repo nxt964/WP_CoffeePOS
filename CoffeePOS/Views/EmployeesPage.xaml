@@ -1,0 +1,152 @@
+<Page
+    x:Class="CoffeePOS.Views.EmployeesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:viewmodels="using:CoffeePOS.ViewModels"
+    xmlns:models="using:CoffeePOS.Models"
+    xmlns:converters="using:CoffeePOS.Converters"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:CurrencyFormatter x:Key="CurrencyConverter"/>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Thanh tìm kiếm và nút Add -->
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Column="0"
+                    PlaceholderText="Search by Name or Email"
+                    Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Content="Add"
+                    Click="AddButton_Click"/>
+            </Grid>
+
+            <!-- Bảng danh sách nhân viên -->
+            <controls:DataGrid
+                x:Name="EmployeesDataGrid"
+                Grid.Row="1"
+                AutoGenerateColumns="False"
+                ItemsSource="{Binding Source, Mode=OneWay}">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn
+                        Header="Employee Name"
+                        Width="2*"
+                        Binding="{Binding Name}"
+                        IsReadOnly="True"/>
+                    <controls:DataGridTextColumn
+                        Header="Email"
+                        Width="2*"
+                        Binding="{Binding Email}"
+                        IsReadOnly="True"/>
+                    <controls:DataGridTextColumn
+                        Header="Phone"
+                        Width="*"
+                        Binding="{Binding Phone}"
+                        IsReadOnly="True"/>
+                    <controls:DataGridTextColumn
+                        Header="Salary"
+                        Width="*"
+                        Binding="{Binding Salary, Converter={StaticResource CurrencyConverter}}"
+                        IsReadOnly="True">
+                        <controls:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </controls:DataGridTextColumn.ElementStyle>
+                    </controls:DataGridTextColumn>
+                    <controls:DataGridTemplateColumn
+                        Header="Action"
+                        Width="*">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="models:EmployeeDisplay">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button
+                                        Width="40"
+                                        Height="30"
+                                        Margin="6,0"
+                                        Tag="{Binding Id}"
+                                        Click="EditButton_Click"
+                                        HorizontalAlignment="Center">
+                                        <TextBlock
+                                            Text=""
+                                            FontFamily="Segoe MDL2 Assets"
+                                            VerticalAlignment="Center"/>
+                                    </Button>
+                                    <Button
+                                        Background="Red"
+                                        Foreground="White"
+                                        Width="40"
+                                        Height="30"
+                                        Margin="6,0"
+                                        Tag="{Binding Id}"
+                                        Click="DeleteButton_Click"
+                                        HorizontalAlignment="Center">
+                                        <TextBlock
+                                            Text=""
+                                            FontFamily="Segoe MDL2 Assets"
+                                            VerticalAlignment="Center"/>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+
+            <!-- Phân trang -->
+            <Grid Grid.Row="2" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Text="Employees per page:"/>
+                    <TextBox
+                        x:Name="PageSizeTextBox"
+                        Width="50"
+                        Margin="10,0,0,0"
+                        Text="{Binding PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel
+                    Grid.Column="1"
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="10,0"
+                        Content="Previous"
+                        Command="{Binding PreviousPageCommand}"/>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Text="{Binding PageInfo, Mode=OneWay}"/>
+                    <Button
+                        Margin="10,0"
+                        Content="Next"
+                        Command="{Binding NextPageCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>
