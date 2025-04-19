@@ -13,7 +13,7 @@ public class Employee
     }
 
     [Required]
-    public string EmployeeName
+    public string Name
     {
         get; set;
     }
@@ -26,7 +26,7 @@ public class Employee
     {
         get; set;
     }
-    public double Salary
+    public decimal Salary
     {
         get; set;
     }
