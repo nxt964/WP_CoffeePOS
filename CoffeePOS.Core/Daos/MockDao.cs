@@ -19,8 +19,8 @@ public class MockDao : IDao
     //});
     public IUserRepository Users => throw new NotImplementedException("MockDao.Users is not implemented.");
     public IRepository<Employee> Employees { get; } = new MockRepository<Employee>(new List<Employee>() {
-        new Employee { Id = 1, EmployeeName = "John Doe", Email = "john@example.com", Phone = "123-456-7890", Salary = 2000 },
-        new Employee { Id = 2, EmployeeName = "Jane Smith", Email = "jane@example.com", Phone = "234-567-8901", Salary = 2200 }
+        new Employee { Id = 1, Name = "John Doe", Email = "john@example.com", Phone = "123-456-7890", Salary = 2000 },
+        new Employee { Id = 2, Name = "Jane Smith", Email = "jane@example.com", Phone = "234-567-8901", Salary = 2200 }
     });
 
     public IRepository<Category> Categories { get; } = new MockRepository<Category>(new List<Category>() {

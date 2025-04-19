@@ -60,7 +60,7 @@ public class SqliteManualDao : IDao
             // Employees Table
             @"CREATE TABLE IF NOT EXISTS Employees (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                EmployeeName TEXT NOT NULL,
+                Name TEXT NOT NULL,
                 Email TEXT,
                 Phone TEXT,
                 Salary REAL
@@ -204,8 +204,8 @@ public class SqliteManualDao : IDao
             $"INSERT OR IGNORE INTO Users (Id, Username, Password) VALUES (3, 'employee2', '{BCrypt.Net.BCrypt.HashPassword("employee1234")}')",
             
             // Employees
-            "INSERT OR IGNORE INTO Employees (Id, EmployeeName, Email, Phone, Salary) VALUES (1, 'John Doe', 'john@example.com', '123-456-7890', 2000)",
-            "INSERT OR IGNORE INTO Employees (Id, EmployeeName, Email, Phone, Salary) VALUES (2, 'Jane Smith', 'jane@example.com', '234-567-8901', 2200)",
+            "INSERT OR IGNORE INTO Employees (Id, Name, Email, Phone, Salary) VALUES (1, 'John Doe', 'john@example.com', '123-456-7890', 2000)",
+            "INSERT OR IGNORE INTO Employees (Id, Name, Email, Phone, Salary) VALUES (2, 'Jane Smith', 'jane@example.com', '234-567-8901', 2200)",
             
             // Categories
             "INSERT OR IGNORE INTO Categories (Id, Name, Description) VALUES (1, 'Coffee', 'Hot and cold coffee')",
