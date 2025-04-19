@@ -3,18 +3,27 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.Diagnostics;
 using Windows.UI;
 
 namespace CoffeePOS.Converters;
 
+// Modified LowStockVisibilityConverter
 public class LowStockVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        if (value is int quantity && parameter is int threshold)
+        // Handle the case where we're binding to the entire Ingredient
+        if (value is Ingredient ingredient)
+        {
+            return ingredient.Quantity <= ingredient.Threshold ? Visibility.Visible : Visibility.Collapsed;
+        }
+        // Keep the original logic for backward compatibility
+        else if (value is int quantity && parameter is int threshold)
         {
             return quantity <= threshold ? Visibility.Visible : Visibility.Collapsed;
         }
+
         return Visibility.Collapsed;
     }
 
@@ -24,14 +33,22 @@ public class LowStockVisibilityConverter : IValueConverter
     }
 }
 
+// Modified NormalStockVisibilityConverter
 public class NormalStockVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        if (value is int quantity && parameter is int threshold)
+        // Handle the case where we're binding to the entire Ingredient
+        if (value is Ingredient ingredient)
+        {
+            return ingredient.Quantity > ingredient.Threshold ? Visibility.Visible : Visibility.Collapsed;
+        }
+        // Keep the original logic for backward compatibility
+        else if (value is int quantity && parameter is int threshold)
         {
             return quantity > threshold ? Visibility.Visible : Visibility.Collapsed;
         }
+
         return Visibility.Collapsed;
     }
 
@@ -40,7 +57,6 @@ public class NormalStockVisibilityConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
-
 public class ObjectToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
@@ -100,6 +116,30 @@ public class StockBackgroundConverter : IValueConverter
         return new SolidColorBrush(Color.FromArgb(255, 158, 158, 158)); // Gray
     }
 
+    public object ConvertBack(object value, Type targetType, object parameter, string language)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class IngredientStockConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        if (value is Ingredient ingredient)
+        {
+            int quantity = ingredient.Quantity;
+            int threshold = ingredient.Threshold;
+            Debug.WriteLine($"IngredientStockConverter - Quantity: {quantity}, Threshold: {threshold}");
+            if (quantity <= 0)
+                return new SolidColorBrush(Color.FromArgb(255, 224, 67, 67)); // Red
+            else if (quantity <= threshold)
+                return new SolidColorBrush(Color.FromArgb(255, 255, 159, 0)); // Orange
+            else
+                return new SolidColorBrush(Color.FromArgb(255, 46, 204, 113)); // Green
+        }
+        return new SolidColorBrush(Color.FromArgb(255, 158, 158, 158)); // Gray default
+    }
     public object ConvertBack(object value, Type targetType, object parameter, string language)
     {
         throw new NotImplementedException();
