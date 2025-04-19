@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CoffeePOS.Core.Models;
+
 public class IngredientInventoryTransaction
 {
-    [Key]
     public int Id
     {
         get; set;
     }
-
-    [ForeignKey("Ingredient")]
     public int IngredientId
     {
         get; set;
     }
-
-    public decimal QuantityChange
+    public long Timestamp
+    {
+        get; set;
+    } // Unix timestamp in milliseconds
+    public int Quantity
     {
         get; set;
     }
-    public DateTime TransactionDate
-    {
-        get; set;
-    }
-    public string TransactionType
+    public string Unit { get; set; } = string.Empty;
+    public string TransactionType { get; set; } = string.Empty; // "IMPORT" or "EXPORT"
+    public double UnitPrice
     {
         get; set;
     }
