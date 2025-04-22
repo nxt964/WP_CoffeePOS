@@ -19,20 +19,34 @@
             <converter:TableStatusColorConverter x:Key="TableStatusColorConverter"/>
             <converter:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter"/>
             <converter:LowStockVisibilityConverter x:Key="LowStockVisibilityConverter"/>
-                <converter:NormalStockVisibilityConverter x:Key="NormalStockVisibilityConverter"/>
-                <converter:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
-                <converter:ObjectToVisibilityConverterInverted x:Key="ObjectToVisibilityConverterInverted"/>
-                <converter:EmptyCollectionVisibilityConverter x:Key="EmptyCollectionVisibilityConverter"/>
-                <converter:StockBackgroundConverter x:Key="StockBackgroundConverter"/>
+            <converter:NormalStockVisibilityConverter x:Key="NormalStockVisibilityConverter"/>
+            <converter:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
+            <converter:ObjectToVisibilityConverterInverted x:Key="ObjectToVisibilityConverterInverted"/>
+            <converter:EmptyCollectionVisibilityConverter x:Key="EmptyCollectionVisibilityConverter"/>
+            <converter:StockBackgroundConverter x:Key="StockBackgroundConverter"/>
             <converter:IngredientStockConverter x:Key="IngredientStockConverter"/>
 
             <converter:TransactionTypeBackgroundConverter x:Key="TransactionTypeBackgroundConverter"/>
-                <converter:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter"/>
-                <converter:UnixTimestampConverter x:Key="UnixTimestampConverter"/>
-                <converter:TransactionTotalConverter x:Key="TransactionTotalConverter"/>
-                <converter:BoolToStockBackgroundConverter x:Key="BoolToStockBackgroundConverter"/>
+            <converter:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter"/>
+            <converter:UnixTimestampConverter x:Key="UnixTimestampConverter"/>
+            <converter:TransactionTotalConverter x:Key="TransactionTotalConverter"/>
+            <converter:BoolToStockBackgroundConverter x:Key="BoolToStockBackgroundConverter"/>
             <converter:StockIndicatorConverter x:Key="StockIndicatorConverter"/>
             <converter:ProductDetailCountToVisibilityConverter x:Key="ProductDetailCountToVisibilityConverter"/>
+
+            <converter:StatisticsOrderStatusToColorConverter x:Key="StatisticsOrderStatusToColorConverter"/>
+            <converter:StatisticsEmptyCollectionVisibilityConverter x:Key="StatisticsEmptyCollectionVisibilityConverter"/>
+            <converter:OrderCountFormatter x:Key="OrderCountFormatter"/>
+            <converter:TransactionCountFormatter x:Key="TransactionCountFormatter"/>
+            <converter:ProfitMarginFormatter x:Key="ProfitMarginFormatter"/>
+            <converter:ItemsSoldFormatter x:Key="ItemsSoldFormatter"/>
+
+            
+
+
+
+
+
 
             <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
