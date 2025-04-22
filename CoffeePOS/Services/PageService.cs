@@ -21,7 +21,6 @@ public class PageService : IPageService
         Configure<ProductsDetailViewModel, ProductsDetailPage>();
         Configure<CustomersViewModel, CustomersPage>();
         Configure<InventoryViewModel, InventoryPage>();
-        Configure<MaterialViewModel, MaterialPage>();
         Configure<TableViewModel, TablePage>();
         Configure<TableDetailViewModel, TableDetailPage>();
         Configure<StatisticsViewModel, StatisticsPage>();

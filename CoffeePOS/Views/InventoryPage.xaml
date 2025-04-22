@@ -68,14 +68,14 @@
         </Grid>
 
         <!-- Main Content -->
-        <Grid Padding="24" Margin="0,80,0,0">
+        <Grid Padding="0, 20" Margin="0,80,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Left Panel - Ingredients -->
-            <Grid Grid.Column="0" Margin="0,0,12,0">
+            <Grid Grid.Column="0" Margin="0,0,10,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -121,12 +121,26 @@
                                 <SolidColorBrush x:Key="DataGridRowSelectedBackgroundColor" Color="{ThemeResource SystemAccentColorLight2}"/>
                             </controls:DataGrid.Resources>
                             <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" />
-                                <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                                <controls:DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                                <controls:DataGridTemplateColumn Header="Name" Width="*">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:Ingredient">
+                                            <StackPanel VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left"
+                                                        Padding="10, 0">
+                                                <TextBlock 
+                                                Text="{x:Bind Name}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap"
+                                                MaxLines="1"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
                                 <controls:DataGridTemplateColumn Header="Stock" Width="100">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="models:Ingredient">
-                                            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="13, 0 , 0, 0">
                                                 <TextBlock Text="{x:Bind Quantity}" FontWeight="SemiBold" />
                                                 <TextBlock Text="{x:Bind Unit}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                             </StackPanel>
@@ -136,54 +150,64 @@
                                 <controls:DataGridTemplateColumn Header="Status" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="models:Ingredient">
-                                            <Border x:Name="StockStatusBorder"
-                Background="{x:Bind Converter={StaticResource IngredientStockConverter}}"
-                CornerRadius="4"
-                Padding="8,2"
-                Height="28"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left">
-                                                <Grid VerticalAlignment="Center">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
+                                            <StackPanel
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Padding="4">
+                                                <Border x:Name="StockStatusBorder"
+                                                    Background="{x:Bind Converter={StaticResource IngredientStockConverter}}"
+                                                    CornerRadius="4"
+                                                    Padding="5,4"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left">
+                                                    <Grid VerticalAlignment="Center" Padding="0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
 
-                                                    <!-- Low Stock Content -->
-                                                    <StackPanel Grid.Column="0" 
-                               Orientation="Horizontal" 
-                               Spacing="4"
-                               VerticalAlignment="Center"
-                               Visibility="{x:Bind Converter={StaticResource LowStockVisibilityConverter}}">
-                                                        <FontIcon Glyph="&#xE7BA;" 
-                                 FontSize="12" 
-                                 VerticalAlignment="Center"
-                                 Foreground="White"/>
-                                                        <TextBlock Text="Low Stock" 
-                                  Foreground="White" 
-                                  FontSize="12"
-                                  FontWeight="SemiBold"
-                                  VerticalAlignment="Center" />
-                                                    </StackPanel>
+                                                        <!-- Low Stock Content -->
+                                                        <StackPanel 
+                                                        Grid.Column="0"
+                                                        Orientation="Horizontal" 
+                                                        Spacing="4"
+                                                        VerticalAlignment="Center"
+                                                        Visibility="{x:Bind Converter={StaticResource LowStockVisibilityConverter}}">
+                                                            <FontIcon 
+                                                            Glyph="&#xE7BA;" 
+                                                            FontSize="12" 
+                                                            VerticalAlignment="Center"
+                                                            Foreground="White"/>
+                                                            <TextBlock 
+                                                            Text="Low Stock" 
+                                                            Foreground="White" 
+                                                            FontSize="12"
+                                                            FontWeight="SemiBold"
+                                                            VerticalAlignment="Center" />
+                                                        </StackPanel>
 
-                                                    <!-- In Stock Content -->
-                                                    <StackPanel Grid.Column="0" 
-                               Orientation="Horizontal" 
-                               Spacing="4"
-                               VerticalAlignment="Center"
-                               Visibility="{x:Bind Converter={StaticResource NormalStockVisibilityConverter}}">
-                                                        <FontIcon Glyph="&#xE734;" 
-                                 FontSize="12" 
-                                 VerticalAlignment="Center"
-                                 Foreground="White"/>
-                                                        <TextBlock Text="In Stock" 
-                                  Foreground="White" 
-                                  FontSize="12"
-                                  FontWeight="SemiBold"
-                                  VerticalAlignment="Center" />
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
+                                                        <!-- In Stock Content -->
+                                                        <StackPanel 
+                                                        Grid.Column="0" 
+                                                        Orientation="Horizontal" 
+                                                        Spacing="4"
+                                                        VerticalAlignment="Center"
+                                                        Visibility="{x:Bind Converter={StaticResource NormalStockVisibilityConverter}}">
+                                                            <FontIcon 
+                                                            Glyph="&#xE734;" 
+                                                            FontSize="12" 
+                                                            VerticalAlignment="Center"
+                                                            Foreground="White"/>
+                                                            <TextBlock
+                                                            Text="In Stock" 
+                                                            Foreground="White" 
+                                                            FontSize="12"
+                                                            FontWeight="SemiBold"
+                                                            VerticalAlignment="Center" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </StackPanel>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
@@ -191,27 +215,35 @@
                                 <controls:DataGridTemplateColumn Header="Actions" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <StackPanel Orientation="Horizontal" Spacing="4"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center">
                                                 <Button 
                                                     Tag="{Binding}"
                                                     ToolTipService.ToolTip="Add Transaction"
                                                     Click="AddTransaction_Click"
-                                                    Style="{StaticResource IconButtonStyle}">
-                                                    <FontIcon Glyph="&#xE710;" FontSize="16" />
+                                                    Style="{StaticResource IconButtonStyle}"
+                                                    Width="25"
+                                                    Height="25">
+                                                    <FontIcon Glyph="&#xE710;" FontSize="14"/>
                                                 </Button>
                                                 <Button 
                                                     Tag="{Binding}"
                                                     ToolTipService.ToolTip="Edit"
                                                     Click="EditIngredient_Click"
-                                                    Style="{StaticResource IconButtonStyle}">
-                                                    <FontIcon Glyph="&#xE70F;" FontSize="16" />
+                                                    Style="{StaticResource IconButtonStyle}"
+                                                    Width="25"
+                                                    Height="25">
+                                                    <FontIcon Glyph="&#xE70F;" FontSize="14" />
                                                 </Button>
                                                 <Button 
                                                     Tag="{Binding}"
                                                     ToolTipService.ToolTip="Delete"
                                                     Click="DeleteIngredient_Click"
-                                                    Style="{StaticResource IconButtonStyle}">
-                                                    <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="Red" />
+                                                    Style="{StaticResource IconButtonStyle}"
+                                                    Width="25"
+                                                    Height="25">
+                                                    <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="Red" />
                                                 </Button>
                                             </StackPanel>
                                         </DataTemplate>
@@ -302,42 +334,49 @@
                                     </StackPanel>
 
                                     <!-- Status Indicator -->
-                                    <Border x:Name="SelectedIngredientStatusBorder"
-            Background="{x:Bind ViewModel.SelectedIngredient, Mode=OneWay, Converter={StaticResource IngredientStockConverter}}"
-            CornerRadius="4"
-            Height="32"
-            VerticalAlignment="Bottom"
-            Margin="0,0,0,1"
-            Padding="12,0">
+                                    <Border 
+                                        x:Name="SelectedIngredientStatusBorder"
+                                        Background="{x:Bind ViewModel.SelectedIngredient, Mode=OneWay, Converter={StaticResource IngredientStockConverter}}"
+                                        CornerRadius="4"
+                                        Height="32"
+                                        VerticalAlignment="Bottom"
+                                        Margin="0,0,0,1"
+                                        Padding="8,4">
                                         <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="20">
                                             <!-- Low Stock Status -->
-                                            <StackPanel Orientation="Horizontal" Spacing="6" 
-                       Visibility="{x:Bind ViewModel.SelectedIngredient, Mode=OneWay, Converter={StaticResource LowStockVisibilityConverter}}"
-                       VerticalAlignment="Center">
-                                                <FontIcon Glyph="&#xE7BA;" 
-                         FontSize="12" 
-                         VerticalAlignment="Center"
-                         Foreground="White"/>
-                                                <TextBlock Text="Low Stock" 
-                          Foreground="White" 
-                          FontSize="13"
-                          FontWeight="SemiBold"
-                          VerticalAlignment="Center" />
+                                            <StackPanel 
+                                                Orientation="Horizontal" Spacing="6" 
+                                                Visibility="{x:Bind ViewModel.SelectedIngredient, Mode=OneWay, Converter={StaticResource LowStockVisibilityConverter}}"
+                                                VerticalAlignment="Center">
+                                                <FontIcon 
+                                                    Glyph="&#xE7BA;" 
+                                                    FontSize="12" 
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"/>
+                                                <TextBlock 
+                                                    Text="Low Stock" 
+                                                    Foreground="White" 
+                                                    FontSize="13"
+                                                    FontWeight="SemiBold"
+                                                    VerticalAlignment="Center" />
                                             </StackPanel>
 
                                             <!-- In Stock Status -->
-                                            <StackPanel Orientation="Horizontal" Spacing="6" 
-                       Visibility="{x:Bind ViewModel.SelectedIngredient, Mode=OneWay, Converter={StaticResource NormalStockVisibilityConverter}}"
-                       VerticalAlignment="Center">
-                                                <FontIcon Glyph="&#xE734;" 
-                         FontSize="12" 
-                         VerticalAlignment="Center"
-                         Foreground="White"/>
-                                                <TextBlock Text="In Stock" 
-                          Foreground="White" 
-                          FontSize="13"
-                          FontWeight="SemiBold"
-                          VerticalAlignment="Center" />
+                                            <StackPanel 
+                                                Orientation="Horizontal" Spacing="6" 
+                                                Visibility="{x:Bind ViewModel.SelectedIngredient, Mode=OneWay, Converter={StaticResource NormalStockVisibilityConverter}}"
+                                                VerticalAlignment="Center">
+                                                <FontIcon 
+                                                    Glyph="&#xE734;" 
+                                                    FontSize="12" 
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"/>
+                                                <TextBlock 
+                                                    Text="In Stock" 
+                                                    Foreground="White" 
+                                                    FontSize="13"
+                                                    FontWeight="SemiBold"
+                                                    VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Grid>
                                     </Border>
@@ -367,30 +406,38 @@
                                 <controls:DataGridTemplateColumn Header="Date" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="models:IngredientInventoryTransaction">
-                                            <TextBlock Text="{x:Bind Timestamp, Converter={StaticResource UnixTimestampConverter}}" />
+                                            <StackPanel VerticalAlignment="Center" Padding="5, 0">
+                                                <TextBlock Text="{x:Bind Timestamp, Converter={StaticResource UnixTimestampConverter}}" />
+                                            </StackPanel>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
                                 <controls:DataGridTemplateColumn Header="Type" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="models:IngredientInventoryTransaction">
-                                            <Border 
+                                            <StackPanel
+                                                VerticalAlignment="Center"
+                                                Padding="6">
+                                                <Border 
                                                 Background="{x:Bind TransactionType, Converter={StaticResource TransactionTypeBackgroundConverter}}"
                                                 CornerRadius="4"
-                                                Padding="8,2">
-                                                <TextBlock 
-                                                    Text="{x:Bind TransactionType}" 
-                                                    Foreground="White" 
-                                                    FontSize="12"
-                                                    FontWeight="SemiBold" />
-                                            </Border>
+                                                Padding="5,4">
+                                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <TextBlock 
+                                                        Text="{x:Bind TransactionType}" 
+                                                        Foreground="White" 
+                                                        FontSize="12"
+                                                        FontWeight="SemiBold" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Quantity" Width="*">
+                                <controls:DataGridTemplateColumn Header="Quantity" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="models:IngredientInventoryTransaction">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="13, 0, 0, 0">
                                                 <TextBlock Text="{x:Bind Quantity}" FontWeight="SemiBold" />
                                                 <TextBlock Text="{x:Bind Unit}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                             </StackPanel>
@@ -400,14 +447,18 @@
                                 <controls:DataGridTemplateColumn Header="Unit Price" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="models:IngredientInventoryTransaction">
-                                            <TextBlock Text="{x:Bind UnitPrice, Converter={StaticResource CurrencyConverter}}" />
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Padding="10, 0, 0, 0">
+                                                <TextBlock Text="{x:Bind UnitPrice, Converter={StaticResource PriceFormatter} }" />
+                                            </StackPanel>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
                                 <controls:DataGridTemplateColumn Header="Total" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Converter={StaticResource TransactionTotalConverter}}" FontWeight="SemiBold" />
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Padding="10, 0, 0, 0">
+                                                <TextBlock Text="{Binding Converter={StaticResource TransactionTotalConverter}}" FontWeight="SemiBold" />
+                                            </StackPanel>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
