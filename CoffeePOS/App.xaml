@@ -34,17 +34,18 @@
             <converter:StockIndicatorConverter x:Key="StockIndicatorConverter"/>
             <converter:ProductDetailCountToVisibilityConverter x:Key="ProductDetailCountToVisibilityConverter"/>
 
-            <converter:StatisticsBoolToColorConverter x:Key="StatisticsBoolToColorConverter"/>
-            <converter:StatisticsStockIndicatorConverter x:Key="StatisticsStockIndicatorConverter"/>
-            <converter:StatisticsTransactionTypeBackgroundConverter x:Key="StatisticsTransactionTypeBackgroundConverter"/>
             <converter:StatisticsOrderStatusToColorConverter x:Key="StatisticsOrderStatusToColorConverter"/>
-            <converter:StatisticsCurrencyFormatter x:Key="StatisticsCurrencyFormatter"/>
-            <converter:StatisticsPriceFormatter x:Key="StatisticsPriceFormatter"/>
-            <converter:StringFormatConverter x:Key="StringFormatConverter"/>
-            <converter:StatisticsBoolToStockBackgroundConverter x:Key="StatisticsBoolToStockBackgroundConverter"/>
-            <converter:DateTimeToDateTimeOffsetConverter x:Key="DateTimeToDateTimeOffsetConverter"/>
+            <converter:StatisticsEmptyCollectionVisibilityConverter x:Key="StatisticsEmptyCollectionVisibilityConverter"/>
+            <converter:OrderCountFormatter x:Key="OrderCountFormatter"/>
+            <converter:TransactionCountFormatter x:Key="TransactionCountFormatter"/>
+            <converter:ProfitMarginFormatter x:Key="ProfitMarginFormatter"/>
+            <converter:ItemsSoldFormatter x:Key="ItemsSoldFormatter"/>
 
             
+
+
+
+
 
 
             <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">

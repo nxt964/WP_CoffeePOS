@@ -1,5 +1,8 @@
 ﻿using CoffeePOS.ViewModels;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using System.Diagnostics;
 
 namespace CoffeePOS.Views;
 
@@ -17,55 +20,40 @@ public sealed partial class StatisticsPage : Page
         InitializeComponent();
     }
 
-    private void DateRange_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    protected override void OnNavigatedTo(NavigationEventArgs e)
     {
-        if (ViewModel.DateRangeChangedCommand != null && ViewModel.DateRangeChangedCommand.CanExecute(null))
-        {
-            ViewModel.DateRangeChangedCommand.Execute(null);
-        }
+        base.OnNavigatedTo(e);
+        ViewModel.OnNavigatedTo(e.Parameter);
     }
 
-    /// <summary>
-    /// Event handler for custom date pickers' date changed event
-    /// </summary>
-    private void CustomDate_DateChanged(object sender, DatePickerValueChangedEventArgs e)
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
-        if (ViewModel.CustomDateChangedCommand != null && ViewModel.CustomDateChangedCommand.CanExecute(null))
-        {
-            ViewModel.CustomDateChangedCommand.Execute(null);
-        }
+        base.OnNavigatedFrom(e);
+        ViewModel.OnNavigatedFrom();
     }
 
-    /// <summary>
-    /// Event handler for search query submission
-    /// </summary>
-    private void SearchOrders_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    private void DateRange_Changed(object sender, DatePickerValueChangedEventArgs e)
     {
-        if (ViewModel.SearchOrdersCommand != null && ViewModel.SearchOrdersCommand.CanExecute(null))
-        {
-            ViewModel.SearchOrdersCommand.Execute(args.QueryText);
-        }
+        Debug.WriteLine("[DEBUG] StatisticsPage.DateRange_Changed: Date range changed");
+        // No need to update ViewModel properties as they are bound to the DatePicker.Date property
+        // Just reload the data
+        ViewModel.LoadStatisticsCommand.Execute(null);
     }
 
-    /// <summary>
-    /// Event handler for order filter combo box selection change
-    /// </summary>
-    private void OrderFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void OrderStatusFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (ViewModel.OrderFilterChangedCommand != null && ViewModel.OrderFilterChangedCommand.CanExecute(null))
+        Debug.WriteLine("[DEBUG] StatisticsPage.OrderStatusFilter_SelectionChanged: Status filter changed");
+        if (sender is ComboBox comboBox)
         {
-            ViewModel.OrderFilterChangedCommand.Execute(null);
-        }
-    }
+            string statusFilter = "All";
 
-    /// <summary>
-    /// Event handler for sort option combo box selection change
-    /// </summary>
-    private void SortOption_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (ViewModel.SortOptionChangedCommand != null && ViewModel.SortOptionChangedCommand.CanExecute(null))
-        {
-            ViewModel.SortOptionChangedCommand.Execute(null);
+            if (comboBox.SelectedIndex > 0)
+            {
+                statusFilter = (comboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "All";
+            }
+
+            ViewModel.OrderStatusFilter = statusFilter;
+            ViewModel.FilterOrdersCommand.Execute(null);
         }
     }
 }
