@@ -13,6 +13,12 @@
 
     <Page.Resources>
         <converters:CurrencyFormatter x:Key="CurrencyConverter"/>
+        <Style x:Key="RedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#dc3545"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#dc3545"/>
+            <Setter Property="Padding" Value="10,5"/>
+        </Style>
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">

@@ -15,37 +15,56 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Tiêu đề -->
             <TextBlock
                 Grid.Row="0"
                 Text="Add New Customer"
                 Style="{StaticResource TitleTextBlockStyle}"
                 HorizontalAlignment="Center"
-                Margin="0,0,0,20"/>
+                Margin="0,0,0,20"
+                Foreground="#343A40"/>
 
-            <!-- Form nhập liệu -->
-            <StackPanel Grid.Row="1" Spacing="10" Margin="20,0">
-                <TextBox
-                    Header="Customer Name"
-                    Width="300"
-                    HorizontalAlignment="Left"
-                    Text="{x:Bind ViewModel.CustomerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    Header="Phone"
-                    Width="300"
-                    HorizontalAlignment="Left"
-                    Text="{x:Bind ViewModel.Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <CheckBox
-                    Content="Is Membership"
-                    IsChecked="{x:Bind ViewModel.IsMembership, Mode=TwoWay}"/>
-                <TextBox
-                    Header="Points"
-                    Width="300"
-                    HorizontalAlignment="Left"
-                    Text="{x:Bind ViewModel.PointsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <StackPanel 
+                Grid.Row="1" 
+                Spacing="10" 
+                Margin="20,0"
+                HorizontalAlignment="Center">
+                <StackPanel Spacing="5">
+                    <TextBox
+                        Header="Customer Name"
+                        Width="300"
+                        Text="{x:Bind ViewModel.CustomerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock
+                        Text="{x:Bind ViewModel.CustomerNameError, Mode=OneWay}"
+                        Foreground="#dc3545"
+                        FontSize="12"
+                        TextWrapping="Wrap"
+                        Visibility="{x:Bind ViewModel.CustomerNameError, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"
+                        Margin="0,0,0,5"/>
+                </StackPanel>
+                <StackPanel Spacing="5">
+                    <TextBox
+                        Header="Phone"
+                        Width="300"
+                        Text="{x:Bind ViewModel.Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        InputScope="Number"
+                        TextChanged="PhoneTextBox_TextChanged"/>
+                    <TextBlock
+                        Text="{x:Bind ViewModel.PhoneError, Mode=OneWay}"
+                        Foreground="#dc3545"
+                        FontSize="12"
+                        TextWrapping="Wrap"
+                        Visibility="{x:Bind ViewModel.PhoneError, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"
+                        Margin="0,0,0,5"/>
+                    <TextBlock
+                        Text="{x:Bind ViewModel.PhoneDuplicateError, Mode=OneWay}"
+                        Foreground="#dc3545"
+                        FontSize="12"
+                        TextWrapping="Wrap"
+                        Visibility="{x:Bind ViewModel.PhoneDuplicateError, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"
+                        Margin="0,0,0,5"/>
+                </StackPanel>
             </StackPanel>
 
-            <!-- Nút Add và Cancel -->
             <StackPanel
                 Grid.Row="2"
                 Orientation="Horizontal"
@@ -54,10 +73,14 @@
                 Margin="0,20,20,0">
                 <Button
                     Content="Add"
-                    Command="{x:Bind ViewModel.AddCustomerCommand}"/>
+                    Command="{x:Bind ViewModel.AddCustomerCommand}"
+                    Background="#28a745"
+                    Foreground="White"/>
                 <Button
                     Content="Cancel"
-                    Command="{x:Bind ViewModel.CancelCommand}"/>
+                    Command="{x:Bind ViewModel.CancelCommand}"
+                    Background="#dc3545"
+                    Foreground="White"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

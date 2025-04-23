@@ -33,26 +33,22 @@ public sealed partial class AddProductToOrderDetailPage : Page
 
     private void AddButton_Click(object sender, RoutedEventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine("[DEBUG] AddProductToOrderDetailPage.AddButton_Click: Adding products...");
         ViewModel.AddProductsCommand.Execute(Frame);
     }
 
     private void BackButton_Click(object sender, RoutedEventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine("[DEBUG] AddProductToOrderDetailPage.BackButton_Click: Navigating back...");
         ViewModel.BackCommand.Execute(Frame);
     }
 
     private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddProductToOrderDetailPage.AutoSuggestBox_TextChanged: Query = {sender.Text}");
         ViewModel.SearchQuery = sender.Text;
         ViewModel.SearchProductsCommand.Execute(null);
     }
 
     private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddProductToOrderDetailPage.AutoSuggestBox_QuerySubmitted: Query = {args.QueryText}");
         ViewModel.SearchQuery = args.QueryText;
         ViewModel.SearchProductsCommand.Execute(null);
     }

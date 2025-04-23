@@ -80,7 +80,7 @@ namespace CoffeePOS.Views
             ContentDialog confirmDialog = new ContentDialog
             {
                 Title = "Confirm Delete",
-                Content = $"Are you sure you want to delete customer with ID {customerId}?",
+                Content = $"Be sure that the cusomter deleted with ID {customerId} has no order?",
                 PrimaryButtonText = "Delete",
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Close,

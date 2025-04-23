@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using System.Threading;
 
 namespace CoffeePOS.ViewModels;
 
@@ -23,7 +25,8 @@ public partial class AddOrderViewModel : ObservableRecipient
     private readonly INavigationService _navigationService;
     private readonly IDao _dao;
     private ObservableCollection<Customer> _allCustomers = new ObservableCollection<Customer>();
-    private XamlRoot _xamlRoot; // Thêm để quản lý dialog
+    private XamlRoot _xamlRoot;
+    private bool _isDialogShowing;
 
     [ObservableProperty]
     private ObservableCollection<Customer> customerSuggestions = new ObservableCollection<Customer>();
@@ -50,6 +53,18 @@ public partial class AddOrderViewModel : ObservableRecipient
     [ObservableProperty]
     private string customerPhone;
 
+    [ObservableProperty]
+    private string customerNameError;
+
+    [ObservableProperty]
+    private string customerPhoneError;
+
+    [ObservableProperty]
+    private string customerPhoneDuplicateError;
+
+    [ObservableProperty]
+    private string serviceTypeError;
+
     private ServiceTypeOption _selectedServiceTypeOption;
 
     public AddOrderViewModel(INavigationService navigationService, IDao dao)
@@ -65,7 +80,7 @@ public partial class AddOrderViewModel : ObservableRecipient
         {
             if (SetProperty(ref _selectedServiceType, value))
             {
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.SelectedServiceType: Changed to {value?.Name}");
+                LogMessage("DEBUG", $"AddOrderViewModel.SelectedServiceType: Changed to {value?.Name}");
             }
         }
     }
@@ -77,23 +92,33 @@ public partial class AddOrderViewModel : ObservableRecipient
 
     partial void OnIsDineInChanged(bool value)
     {
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnIsDineInChanged: IsDineIn = {value}");
+        LogMessage("DEBUG", $"AddOrderViewModel.OnIsDineInChanged: IsDineIn = {value}");
         if (value)
         {
             IsTakeAway = false;
             _selectedServiceTypeOption = ServiceTypeOption.DineIn;
             UpdateSelectedServiceType();
+            if (ServiceTypeError != null)
+            {
+                LogMessage("DEBUG", $"AddOrderViewModel.OnIsDineInChanged: Clearing ServiceTypeError = {ServiceTypeError}");
+                ServiceTypeError = null;
+            }
         }
     }
 
     partial void OnIsTakeAwayChanged(bool value)
     {
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnIsTakeAwayChanged: IsTakeAway = {value}");
+        LogMessage("DEBUG", $"AddOrderViewModel.OnIsTakeAwayChanged: IsTakeAway = {value}");
         if (value)
         {
             IsDineIn = false;
             _selectedServiceTypeOption = ServiceTypeOption.TakeAway;
             UpdateSelectedServiceType();
+            if (ServiceTypeError != null)
+            {
+                LogMessage("DEBUG", $"AddOrderViewModel.OnIsTakeAwayChanged: Clearing ServiceTypeError = {ServiceTypeError}");
+                ServiceTypeError = null;
+            }
         }
     }
 
@@ -104,7 +129,7 @@ public partial class AddOrderViewModel : ObservableRecipient
 
         if (SelectedServiceType == null)
         {
-            System.Diagnostics.Debug.WriteLine($"[WARNING] AddOrderViewModel.UpdateSelectedServiceType: ServiceType '{serviceTypeName}' not found in ServiceTypes. Creating new ServiceType...");
+            LogMessage("WARNING", $"AddOrderViewModel.UpdateSelectedServiceType: ServiceType '{serviceTypeName}' not found in ServiceTypes. Creating new ServiceType...");
             var newServiceType = new ServiceType
             {
                 Name = serviceTypeName
@@ -113,13 +138,13 @@ public partial class AddOrderViewModel : ObservableRecipient
             await _dao.SaveChangesAsync();
             ServiceTypes.Add(addedServiceType);
             SelectedServiceType = addedServiceType;
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.UpdateSelectedServiceType: Created new ServiceType - Id = {addedServiceType.Id}, Name = {addedServiceType.Name}");
+            LogMessage("DEBUG", $"AddOrderViewModel.UpdateSelectedServiceType: Created new ServiceType - Id = {addedServiceType.Id}, Name = {addedServiceType.Name}");
         }
     }
 
     public async void OnNavigatedTo(object parameter)
     {
-        System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.OnNavigatedTo: Loading customers...");
+        LogMessage("DEBUG", "AddOrderViewModel.OnNavigatedTo: Loading customers...");
         _allCustomers.Clear();
         CustomerSuggestions.Clear();
         var customersList = await _dao.Customers.GetAll();
@@ -128,14 +153,14 @@ public partial class AddOrderViewModel : ObservableRecipient
             _allCustomers.Add(customer);
             CustomerSuggestions.Add(customer);
         }
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnNavigatedTo: Loaded {customersList.Count()} customers");
+        LogMessage("DEBUG", $"AddOrderViewModel.OnNavigatedTo: Loaded {customersList.Count()} customers");
 
         ServiceTypes.Clear();
         var serviceTypesList = await _dao.ServiceTypes.GetAll();
         foreach (var serviceType in serviceTypesList)
         {
             ServiceTypes.Add(serviceType);
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnNavigatedTo: Added ServiceType - Id = {serviceType.Id}, Name = {serviceType.Name}");
+            LogMessage("DEBUG", $"AddOrderViewModel.OnNavigatedTo: Added ServiceType - Id = {serviceType.Id}, Name = {serviceType.Name}");
         }
 
         if (ServiceTypes.Any(st => st.Name.Equals("Dine-in", StringComparison.OrdinalIgnoreCase)))
@@ -151,12 +176,12 @@ public partial class AddOrderViewModel : ObservableRecipient
             IsDineIn = true;
         }
 
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.OnNavigatedTo: Loaded {serviceTypesList.Count()} service types");
+        LogMessage("DEBUG", $"AddOrderViewModel.OnNavigatedTo: Loaded {serviceTypesList.Count()} service types");
     }
 
     public void OnNavigatedFrom()
     {
-        System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.OnNavigatedFrom: Leaving page...");
+        LogMessage("DEBUG", "AddOrderViewModel.OnNavigatedFrom: Leaving page...");
     }
 
     public void UpdateCustomerSuggestions(string query)
@@ -179,7 +204,7 @@ public partial class AddOrderViewModel : ObservableRecipient
                 CustomerSuggestions.Add(customer);
             }
         }
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.UpdateCustomerSuggestions: Found {CustomerSuggestions.Count} suggestions for query '{query}'");
+        LogMessage("DEBUG", $"AddOrderViewModel.UpdateCustomerSuggestions: Found {CustomerSuggestions.Count} suggestions for query '{query}'");
     }
 
     [RelayCommand]
@@ -187,38 +212,81 @@ public partial class AddOrderViewModel : ObservableRecipient
     {
         try
         {
-            // Kiểm tra nếu thiếu trường
-            if (string.IsNullOrWhiteSpace(CustomerName) || string.IsNullOrWhiteSpace(CustomerPhone) || SelectedServiceType == null)
+            // Reset error messages
+            CustomerNameError = null;
+            CustomerPhoneError = null;
+            CustomerPhoneDuplicateError = null;
+            ServiceTypeError = null;
+            LogMessage("DEBUG", "AddOrderViewModel.AddOrder: Reset error messages");
+
+            bool hasError = false;
+
+            // Validate CustomerName
+            if (string.IsNullOrWhiteSpace(CustomerName))
             {
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Missing required fields - CustomerName: {CustomerName}, CustomerPhone: {CustomerPhone}, SelectedServiceType: {SelectedServiceType?.Name}");
-                await ShowDialogAsync("Error", "Please fill in all required fields (Customer Name, Customer Phone, and Service Type).", "OK");
+                LogMessage("DEBUG", "AddOrderViewModel.AddOrder: CustomerName is empty");
+                CustomerNameError = "Customer Name is required.";
+                LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Set CustomerNameError = {CustomerNameError}");
+                hasError = true;
+            }
+
+            // Validate CustomerPhone
+            if (string.IsNullOrWhiteSpace(CustomerPhone))
+            {
+                LogMessage("DEBUG", "AddOrderViewModel.AddOrder: CustomerPhone is empty");
+                CustomerPhoneError = "Customer Phone is required.";
+                LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Set CustomerPhoneError = {CustomerPhoneError}");
+                hasError = true;
+            }
+            else if (!CustomerPhone.All(char.IsDigit))
+            {
+                LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Invalid phone format - CustomerPhone: {CustomerPhone}");
+                CustomerPhoneError = "Customer Phone must contain only digits.";
+                LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Set CustomerPhoneError = {CustomerPhoneError}");
+                hasError = true;
+            }
+
+            // Validate ServiceType
+            if (!IsDineIn && !IsTakeAway)
+            {
+                LogMessage("DEBUG", "AddOrderViewModel.AddOrder: No service type selected");
+                ServiceTypeError = "Please select a service type.";
+                LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Set ServiceTypeError = {ServiceTypeError}");
+                hasError = true;
+            }
+
+            // Check for duplicate phone with different name
+            if (!hasError)
+            {
+                var customers = await _dao.Customers.GetAll();
+                var existingCustomer = customers.FirstOrDefault(c => c.Phone == CustomerPhone);
+
+                if (existingCustomer != null)
+                {
+                    if (!existingCustomer.Name.Equals(CustomerName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Phone {CustomerPhone} already used by customer {existingCustomer.Name} (ID: {existingCustomer.Id}) with different name");
+                        CustomerPhoneDuplicateError = "This phone number is already used by another customer with a different name.";
+                        LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Set CustomerPhoneDuplicateError = {CustomerPhoneDuplicateError}");
+                        hasError = true;
+                    }
+                    else
+                    {
+                        LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Phone {CustomerPhone} and Name {CustomerName} match existing customer {existingCustomer.Name} (ID: {existingCustomer.Id})");
+                        SelectedCustomer = existingCustomer;
+                    }
+                }
+            }
+
+            if (hasError)
+            {
+                LogMessage("DEBUG", "AddOrderViewModel.AddOrder: Validation failed, returning");
                 return;
             }
 
-            // Kiểm tra khách hàng trùng lặp
-            var customers = await _dao.Customers.GetAll();
-            var existingCustomer = customers.FirstOrDefault(c => c.Phone == CustomerPhone);
-
-            if (existingCustomer != null)
+            // Create new customer if phone doesn't exist
+            if (SelectedCustomer == null)
             {
-                // Nếu số điện thoại trùng, kiểm tra tên
-                if (existingCustomer.Name.Equals(CustomerName, StringComparison.OrdinalIgnoreCase))
-                {
-                    // Số điện thoại và tên trùng, sử dụng khách hàng hiện có
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Phone {CustomerPhone} and Name {CustomerName} match existing customer {existingCustomer.Name} (ID: {existingCustomer.Id})");
-                    SelectedCustomer = existingCustomer;
-                }
-                else
-                {
-                    // Số điện thoại trùng nhưng tên không trùng, báo lỗi
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Phone {CustomerPhone} already used by customer {existingCustomer.Name} (ID: {existingCustomer.Id}) with different name");
-                    await ShowDialogAsync("Error", "This phone number is already used by another customer with a different name. Please use a different phone number.", "OK");
-                    return;
-                }
-            }
-            else
-            {
-                // Số điện thoại không trùng, tạo khách hàng mới
                 var newCustomer = new Customer
                 {
                     Name = CustomerName,
@@ -230,10 +298,10 @@ public partial class AddOrderViewModel : ObservableRecipient
                 await _dao.SaveChangesAsync();
                 _allCustomers.Add(addedCustomer);
                 SelectedCustomer = addedCustomer;
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Created new customer with Id = {SelectedCustomer.Id}");
+                LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Created new customer with Id = {SelectedCustomer.Id}");
             }
 
-            // Tạo đơn hàng mới
+            // Create new order
             var newOrder = new Order
             {
                 OrderDate = OrderDate.DateTime,
@@ -243,45 +311,155 @@ public partial class AddOrderViewModel : ObservableRecipient
                 TotalAmount = 0
             };
 
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Adding new order for CustomerId = {newOrder.CustomerId}, ServiceTypeId = {newOrder.ServiceTypeId}");
+            LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Adding new order for CustomerId = {newOrder.CustomerId}, ServiceTypeId = {newOrder.ServiceTypeId}");
             var addedOrder = await _dao.Orders.Add(newOrder);
             await _dao.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderViewModel.AddOrder: Order added successfully with Id = {addedOrder.Id}");
+            LogMessage("DEBUG", $"AddOrderViewModel.AddOrder: Order added successfully with Id = {addedOrder.Id}");
+
+            // Show success dialog
+            await ShowSuccessDialog("Success", "Order added successfully.");
 
             _navigationService.NavigateTo(typeof(OrderViewModel).FullName);
-            System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.AddOrder: Navigated to OrderPage");
+            LogMessage("DEBUG", "AddOrderViewModel.AddOrder: Navigated to OrderPage");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[ERROR] AddOrderViewModel.AddOrder: {ex.Message}");
-            await ShowDialogAsync("Error", $"Failed to add order: {ex.Message}", "OK");
+            LogMessage("ERROR", $"AddOrderViewModel.AddOrder: {ex.Message}");
+            await ShowErrorDialog("Error", $"Failed to add order: {ex.Message}");
         }
     }
 
-    // Phương thức helper để hiển thị dialog
-    private async Task ShowDialogAsync(string title, string content, string closeButtonText)
+    private async Task ShowErrorDialog(string title, string content)
     {
+        if (_isDialogShowing)
+        {
+            LogMessage("DEBUG", "AddOrderViewModel.ShowErrorDialog: Another dialog is already showing. Skipping...");
+            return;
+        }
+
         try
         {
+            _isDialogShowing = true;
             var dialog = new ContentDialog
             {
                 Title = title,
                 Content = content,
-                CloseButtonText = closeButtonText,
+                CloseButtonText = "OK",
                 XamlRoot = _xamlRoot
             };
             await dialog.ShowAsync();
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[ERROR] AddOrderViewModel.ShowDialogAsync: Failed to show dialog. Exception: {ex.Message}");
+            LogMessage("ERROR", $"AddOrderViewModel.ShowErrorDialog: Failed to show dialog. Exception: {ex.Message}");
+        }
+        finally
+        {
+            _isDialogShowing = false;
+        }
+    }
+
+    private async Task ShowSuccessDialog(string title, string content)
+    {
+        if (_isDialogShowing)
+        {
+            LogMessage("DEBUG", "AddOrderViewModel.ShowSuccessDialog: Another dialog is already showing. Skipping...");
+            return;
+        }
+
+        try
+        {
+            _isDialogShowing = true;
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = content,
+                CloseButtonText = "OK",
+                XamlRoot = _xamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+        catch (Exception ex)
+        {
+            LogMessage("ERROR", $"AddOrderViewModel.ShowSuccessDialog: Failed to show dialog. Exception: {ex.Message}");
+        }
+        finally
+        {
+            _isDialogShowing = false;
         }
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        System.Diagnostics.Debug.WriteLine("[DEBUG] AddOrderViewModel.Cancel: Navigating to OrderPage");
+        LogMessage("DEBUG", "AddOrderViewModel.Cancel: Navigating to OrderPage");
         _navigationService.NavigateTo(typeof(OrderViewModel).FullName);
+    }
+
+    partial void OnCustomerNameChanged(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            if (CustomerNameError != null)
+            {
+                LogMessage("DEBUG", $"AddOrderViewModel.OnCustomerNameChanged: Clearing CustomerNameError = {CustomerNameError}");
+                CustomerNameError = null;
+            }
+        }
+    }
+
+    partial void OnCustomerPhoneChanged(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            if (CustomerPhoneError != null)
+            {
+                LogMessage("DEBUG", $"AddOrderViewModel.OnCustomerPhoneChanged: Clearing CustomerPhoneError = {CustomerPhoneError}");
+                CustomerPhoneError = null;
+            }
+            if (CustomerPhoneDuplicateError != null)
+            {
+                LogMessage("DEBUG", $"AddOrderViewModel.OnCustomerPhoneChanged: Clearing CustomerPhoneDuplicateError = {CustomerPhoneDuplicateError}");
+                CustomerPhoneDuplicateError = null;
+            }
+        }
+    }
+
+    private async void LogMessage(string type, string message)
+    {
+        try
+        {
+            var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var logMessage = $"[{timestamp}] [{type}] {message}";
+
+            // Write to debug console
+            System.Diagnostics.Debug.WriteLine(logMessage);
+
+            if (_xamlRoot == null)
+            {
+                return;
+            }
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = _xamlRoot,
+                Content = logMessage,
+                Style = Application.Current.Resources["ToastNotificationStyle"] as Style,
+                Background = type == "ERROR" ? new SolidColorBrush(Microsoft.UI.Colors.Red) : new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 233, 236, 239)),
+                Foreground = type == "ERROR" ? new SolidColorBrush(Microsoft.UI.Colors.White) : new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 52, 58, 64)),
+            };
+
+            // Run the dialog in the background and auto-dismiss after 3 seconds
+            _ = Task.Run(async () =>
+            {
+                await dialog.ShowAsync();
+                await Task.Delay(3000);
+                dialog.Hide();
+            });
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] AddOrderViewModel.LogMessage: Failed to show toast notification. Exception: {ex.Message}");
+        }
     }
 }
