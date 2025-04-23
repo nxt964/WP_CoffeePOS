@@ -185,6 +185,7 @@
                                         DesiredWidth="200"
                                         ItemHeight="255"
                                         IsItemClickEnabled="True"
+                                        ItemClickCommand="{x:Bind ViewModel.ProductClickedCommand}"
                                         ItemsSource="{x:Bind ViewModel.BestSellerInLast7Days, Mode=OneWay}"
                                         SelectionMode="None"
                                         StretchContentForSingleRow="False">
@@ -294,12 +295,16 @@
                                         Binding="{Binding Id}"/>
                                     <controls:DataGridTextColumn
                                         Header="Date"
-                                        Width="*"
+                                        Width="Auto"
                                         Binding="{Binding OrderDate}"/>
                                     <controls:DataGridTextColumn
                                         Header="Customer Name"
                                         Width="*"
                                         Binding="{Binding CustomerName}"/>
+                                    <controls:DataGridTextColumn
+                                        Header="Phone"
+                                        Width="*"
+                                        Binding="{Binding CustomerPhone}"/>
                                     <controls:DataGridTextColumn
                                         Header="Service Type"
                                         Width="*"   
