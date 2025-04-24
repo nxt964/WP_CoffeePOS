@@ -24,7 +24,6 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Thanh tìm kiếm và nút Add -->
@@ -39,7 +38,7 @@
                     Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button
                     Grid.Column="1"
-                    Margin="10,0,0,0"
+                    Margin="20,0,0,0"
                     Content="Add"
                     Click="AddButton_Click"
                     IsEnabled="{Binding IsOrderEditable}"/>
@@ -146,53 +145,67 @@
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
 
-            <!-- Dòng nhập voucher và tổng giá tiền -->
-            <Grid Grid.Row="2" Margin="0,10,0,10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Margin="0,0,0,5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox
-                        Grid.Column="0"
-                        Width="200"
-                        PlaceholderText="Nhập mã voucher"
-                        Text="{Binding VoucherCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding IsOrderEditable}"/>
-                    <Button
-                        Grid.Column="1"
-                        Margin="10,0,0,0"
-                        Content="Apply"
-                        Command="{Binding ApplyVoucherCommand}"
-                        IsEnabled="{Binding IsOrderEditable}"/>
-                    <TextBlock
-                        Grid.Column="2"
-                        VerticalAlignment="Center"
-                        Text="{Binding TotalPrice, Mode=OneWay, Converter={StaticResource CurrencyConverter}}"
-                        FontWeight="Bold"/>
-                </Grid>
+            <!-- Voucher và Payment Methods -->
+            <Grid Grid.Row="2" Margin="0,15,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="5" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBox
+                            Width="200"
+                            PlaceholderText="Apply voucher code"
+                            Text="{Binding VoucherCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding IsOrderEditable}"/>
+                        <Button
+                            Content="Apply"
+                            Command="{Binding ApplyVoucherCommand}"
+                            IsEnabled="{Binding IsOrderEditable}"/>
+                    </StackPanel>
+                </StackPanel>
                 <TextBlock
-                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,40,0,0"
                     Text="{Binding VoucherInfo, Mode=OneWay}"
                     Foreground="Green"
                     Visibility="{Binding VoucherInfo, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"/>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Payment Methods" FontWeight="Bold" Margin="70,0,0,0"/>
+                    <ItemsControl Grid.Row="1" x:Name="PaymentMethodsControl" ItemsSource="{Binding PaymentMethodItems}" Margin="20,5,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <RadioButton
+                                    Content="{Binding PaymentMethod.Name}"
+                                    Margin="50,0,0,0"
+                                    GroupName="PaymentMethod"
+                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                    IsEnabled="{Binding DataContext.IsOrderEditable, ElementName=PaymentMethodsControl}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button
+                        Grid.Row="2"
+                        Content="Checkout"
+                        Command="{Binding PayCommand}"
+                        IsEnabled="{Binding IsOrderEditable}"
+                        HorizontalAlignment="Right"
+                        Margin="0,10,0,0"/>
+                </Grid>
             </Grid>
 
-            <!-- Nút thanh toán -->
-            <Button
-                Grid.Row="3"
-                HorizontalAlignment="Right"
-                Content="Checkout"
-                Command="{Binding PayCommand}"
-                IsEnabled="{Binding IsOrderEditable}"/>
-
             <!-- Phân trang -->
-            <Grid Grid.Row="4" Margin="0,10,0,0">
+            <Grid Grid.Row="3" Margin="0,10,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>

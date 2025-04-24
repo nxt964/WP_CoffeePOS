@@ -37,7 +37,7 @@ public sealed partial class AddOrderPage : Page
             System.Diagnostics.Debug.WriteLine($"[DEBUG] AddOrderPage.AutoSuggestBox_SuggestionChosen: Selected Customer = {selectedCustomer.Name} (Id = {selectedCustomer.Id})");
             ViewModel.SelectedCustomer = selectedCustomer;
             ViewModel.CustomerName = selectedCustomer.Name;
-            ViewModel.CustomerPhone = selectedCustomer.Phone; // Update phone when customer is selected
+            ViewModel.CustomerPhone = selectedCustomer.Phone; 
         }
     }
 
