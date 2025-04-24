@@ -41,11 +41,15 @@
             <converter:ProfitMarginFormatter x:Key="ProfitMarginFormatter"/>
             <converter:ItemsSoldFormatter x:Key="ItemsSoldFormatter"/>
 
+
+
+            <converter:PercentageFormatter x:Key="PercentageFormatter"/>
+
+
+
+
+
             
-
-
-
-
 
 
             <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">

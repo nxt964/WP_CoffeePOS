@@ -4,77 +4,79 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:chart="using:Syncfusion.UI.Xaml.Charts"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:models="using:CoffeePOS.Core.Models"
     mc:Ignorable="d">
 
-    <Page.Resources>
-        <Style x:Key="CardBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
-            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="16"/>
-        </Style>
-
-        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,12"/>
-        </Style>
-
-        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="28"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
-
-        <Style x:Key="StatisticTitleStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}"/>
-            <Setter Property="Margin" Value="0,0,0,4"/>
-        </Style>
-
-        <Style x:Key="StatisticValueStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="24"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
-    </Page.Resources>
-
     <Grid>
-        <!-- Page Header -->
-        <Grid VerticalAlignment="Top" Height="80" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Canvas.ZIndex="100"
-              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
-            <Grid Padding="24,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                    <FontIcon Glyph="&#xEB05;" FontSize="24" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
-                    <TextBlock Text="Statistics &amp; Analytics" Style="{StaticResource HeaderTextStyle}"/>
-                </StackPanel>
+        <!-- Page Header and Filter -->
+        <Grid Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" 
+              Padding="24,12" Height="Auto">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <DatePicker x:Name="StartDatePicker" Header="From" Margin="0,0,8,0" 
-                                Date="{x:Bind ViewModel.StartDate, Mode=TwoWay}"
-                                DateChanged="DateRange_Changed"/>
-                    <DatePicker x:Name="EndDatePicker" Header="To" 
-                                Date="{x:Bind ViewModel.EndDate, Mode=TwoWay}"
-                                DateChanged="DateRange_Changed"/>
-                </StackPanel>
-            </Grid>
+            <!-- Title -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                <FontIcon Glyph="&#xEB05;" FontSize="24" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                <TextBlock Text="Statistics" FontSize="28" FontWeight="SemiBold"/>
+            </StackPanel>
+
+            <!-- Time Navigation -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                <Button x:Name="PreviousPeriodButton" Click="PreviousPeriod_Click">
+                    <FontIcon Glyph="&#xE892;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                </Button>
+                <TextBlock x:Name="PeriodDisplay" Text="2023" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold"/>
+                <Button x:Name="NextPeriodButton" Click="NextPeriod_Click">
+                    <FontIcon Glyph="&#xE893;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                </Button>
+            </StackPanel>
+
+            <!-- Date and View Settings -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <ComboBox x:Name="TimeFilterComboBox" SelectionChanged="TimeFilter_Changed" Width="120" SelectedIndex="2">
+                    <ComboBoxItem Content="Week"/>
+                    <ComboBoxItem Content="Month"/>
+                    <ComboBoxItem Content="Year"/>
+                </ComboBox>
+
+                <ComboBox x:Name="DataTypeComboBox" SelectionChanged="DataType_Changed" Width="150" SelectedIndex="0">
+                    <ComboBoxItem Content="Revenue"/>
+                    <ComboBoxItem Content="Profit"/>
+                </ComboBox>
+
+                <ComboBox x:Name="DistributionTypeComboBox" SelectionChanged="DistributionType_Changed" Width="180" SelectedIndex="0">
+                    <ComboBoxItem Content="Service Type Distribution"/>
+                    <ComboBoxItem Content="Payment Method Distribution"/>
+                </ComboBox>
+
+
+            </StackPanel>
         </Grid>
 
         <!-- Main Content -->
-        <ScrollViewer Padding="24" Margin="0,80,0,0">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <!-- Key Metrics -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Chart Section -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Pie Chart Section -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Recent Orders -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Top Products -->
                 </Grid.RowDefinitions>
 
                 <!-- Key Metrics Section -->
@@ -87,52 +89,112 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Total Revenue -->
-                    <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}" Margin="0,0,8,0">
+                    <Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                            CornerRadius="8" Padding="16" Margin="0,0,8,0">
                         <StackPanel>
-                            <TextBlock Text="Total Revenue" Style="{StaticResource StatisticTitleStyle}"/>
+                            <TextBlock Text="Total Revenue" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
                             <TextBlock Text="{x:Bind ViewModel.TotalRevenue, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
-                                      Style="{StaticResource StatisticValueStyle}" Foreground="#0078D7"/>
+                                       FontSize="24" FontWeight="SemiBold" Foreground="#0078D7"/>
                             <TextBlock Text="{x:Bind ViewModel.OrderCount, Mode=OneWay, Converter={StaticResource OrderCountFormatter}}" 
-                                      Margin="0,8,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                       Margin="0,8,0,0" Opacity="0.6"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Total Costs -->
-                    <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}" Margin="8,0,8,0">
+                    <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                            CornerRadius="8" Padding="16" Margin="8,0">
                         <StackPanel>
-                            <TextBlock Text="Total Costs" Style="{StaticResource StatisticTitleStyle}"/>
+                            <TextBlock Text="Total Costs" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
                             <TextBlock Text="{x:Bind ViewModel.TotalCosts, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
-                                      Style="{StaticResource StatisticValueStyle}" Foreground="#E81123"/>
+                                       FontSize="24" FontWeight="SemiBold" Foreground="#E81123"/>
                             <TextBlock Text="{x:Bind ViewModel.IngredientTransactionCount, Mode=OneWay, Converter={StaticResource TransactionCountFormatter}}" 
-                                      Margin="0,8,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                       Margin="0,8,0,0" Opacity="0.6"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Net Profit -->
-                    <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}" Margin="8,0,8,0">
+                    <Border Grid.Column="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                            CornerRadius="8" Padding="16" Margin="8,0">
                         <StackPanel>
-                            <TextBlock Text="Net Profit" Style="{StaticResource StatisticTitleStyle}"/>
+                            <TextBlock Text="Net Profit" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
                             <TextBlock Text="{x:Bind ViewModel.NetProfit, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
-                                      Style="{StaticResource StatisticValueStyle}" Foreground="#107C10"/>
+                                       FontSize="24" FontWeight="SemiBold" Foreground="#107C10"/>
                             <TextBlock Text="{x:Bind ViewModel.ProfitMargin, Mode=OneWay, Converter={StaticResource ProfitMarginFormatter}}" 
-                                      Margin="0,8,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                       Margin="0,8,0,0" Opacity="0.6"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Average Order Value -->
-                    <Border Grid.Column="3" Style="{StaticResource CardBorderStyle}" Margin="8,0,0,0">
+                    <Border Grid.Column="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                            CornerRadius="8" Padding="16" Margin="8,0,0,0">
                         <StackPanel>
-                            <TextBlock Text="Average Order Value" Style="{StaticResource StatisticTitleStyle}"/>
+                            <TextBlock Text="Average Order Value" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
                             <TextBlock Text="{x:Bind ViewModel.AverageOrderValue, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
-                                      Style="{StaticResource StatisticValueStyle}" Foreground="#00B7C3"/>
+                                       FontSize="24" FontWeight="SemiBold" Foreground="#00B7C3"/>
                             <TextBlock Text="{x:Bind ViewModel.TotalProductsSold, Mode=OneWay, Converter={StaticResource ItemsSoldFormatter}}" 
-                                      Margin="0,8,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                       Margin="0,8,0,0" Opacity="0.6"/>
                         </StackPanel>
                     </Border>
                 </Grid>
 
-                <!-- Orders Table Section -->
-                <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,20">
+                <!-- Chart Section -->
+                <Border Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                        CornerRadius="8" Padding="16" Margin="0,0,0,20" MinHeight="300">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Revenue Trend" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" x:Name="ChartTitle"/>
+
+                        <chart:SfCartesianChart Grid.Row="1" x:Name="RevenueChart">
+                            <chart:SfCartesianChart.XAxes>
+                                <chart:CategoryAxis Header="Time Period" x:Name="XAxis"/>
+                            </chart:SfCartesianChart.XAxes>
+                            <chart:SfCartesianChart.YAxes>
+                                <chart:NumericalAxis Header="Amount ($)" x:Name="YAxis"/>
+                            </chart:SfCartesianChart.YAxes>
+                            <chart:SfCartesianChart.Legend>
+                                <chart:ChartLegend ToggleSeriesVisibility="True"/>
+                            </chart:SfCartesianChart.Legend>
+                            <chart:SfCartesianChart.Series>
+                                <chart:ColumnSeries x:Name="ColumnSeries" 
+                                                   ItemsSource="{x:Bind ViewModel.ChartData, Mode=OneWay}" 
+                                                   XBindingPath="Period" 
+                                                   YBindingPath="Value"
+                                                   Label="Revenue" 
+                                                   ShowDataLabels="True">
+                                </chart:ColumnSeries>
+                                <chart:LineSeries x:Name="LineSeries" 
+                                                 ItemsSource="{x:Bind ViewModel.ChartData, Mode=OneWay}" 
+                                                 XBindingPath="Period" 
+                                                 YBindingPath="Value"
+                                                 Label="Trend" 
+                                                 ShowDataLabels="False">
+                                </chart:LineSeries>
+                            </chart:SfCartesianChart.Series>
+                        </chart:SfCartesianChart>
+
+                        <!-- Empty state for chart -->
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12"
+                                   Visibility="{x:Bind ViewModel.ChartData.Count, Mode=OneWay, Converter={StaticResource StatisticsEmptyCollectionVisibilityConverter}}">
+                            <FontIcon Glyph="&#xE9D9;" FontSize="36" Opacity="0.6"/>
+                            <TextBlock Text="No data available for this period" FontSize="16" TextAlignment="Center"/>
+                            <TextBlock Text="Try adjusting the date range" TextAlignment="Center" TextWrapping="Wrap" Opacity="0.6"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Recent Orders -->
+                <Border Grid.Row="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                        CornerRadius="8" Padding="16" Margin="0,0,0,20">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -145,147 +207,150 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="Recent Orders" Style="{StaticResource SectionHeaderStyle}"/>
+                            <TextBlock Grid.Column="0" Text="Recent Orders" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16"/>
 
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                <ComboBox x:Name="OrderStatusFilter" 
-                                          SelectedIndex="0"
-                                          SelectionChanged="OrderStatusFilter_SelectionChanged"
-                                          MinWidth="120">
-                                    <ComboBoxItem Content="All Orders"/>
-                                    <ComboBoxItem Content="Completed"/>
-                                    <ComboBoxItem Content="Pending"/>
-                                    <ComboBoxItem Content="Cancelled"/>
-                                </ComboBox>
-                            </StackPanel>
+                            <ComboBox Grid.Column="1" x:Name="OrderStatusFilter"
+                                     SelectedIndex="0"
+                                     SelectionChanged="OrderStatusFilter_SelectionChanged"
+                                     MinWidth="120">
+                                <ComboBoxItem Content="All Orders"/>
+                                <ComboBoxItem Content="Completed"/>
+                                <ComboBoxItem Content="Pending"/>
+                                <ComboBoxItem Content="Cancelled"/>
+                            </ComboBox>
                         </Grid>
 
-                        <controls:DataGrid
-                            Grid.Row="1"
-                            AutoGenerateColumns="False"
-                            GridLinesVisibility="Horizontal"
-                            HorizontalGridLinesBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            AlternatingRowBackground="{ThemeResource LayerFillColorAltBrush}"
-                            CanUserSortColumns="True"
-                            IsReadOnly="True"
-                            ItemsSource="{x:Bind ViewModel.RecentOrders, Mode=OneWay}"
-                            MaxHeight="400"
-                            VerticalScrollBarVisibility="Auto">
-                            <controls:DataGrid.Resources>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent"/>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderForegroundColor" Color="{ThemeResource SystemBaseHighColor}"/>
-                            </controls:DataGrid.Resources>
+                        <controls:DataGrid Grid.Row="1"
+                                          AutoGenerateColumns="False"
+                                          GridLinesVisibility="Horizontal"
+                                          HorizontalGridLinesBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                          AlternatingRowBackground="{ThemeResource LayerFillColorAltBrush}"
+                                          CanUserSortColumns="True"
+                                          IsReadOnly="True"
+                                          ItemsSource="{x:Bind ViewModel.RecentOrders, Mode=OneWay}"
+                                          MaxHeight="300"
+                                          VerticalScrollBarVisibility="Auto">
                             <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" />
-                                <controls:DataGridTemplateColumn Header="Date" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate x:DataType="models:Order">
-                                            <TextBlock Text="{x:Bind OrderDate}" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Customer" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding CustomerName}" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
+                                <controls:DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                                <controls:DataGridTextColumn Header="Date" Binding="{Binding OrderDate}" Width="Auto"/>
+                                <controls:DataGridTextColumn Header="Customer" Binding="{Binding CustomerName}" Width="*"/>
                                 <controls:DataGridTemplateColumn Header="Amount" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate x:DataType="models:Order">
-                                            <TextBlock Text="{x:Bind TotalAmount, Converter={StaticResource CurrencyConverter}}" FontWeight="SemiBold" />
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}" 
+                                                      FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
                                 <controls:DataGridTemplateColumn Header="Status" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate x:DataType="models:Order">
-                                            <Border 
-                                                Background="{x:Bind Status, Converter={StaticResource StatisticsOrderStatusToColorConverter}}"
-                                                CornerRadius="4"
-                                                Padding="8,2">
-                                                <TextBlock 
-                                                    Text="{x:Bind Status}" 
-                                                    Foreground="White" 
-                                                    FontSize="12"
-                                                    FontWeight="SemiBold" />
+                                        <DataTemplate>
+                                            <Border Background="{Binding Status, Converter={StaticResource StatisticsOrderStatusToColorConverter}}"
+                                                   CornerRadius="4" Padding="8,2">
+                                                <TextBlock Text="{Binding Status}" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
                                             </Border>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Payment Method" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding PaymentMethodName}" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Service Type" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding ServiceTypeName}" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
+                                <controls:DataGridTextColumn Header="Payment" Binding="{Binding PaymentMethodName}" Width="Auto"/>
+                                <controls:DataGridTextColumn Header="Service" Binding="{Binding ServiceTypeName}" Width="Auto"/>
                             </controls:DataGrid.Columns>
                         </controls:DataGrid>
 
                         <!-- Empty state for orders -->
-                        <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.RecentOrders.Count, Mode=OneWay, Converter={StaticResource StatisticsEmptyCollectionVisibilityConverter}}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-                                <FontIcon Glyph="&#xE7BA;" FontSize="36" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                <TextBlock Text="No orders found for the selected period" FontSize="16" TextAlignment="Center"/>
-                                <TextBlock Text="Try adjusting the date range" 
-                                           TextAlignment="Center" 
-                                           TextWrapping="Wrap" 
-                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            </StackPanel>
-                        </Grid>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12"
+                                   Visibility="{x:Bind ViewModel.RecentOrders.Count, Mode=OneWay, Converter={StaticResource StatisticsEmptyCollectionVisibilityConverter}}">
+                            <FontIcon Glyph="&#xE7BA;" FontSize="36" Opacity="0.6"/>
+                            <TextBlock Text="No orders found for the selected period" FontSize="16" TextAlignment="Center"/>
+                            <TextBlock Text="Try adjusting the date range" TextAlignment="Center" TextWrapping="Wrap" Opacity="0.6"/>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
-                <!-- Top Products Section -->
-                <Border Grid.Row="2" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,20">
+
+
+                <!-- Pie Chart Section -->
+                <Border Grid.Row="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+        CornerRadius="8" Padding="16" Margin="0,0,0,20" MinHeight="300">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Top Selling Products" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Grid.Row="0" Text="Distribution by Service Type" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" x:Name="PieChartTitle"/>
 
-                        <controls:DataGrid
-                            Grid.Row="1"
-                            AutoGenerateColumns="False"
-                            GridLinesVisibility="Horizontal"
-                            HorizontalGridLinesBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            AlternatingRowBackground="{ThemeResource LayerFillColorAltBrush}"
-                            CanUserSortColumns="True"
-                            IsReadOnly="True"
-                            ItemsSource="{x:Bind ViewModel.TopProducts, Mode=OneWay}"
-                            MaxHeight="300"
-                            VerticalScrollBarVisibility="Auto">
-                            <controls:DataGrid.Resources>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent"/>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderForegroundColor" Color="{ThemeResource SystemBaseHighColor}"/>
-                            </controls:DataGrid.Resources>
+                        <chart:SfCircularChart Grid.Row="1" x:Name="DistributionPieChart">
+                            <chart:SfCircularChart.Legend>
+                                <chart:ChartLegend ToggleSeriesVisibility="True" />
+                            </chart:SfCircularChart.Legend>
+                            <chart:SfCircularChart.Series>
+                                <chart:PieSeries
+                                    EnableTooltip="True"
+                                    ItemsSource="{x:Bind ViewModel.ServiceTypeDistribution, Mode=OneWay}"
+                                    XBindingPath="ServiceTypeName"
+                                    YBindingPath="TotalSales"
+                                    ShowDataLabels="True">
+                                <chart:PieSeries.DataLabelSettings>
+                                    <chart:CircularDataLabelSettings
+                                        ConnectorHeight="35"
+                                        Position="Outside"
+                                        ShowConnectorLine="True"
+                                        Context="Percentage"
+                                        UseSeriesPalette="True" />
+                                    </chart:PieSeries.DataLabelSettings>
+                                </chart:PieSeries>
+                            </chart:SfCircularChart.Series>
+                        </chart:SfCircularChart>
+
+                        <!-- Empty state for pie chart -->
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12"
+                   Visibility="{x:Bind ViewModel.ServiceTypeDistribution.Count, Mode=OneWay, Converter={StaticResource StatisticsEmptyCollectionVisibilityConverter}}">
+                            <FontIcon Glyph="&#xE9D9;" FontSize="36" Opacity="0.6"/>
+                            <TextBlock Text="No distribution data available" FontSize="16" TextAlignment="Center"/>
+                            <TextBlock Text="Data will appear when orders are processed" TextAlignment="Center" TextWrapping="Wrap" Opacity="0.6"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Top Products -->
+                <Border Grid.Row="4" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                        CornerRadius="8" Padding="16">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Top Selling Products" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16"/>
+
+                        <controls:DataGrid Grid.Row="1"
+                                          AutoGenerateColumns="False"
+                                          GridLinesVisibility="Horizontal"
+                                          HorizontalGridLinesBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                          AlternatingRowBackground="{ThemeResource LayerFillColorAltBrush}"
+                                          CanUserSortColumns="True"
+                                          IsReadOnly="True"
+                                          ItemsSource="{x:Bind ViewModel.TopProducts, Mode=OneWay}"
+                                          MaxHeight="300"
+                                          VerticalScrollBarVisibility="Auto">
                             <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Header="ID" Binding="{Binding ProductId}" Width="Auto" />
-                                <controls:DataGridTemplateColumn Header="Image" Width="80">
+                                <controls:DataGridTemplateColumn Header="Image" Width="60">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Image Source="{Binding Image, Converter={StaticResource ImageSourceConverter}}" 
-                                                   Width="60" Height="60" Stretch="UniformToFill"/>
+                                                  Width="48" Height="48" Stretch="UniformToFill"/>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
-                                <controls:DataGridTextColumn Header="Name" Binding="{Binding ProductName}" Width="*" />
-                                <controls:DataGridTextColumn Header="Category" Binding="{Binding CategoryName}" Width="Auto" />
-                                <controls:DataGridTemplateColumn Header="Quantity Sold" Width="Auto">
+                                <controls:DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
+                                <controls:DataGridTextColumn Header="Category" Binding="{Binding CategoryName}" Width="Auto"/>
+                                <controls:DataGridTemplateColumn Header="Quantity" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding QuantitySold}" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                            <TextBlock Text="{Binding QuantitySold}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
@@ -293,7 +358,7 @@
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding TotalSales, Converter={StaticResource CurrencyConverter}}" 
-                                                      FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                                      FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
@@ -301,182 +366,13 @@
                         </controls:DataGrid>
 
                         <!-- Empty state for top products -->
-                        <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.TopProducts.Count, Mode=OneWay, Converter={StaticResource StatisticsEmptyCollectionVisibilityConverter}}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-                                <FontIcon Glyph="&#xEC32;" FontSize="36" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                <TextBlock Text="No product sales data available" FontSize="16" TextAlignment="Center"/>
-                                <TextBlock Text="Sales data will appear here once orders are processed" 
-                                           TextAlignment="Center" 
-                                           TextWrapping="Wrap" 
-                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </Border>
-
-                <!-- Inventory Costs Section -->
-                <Border Grid.Row="3" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,20">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Text="Inventory Costs" Style="{StaticResource SectionHeaderStyle}"/>
-
-                        <controls:DataGrid
-                            Grid.Row="1"
-                            AutoGenerateColumns="False"
-                            GridLinesVisibility="Horizontal"
-                            HorizontalGridLinesBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            AlternatingRowBackground="{ThemeResource LayerFillColorAltBrush}"
-                            CanUserSortColumns="True"
-                            IsReadOnly="True"
-                            ItemsSource="{x:Bind ViewModel.IngredientCosts, Mode=OneWay}"
-                            MaxHeight="300"
-                            VerticalScrollBarVisibility="Auto">
-                            <controls:DataGrid.Resources>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent"/>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderForegroundColor" Color="{ThemeResource SystemBaseHighColor}"/>
-                            </controls:DataGrid.Resources>
-                            <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Header="ID" Binding="{Binding IngredientId}" Width="Auto" />
-                                <controls:DataGridTextColumn Header="Name" Binding="{Binding IngredientName}" Width="*" />
-                                <controls:DataGridTemplateColumn Header="Transaction Count" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding TransactionCount}" HorizontalAlignment="Right" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Total Quantity" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Right">
-                                                <TextBlock Text="{Binding TotalQuantity}" />
-                                                <TextBlock Text="{Binding Unit}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Total Cost" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding TotalCost, Converter={StaticResource CurrencyConverter}}" 
-                                                      FontWeight="SemiBold" HorizontalAlignment="Right" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                            </controls:DataGrid.Columns>
-                        </controls:DataGrid>
-
-                        <!-- Empty state for inventory costs -->
-                        <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.IngredientCosts.Count, Mode=OneWay, Converter={StaticResource EmptyCollectionVisibilityConverter}}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-                                <FontIcon Glyph="&#xE80A;" FontSize="36" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                <TextBlock Text="No inventory costs found" FontSize="16" TextAlignment="Center"/>
-                                <TextBlock Text="Costs will appear here when ingredients are purchased" 
-                                           TextAlignment="Center" 
-                                           TextWrapping="Wrap" 
-                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </Border>
-
-                <!-- Service Type Distribution Section -->
-                <Border Grid.Row="4" Style="{StaticResource CardBorderStyle}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Service Type Distribution -->
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Service Type Distribution" Style="{StaticResource SectionHeaderStyle}"/>
-
-                        <controls:DataGrid
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            AutoGenerateColumns="False"
-                            GridLinesVisibility="Horizontal"
-                            HorizontalGridLinesBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            AlternatingRowBackground="{ThemeResource LayerFillColorAltBrush}"
-                            CanUserSortColumns="True"
-                            IsReadOnly="True"
-                            ItemsSource="{x:Bind ViewModel.ServiceTypeDistribution, Mode=OneWay}"
-                            MaxHeight="200"
-                            VerticalScrollBarVisibility="Auto">
-                            <controls:DataGrid.Resources>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent"/>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderForegroundColor" Color="{ThemeResource SystemBaseHighColor}"/>
-                            </controls:DataGrid.Resources>
-                            <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Header="Service Type" Binding="{Binding ServiceTypeName}" Width="*" />
-                                <controls:DataGridTextColumn Header="Order Count" Binding="{Binding OrderCount}" Width="Auto" />
-                                <controls:DataGridTemplateColumn Header="Percentage" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Percentage, Converter={StaticResource PercentageFormatter}}" HorizontalAlignment="Right" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Total Sales" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding TotalSales, Converter={StaticResource CurrencyConverter}}" 
-                                                      FontWeight="SemiBold" HorizontalAlignment="Right" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                            </controls:DataGrid.Columns>
-                        </controls:DataGrid>
-
-                        <!-- Payment Method Distribution -->
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Payment Method Distribution" Style="{StaticResource SectionHeaderStyle}"/>
-
-                        <controls:DataGrid
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="12,0,0,0"
-                            AutoGenerateColumns="False"
-                            GridLinesVisibility="Horizontal"
-                            HorizontalGridLinesBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            AlternatingRowBackground="{ThemeResource LayerFillColorAltBrush}"
-                            CanUserSortColumns="True"
-                            IsReadOnly="True"
-                            ItemsSource="{x:Bind ViewModel.PaymentMethodDistribution, Mode=OneWay}"
-                            MaxHeight="200"
-                            VerticalScrollBarVisibility="Auto">
-                            <controls:DataGrid.Resources>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent"/>
-                                <SolidColorBrush x:Key="DataGridColumnHeaderForegroundColor" Color="{ThemeResource SystemBaseHighColor}"/>
-                            </controls:DataGrid.Resources>
-                            <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Header="Payment Method" Binding="{Binding PaymentMethodName}" Width="*" />
-                                <controls:DataGridTextColumn Header="Order Count" Binding="{Binding OrderCount}" Width="Auto" />
-                                <controls:DataGridTemplateColumn Header="Percentage" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Percentage, Converter={StaticResource PercentageFormatter}}" HorizontalAlignment="Right" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                                <controls:DataGridTemplateColumn Header="Total Sales" Width="Auto">
-                                    <controls:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding TotalSales, Converter={StaticResource CurrencyConverter}}" 
-                                                      FontWeight="SemiBold" HorizontalAlignment="Right" />
-                                        </DataTemplate>
-                                    </controls:DataGridTemplateColumn.CellTemplate>
-                                </controls:DataGridTemplateColumn>
-                            </controls:DataGrid.Columns>
-                        </controls:DataGrid>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12"
+                                   Visibility="{x:Bind ViewModel.TopProducts.Count, Mode=OneWay, Converter={StaticResource StatisticsEmptyCollectionVisibilityConverter}}">
+                            <FontIcon Glyph="&#xEC32;" FontSize="36" Opacity="0.6"/>
+                            <TextBlock Text="No product sales data available" FontSize="16" TextAlignment="Center"/>
+                            <TextBlock Text="Sales data will appear here once orders are processed" 
+                                      TextAlignment="Center" TextWrapping="Wrap" Opacity="0.6"/>
+                        </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
