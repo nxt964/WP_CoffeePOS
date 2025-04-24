@@ -214,10 +214,10 @@ public partial class ProductsViewModel : ObservableRecipient, INavigationAware
             var contentPanel = (StackPanel)((ContentDialog)dialog).Content;
 
             var nameBox = (TextBox)((StackPanel)contentPanel.Children[0]).Children[1];
-            var priceBox = (TextBox)((StackPanel)contentPanel.Children[1]).Children[1];
-            var descriptionBox = (TextBox)((StackPanel)contentPanel.Children[2]).Children[1];
-            var categoryBox = (ComboBox)((StackPanel)contentPanel.Children[3]).Children[1];
-            var inStockBox = (CheckBox)((StackPanel)contentPanel.Children[4]).Children[1];
+            var priceBox = (TextBox)((StackPanel)contentPanel.Children[2]).Children[1];
+            var descriptionBox = (TextBox)((StackPanel)contentPanel.Children[4]).Children[1];
+            var categoryBox = (ComboBox)((StackPanel)contentPanel.Children[6]).Children[1];
+            var inStockBox = (CheckBox)((StackPanel)contentPanel.Children[8]).Children[1];
 
             product.Name = nameBox.Text;
             product.Price = double.TryParse(priceBox.Text, out double price) ? price : 0;
