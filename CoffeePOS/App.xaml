@@ -63,6 +63,13 @@
                 <Setter Property="PrimaryButtonText" Value=""/>
                 <Setter Property="SecondaryButtonText" Value=""/>
             </Style>
+            <converter:PercentageFormatter x:Key="PercentageFormatter"/>
+
+
+
+
+
+            
 
 
             <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">

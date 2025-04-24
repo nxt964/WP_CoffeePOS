@@ -5,12 +5,24 @@ using CoffeePOS.Core.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoffeePOS.ViewModels;
 
 public partial class StatisticsViewModel : ObservableRecipient, INavigationAware
 {
     private readonly IDao _dao;
+
+    // Time period mode
+    [ObservableProperty]
+    private string _timePeriodMode = "Year"; // "Week", "Month", "Year"
+
+    [ObservableProperty]
+    private string _dataType = "Revenue"; // "Revenue", "Profit"
+
+    // Current date selection
+    [ObservableProperty]
+    private DateTime _currentDate;
 
     // Date filters
     [ObservableProperty]
@@ -21,6 +33,9 @@ public partial class StatisticsViewModel : ObservableRecipient, INavigationAware
 
     [ObservableProperty]
     private string _orderStatusFilter = "All";
+
+    [ObservableProperty]
+    private string _periodDisplayText = string.Empty;
 
     // Summary statistics
     [ObservableProperty]
@@ -63,15 +78,22 @@ public partial class StatisticsViewModel : ObservableRecipient, INavigationAware
     [ObservableProperty]
     private ObservableCollection<PaymentMethodViewModel> _paymentMethodDistribution = new();
 
+    // Chart data
+    [ObservableProperty]
+    private ObservableCollection<ChartDataPoint> _chartData = new();
+
     // Constructor
     public StatisticsViewModel(IDao dao)
     {
         _dao = dao;
 
         // Initialize date range to the current month
+        CurrentDate = DateTime.Now.Date;
         var now = DateTime.Now;
-        StartDate = new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, TimeSpan.Zero);
-        EndDate = StartDate.AddMonths(1).AddDays(-1);
+
+        // Set the default view to Year
+        TimePeriodMode = "Year";
+        UpdateTimePeriod();
     }
 
     public async void OnNavigatedTo(object parameter)
@@ -99,6 +121,85 @@ public partial class StatisticsViewModel : ObservableRecipient, INavigationAware
         return LoadOrdersAsync();
     }
 
+    [RelayCommand]
+    private void UpdateTimePeriod()
+    {
+        // Update date range based on the current mode and date
+        switch (TimePeriodMode)
+        {
+            case "Week":
+                // Find the start of the week (Monday)
+                int diff = (7 + (CurrentDate.DayOfWeek - DayOfWeek.Monday)) % 7;
+                var weekStart = CurrentDate.AddDays(-1 * diff);
+                var weekEnd = weekStart.AddDays(6);
+
+                StartDate = new DateTimeOffset(weekStart);
+                EndDate = new DateTimeOffset(weekEnd);
+                PeriodDisplayText = $"{StartDate:MMM dd} - {EndDate:MMM dd, yyyy}";
+                break;
+
+            case "Month":
+                StartDate = new DateTimeOffset(CurrentDate.Year, CurrentDate.Month, 1, 0, 0, 0, TimeSpan.Zero);
+                EndDate = StartDate.AddMonths(1).AddDays(-1);
+                PeriodDisplayText = $"{StartDate:MMMM yyyy}";
+                break;
+
+            case "Year":
+                StartDate = new DateTimeOffset(CurrentDate.Year, 1, 1, 0, 0, 0, TimeSpan.Zero);
+                EndDate = StartDate.AddYears(1).AddDays(-1);
+                PeriodDisplayText = $"{CurrentDate.Year}";
+                break;
+        }
+
+        // Reload statistics with new date range
+        LoadStatisticsCommand.Execute(null);
+    }
+
+    [RelayCommand]
+    private void PreviousPeriod()
+    {
+        switch (TimePeriodMode)
+        {
+            case "Week":
+                CurrentDate = CurrentDate.AddDays(-7);
+                break;
+            case "Month":
+                CurrentDate = CurrentDate.AddMonths(-1);
+                break;
+            case "Year":
+                CurrentDate = CurrentDate.AddYears(-1);
+                break;
+        }
+
+        UpdateTimePeriod();
+    }
+
+    [RelayCommand]
+    private void NextPeriod()
+    {
+        switch (TimePeriodMode)
+        {
+            case "Week":
+                CurrentDate = CurrentDate.AddDays(7);
+                break;
+            case "Month":
+                CurrentDate = CurrentDate.AddMonths(1);
+                break;
+            case "Year":
+                CurrentDate = CurrentDate.AddYears(1);
+                break;
+        }
+
+        UpdateTimePeriod();
+    }
+
+    [RelayCommand]
+    private void ChangeDataType(string type)
+    {
+        DataType = type;
+        LoadChartDataAsync();
+    }
+
     private async Task LoadStatisticsAsync()
     {
         try
@@ -108,7 +209,8 @@ public partial class StatisticsViewModel : ObservableRecipient, INavigationAware
                 LoadOrdersAsync(),
                 LoadTopProductsAsync(),
                 LoadIngredientCostsAsync(),
-                LoadDistributionAsync()
+                LoadDistributionAsync(),
+                LoadChartDataAsync()
             );
         }
         catch (Exception ex)
@@ -183,7 +285,7 @@ public partial class StatisticsViewModel : ObservableRecipient, INavigationAware
             RecentOrders.Add(new OrderDisplayModel
             {
                 Id = order.Id,
-                OrderDate = order.OrderDate.ToString(),
+                OrderDate = order.OrderDate.ToString("MMM dd, yyyy"),
                 TotalAmount = (double)order.TotalAmount,
                 Status = order.Status,
                 CustomerName = customer?.Name ?? "Walk-in Customer",
@@ -363,6 +465,144 @@ public partial class StatisticsViewModel : ObservableRecipient, INavigationAware
             }
         }
     }
+
+    private async Task LoadChartDataAsync()
+    {
+        ChartData.Clear();
+
+        try
+        {
+            var allOrders = await _dao.Orders.GetAll();
+            var allIngredientTransactions = await _dao.IngredientInventoryTransactions.GetAll();
+
+            // Filter orders within the date range
+            var filteredOrders = allOrders.Where(o =>
+                DateTime.TryParse(o.OrderDate.ToString(), out var orderDate) &&
+                orderDate >= StartDate.DateTime &&
+                orderDate <= EndDate.DateTime &&
+                o.Status == "Completed").ToList();
+
+            // Filter ingredient transactions within the date range
+            var filteredTransactions = allIngredientTransactions.Where(t =>
+                t.TransactionType == "IMPORT" &&
+                DateTimeOffset.FromUnixTimeMilliseconds(t.Timestamp) >= StartDate &&
+                DateTimeOffset.FromUnixTimeMilliseconds(t.Timestamp) <= EndDate).ToList();
+
+            // Group data based on the selected time period
+            switch (TimePeriodMode)
+            {
+                case "Week":
+                    // Group by day of the week
+                    for (int i = 0; i < 7; i++)
+                    {
+                        var day = StartDate.AddDays(i).DateTime;
+                        var dayOrders = filteredOrders.Where(o =>
+                            DateTime.TryParse(o.OrderDate.ToString(), out var orderDate) &&
+                            orderDate.Date == day.Date).ToList();
+
+                        var dayTransactions = filteredTransactions.Where(t =>
+                            DateTimeOffset.FromUnixTimeMilliseconds(t.Timestamp).Date == day.Date).ToList();
+
+                        double value = 0;
+                        if (DataType == "Revenue")
+                        {
+                            value = (double)dayOrders.Sum(o => o.TotalAmount);
+                        }
+                        else // Profit
+                        {
+                            double revenue = (double)dayOrders.Sum(o => o.TotalAmount);
+                            double costs = dayTransactions.Sum(t => t.Quantity * t.UnitPrice);
+                            value = revenue - costs;
+                        }
+
+                        ChartData.Add(new ChartDataPoint
+                        {
+                            Period = day.ToString("ddd"),
+                            Value = value
+                        });
+                    }
+                    break;
+
+                case "Month":
+                    // Group by day of the month
+                    int daysInMonth = DateTime.DaysInMonth(StartDate.Year, StartDate.Month);
+                    for (int i = 1; i <= daysInMonth; i++)
+                    {
+                        var day = new DateTime(StartDate.Year, StartDate.Month, i);
+                        var dayOrders = filteredOrders.Where(o =>
+                            DateTime.TryParse(o.OrderDate.ToString(), out var orderDate) &&
+                            orderDate.Date == day.Date).ToList();
+
+                        var dayTransactions = filteredTransactions.Where(t =>
+                            DateTimeOffset.FromUnixTimeMilliseconds(t.Timestamp).Date == day.Date).ToList();
+
+                        double value = 0;
+                        if (DataType == "Revenue")
+                        {
+                            value = (double)dayOrders.Sum(o => o.TotalAmount);
+                        }
+                        else // Profit
+                        {
+                            double revenue = (double)dayOrders.Sum(o => o.TotalAmount);
+                            double costs = dayTransactions.Sum(t => t.Quantity * t.UnitPrice);
+                            value = revenue - costs;
+                        }
+
+                        // For readability in the chart, only show the date for every 5th day or so
+                        string periodLabel = (i == 1 || i % 5 == 0 || i == daysInMonth)
+                            ? day.ToString("MMM d")
+                            : i.ToString();
+
+                        ChartData.Add(new ChartDataPoint
+                        {
+                            Period = periodLabel,
+                            Value = value
+                        });
+                    }
+                    break;
+
+                case "Year":
+                    // Group by month
+                    for (int i = 1; i <= 12; i++)
+                    {
+                        var monthStart = new DateTime(StartDate.Year, i, 1);
+                        var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+                        var monthOrders = filteredOrders.Where(o =>
+                            DateTime.TryParse(o.OrderDate.ToString(), out var orderDate) &&
+                            orderDate.Month == i &&
+                            orderDate.Year == StartDate.Year).ToList();
+
+                        var monthTransactions = filteredTransactions.Where(t =>
+                            DateTimeOffset.FromUnixTimeMilliseconds(t.Timestamp).Month == i &&
+                            DateTimeOffset.FromUnixTimeMilliseconds(t.Timestamp).Year == StartDate.Year).ToList();
+
+                        double value = 0;
+                        if (DataType == "Revenue")
+                        {
+                            value = (double)monthOrders.Sum(o => o.TotalAmount);
+                        }
+                        else // Profit
+                        {
+                            double revenue = (double)monthOrders.Sum(o => o.TotalAmount);
+                            double costs = monthTransactions.Sum(t => t.Quantity * t.UnitPrice);
+                            value = revenue - costs;
+                        }
+
+                        ChartData.Add(new ChartDataPoint
+                        {
+                            Period = monthStart.ToString("MMM"),
+                            Value = value
+                        });
+                    }
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[ERROR] Error loading chart data: {ex.Message}");
+        }
+    }
 }
 
 // View models for data binding
@@ -497,6 +737,18 @@ public class PaymentMethodViewModel
         get; set;
     }
     public double Percentage
+    {
+        get; set;
+    }
+}
+
+public class ChartDataPoint
+{
+    public string Period
+    {
+        get; set;
+    }
+    public double Value
     {
         get; set;
     }
