@@ -151,9 +151,7 @@ public class SqliteManualDao : IDao
             @"CREATE TABLE IF NOT EXISTS Vouchers (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Code TEXT NOT NULL,
-                DiscountPercentage INTEGER,
-                ExpirationDate TEXT,
-                IsUsed INTEGER
+                DiscountPercentage INTEGER
             )",
             
             // PaymentMethods Table
@@ -365,8 +363,16 @@ public class SqliteManualDao : IDao
             "INSERT OR IGNORE INTO Tables (Id, TableNumber, Status) VALUES (2, 'T02', 'Occupied')",
             
             // Vouchers
-            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage, ExpirationDate, IsUsed) VALUES (1, 'WELCOME10', 10, '2025-06-30', 0)",
-            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage, ExpirationDate, IsUsed) VALUES (2, 'COFFEE20', 20, '2025-04-15', 1)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (1, 'WELCOME10', 10)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (2, 'COFFEE20', 20)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (3, 'PASTRY15', 15)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (4, 'LOYALTY25', 25)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (5, 'SPRING10', 10)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (6, 'SUMMER20', 20)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (7, 'TEA15', 15)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (8, 'FIRSTORDER30', 30)",
+            "INSERT OR IGNORE INTO Vouchers (Id, Code, DiscountPercentage) VALUES (9, 'WEEKEND10', 10)",
+
             
             // PaymentMethods
             "INSERT OR IGNORE INTO PaymentMethods (Id, Name, Description) VALUES (1, 'Cash', 'Payment in cash')",

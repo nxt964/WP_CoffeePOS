@@ -41,8 +41,28 @@
             <converter:ProfitMarginFormatter x:Key="ProfitMarginFormatter"/>
             <converter:ItemsSoldFormatter x:Key="ItemsSoldFormatter"/>
 
+            <Style x:Key="RedButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="#dc3545"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="#dc3545"/>
+                <Setter Property="Padding" Value="10,5"/>
+            </Style>
 
 
+            <Style x:Key="ToastNotificationStyle" TargetType="ContentDialog">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="#DEE2E6"/>
+                <Setter Property="MaxWidth" Value="400"/>
+                <Setter Property="MinWidth" Value="200"/>
+                <Setter Property="CloseButtonText" Value=""/>
+                <Setter Property="PrimaryButtonText" Value=""/>
+                <Setter Property="SecondaryButtonText" Value=""/>
+            </Style>
             <converter:PercentageFormatter x:Key="PercentageFormatter"/>
 
 
@@ -65,6 +85,8 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
+            
 
             <Style x:Key="ButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />

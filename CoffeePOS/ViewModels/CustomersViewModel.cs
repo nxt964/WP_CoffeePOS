@@ -127,7 +127,6 @@ public partial class CustomersViewModel : ObservableObject, INavigationAware
         }
     }
 
-    // Phương thức helper để hiển thị dialog và quản lý trạng thái
     private async Task ShowDialogAsync(string title, string content, string closeButtonText)
     {
         // Đảm bảo không hiển thị dialog mới nếu đang có dialog khác

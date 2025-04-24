@@ -206,16 +206,16 @@ public class MockDao : IDao
     {
         get;
     } = new MockRepository<Voucher>(new List<Voucher>() {
-    new Voucher { Id = 1, Code = "WELCOME10", DiscountPercentage = 10, ExpirationDate = DateTime.Parse("2025-06-30"), IsUsed = false },
-    new Voucher { Id = 2, Code = "COFFEE20", DiscountPercentage = 20, ExpirationDate = DateTime.Parse("2025-04-15"), IsUsed = true },
-    new Voucher { Id = 3, Code = "PASTRY15", DiscountPercentage = 15, ExpirationDate = DateTime.Parse("2025-05-31"), IsUsed = false },
-    new Voucher { Id = 4, Code = "LOYALTY25", DiscountPercentage = 25, ExpirationDate = DateTime.Parse("2025-12-31"), IsUsed = false },
-    new Voucher { Id = 5, Code = "SPRING10", DiscountPercentage = 10, ExpirationDate = DateTime.Parse("2025-03-31"), IsUsed = true },
-    new Voucher { Id = 6, Code = "SUMMER20", DiscountPercentage = 20, ExpirationDate = DateTime.Parse("2025-08-31"), IsUsed = false },
-    new Voucher { Id = 7, Code = "TEA15", DiscountPercentage = 15, ExpirationDate = DateTime.Parse("2025-07-15"), IsUsed = false },
-    new Voucher { Id = 8, Code = "FIRSTORDER30", DiscountPercentage = 30, ExpirationDate = DateTime.Parse("2025-04-30"), IsUsed = true },
-    new Voucher { Id = 9, Code = "WEEKEND10", DiscountPercentage = 10, ExpirationDate = DateTime.Parse("2025-05-15"), IsUsed = false },
-    new Voucher { Id = 10, Code = "BIRTHDAY50", DiscountPercentage = 50, ExpirationDate = DateTime.Parse("2025-03-25"), IsUsed = true }
+    new Voucher {Id = 1, Code = "WELCOME10", DiscountPercentage = 10},
+    new Voucher {Id = 2, Code = "COFFEE20", DiscountPercentage = 20},
+    new Voucher {Id = 3, Code = "PASTRY15", DiscountPercentage = 15},
+    new Voucher {Id = 4, Code = "LOYALTY25", DiscountPercentage = 25},
+    new Voucher {Id = 5, Code = "SPRING10", DiscountPercentage = 10},
+    new Voucher {Id = 6, Code = "SUMMER20", DiscountPercentage = 20},
+    new Voucher {Id = 7, Code = "TEA15", DiscountPercentage = 15},
+    new Voucher {Id = 8, Code = "FIRSTORDER30", DiscountPercentage = 30},
+    new Voucher { Id = 9, Code = "WEEKEND10", DiscountPercentage = 10},
+    new Voucher { Id = 10, Code = "BIRTHDAY50", DiscountPercentage = 50}
 });
 
     public IRepository<PaymentMethod> PaymentMethods

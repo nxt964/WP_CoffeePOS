@@ -6,10 +6,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Dispatching;
+
+// Aliases to avoid ambiguity
+using CorePaymentMethod = CoffeePOS.Core.Models.PaymentMethod;
+using UIPaymentMethod = CoffeePOS.Models.PaymentMethodDisplay;
 
 namespace CoffeePOS.ViewModels;
 
@@ -17,6 +23,36 @@ public partial class DetailOrderViewModel : ObservableObject
 {
     private readonly IDao _dao;
     private ObservableCollection<OrderDetailDisplay> _allOrderDetails = new();
+
+    public class PaymentMethodItem : INotifyPropertyChanged
+    {
+        private bool _isSelected;
+
+        public UIPaymentMethod PaymentMethod
+        {
+            get;
+        }
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public PaymentMethodItem(UIPaymentMethod paymentMethod)
+        {
+            PaymentMethod = paymentMethod;
+            _isSelected = false;
+        }
+    }
 
     [ObservableProperty]
     private ObservableCollection<OrderDetailDisplay> source = new();
@@ -42,6 +78,12 @@ public partial class DetailOrderViewModel : ObservableObject
     [ObservableProperty]
     private bool isOrderEditable = true;
 
+    [ObservableProperty]
+    private ObservableCollection<PaymentMethodItem> paymentMethodItems = new();
+
+    [ObservableProperty]
+    private CorePaymentMethod selectedPaymentMethod;
+
     private int currentPage = 1;
     private int totalPages = 1;
     private int orderId;
@@ -56,14 +98,97 @@ public partial class DetailOrderViewModel : ObservableObject
 
     public async void OnNavigatedTo(int orderId)
     {
-        this.orderId = orderId;
-        await LoadOrderDetails();
+        try
+        {
+            this.orderId = orderId;
+            await LoadOrderDetails();
+            await LoadPaymentMethods();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.OnNavigatedTo: Failed to initialize page for OrderId = {orderId}. Error: {ex.Message}");
+            await ShowErrorDialogAsync("Failed to load order details. Please try again.", null);
+        }
+    }
+
+    private async Task LoadPaymentMethods()
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("[DEBUG] DetailOrderViewModel.LoadPaymentMethods: Loading payment methods...");
+            PaymentMethodItems.Clear();
+            var coreMethods = await _dao.PaymentMethods.GetAll();
+            if (coreMethods == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[ERROR] DetailOrderViewModel.LoadPaymentMethods: Payment methods data is null.");
+                return;
+            }
+
+            foreach (var coreMethod in coreMethods)
+            {
+                if (coreMethod != null)
+                {
+                    var uiMethod = new UIPaymentMethod
+                    {
+                        Id = coreMethod.Id,
+                        Name = coreMethod.Name
+                    };
+                    var item = new PaymentMethodItem(uiMethod);
+                    item.PropertyChanged += PaymentMethodItem_PropertyChanged;
+                    PaymentMethodItems.Add(item);
+                }
+            }
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.LoadPaymentMethods: Loaded {PaymentMethodItems.Count} payment methods");
+
+            if (PaymentMethodItems.Any())
+            {
+                var firstItem = PaymentMethodItems.First();
+                firstItem.IsSelected = true; // Set default
+                SelectedPaymentMethod = coreMethods.FirstOrDefault(m => m.Id == firstItem.PaymentMethod.Id);
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.LoadPaymentMethods: Set default SelectedPaymentMethod to {SelectedPaymentMethod?.Name} (Id: {SelectedPaymentMethod?.Id})");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.LoadPaymentMethods: {ex.Message}");
+        }
+    }
+
+    private void PaymentMethodItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(PaymentMethodItem.IsSelected))
+        {
+            var item = (PaymentMethodItem)sender;
+            if (item.IsSelected)
+            {
+                // Unselect others
+                foreach (var other in PaymentMethodItems.Where(i => !i.Equals(item)))
+                {
+                    other.IsSelected = false;
+                }
+                SelectedPaymentMethod = new CorePaymentMethod
+                {
+                    Id = item.PaymentMethod.Id,
+                    Name = item.PaymentMethod.Name
+                };
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.PaymentMethodItem_PropertyChanged: Selected PaymentMethod = {SelectedPaymentMethod?.Name} (Id: {SelectedPaymentMethod?.Id})");
+                PayCommand.NotifyCanExecuteChanged();
+            }
+        }
     }
 
     [RelayCommand]
     private async Task Refresh()
     {
-        await LoadOrderDetails();
+        try
+        {
+            await LoadOrderDetails();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.Refresh: {ex.Message}");
+            await ShowErrorDialogAsync("Failed to refresh order details.", null);
+        }
     }
 
     private async Task LoadOrderDetails()
@@ -75,10 +200,27 @@ public partial class DetailOrderViewModel : ObservableObject
             Source.Clear();
 
             var order = await _dao.Orders.GetById(orderId);
-            IsOrderEditable = order?.Status != "Complete";
+            if (order == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.LoadOrderDetails: Order with ID {orderId} not found.");
+                return;
+            }
 
-            var orderDetails = (await _dao.OrderDetails.GetAll()).Where(od => od.OrderId == orderId).ToList();
+            IsOrderEditable = order.Status != "Complete";
+
+            var orderDetails = (await _dao.OrderDetails.GetAll())?.Where(od => od.OrderId == orderId).ToList();
+            if (orderDetails == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.LoadOrderDetails: OrderDetails is null.");
+                return;
+            }
+
             var products = await _dao.Products.GetAll();
+            if (products == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.LoadOrderDetails: Products data is null.");
+                return;
+            }
 
             System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.LoadOrderDetails: Found {orderDetails.Count} order details for OrderId = {orderId}");
 
@@ -105,12 +247,11 @@ public partial class DetailOrderViewModel : ObservableObject
             System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.LoadOrderDetails: Loaded {_allOrderDetails.Count} items into _allOrderDetails");
 
             UpdateSourceWithPagination();
-            CalculateTotalPrice();
+            await CalculateTotalPrice();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.LoadOrderDetails: {ex.Message}");
-            throw;
         }
     }
 
@@ -123,7 +264,7 @@ public partial class DetailOrderViewModel : ObservableObject
             {
                 try
                 {
-                    var orderDetail = (await _dao.OrderDetails.GetAll()).FirstOrDefault(od => od.Id == orderDetailDisplay.Id);
+                    var orderDetail = (await _dao.OrderDetails.GetAll())?.FirstOrDefault(od => od.Id == orderDetailDisplay.Id);
                     if (orderDetail != null)
                     {
                         orderDetail.Quantity = orderDetailDisplay.Quantity;
@@ -136,7 +277,7 @@ public partial class DetailOrderViewModel : ObservableObject
                         System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.OrderDetailDisplay_PropertyChanged: OrderDetail {orderDetailDisplay.Id} not found");
                     }
 
-                    CalculateTotalPrice();
+                    await CalculateTotalPrice();
                     await UpdateOrderTotalAmount();
                 }
                 catch (Exception ex)
@@ -169,7 +310,7 @@ public partial class DetailOrderViewModel : ObservableObject
             if (!string.IsNullOrWhiteSpace(VoucherCode))
             {
                 var vouchers = await _dao.Vouchers.GetAll();
-                var voucher = vouchers.FirstOrDefault(v => v.Code == VoucherCode && !v.IsUsed && v.ExpirationDate >= DateTime.Now);
+                var voucher = vouchers?.FirstOrDefault(v => v.Code == VoucherCode);
                 appliedVoucher = voucher;
                 if (voucher != null)
                 {
@@ -185,7 +326,7 @@ public partial class DetailOrderViewModel : ObservableObject
                 appliedVoucher = null;
                 VoucherInfo = null;
             }
-            CalculateTotalPrice();
+            await CalculateTotalPrice();
             await UpdateOrderTotalAmount();
         }
         catch (Exception ex)
@@ -197,11 +338,11 @@ public partial class DetailOrderViewModel : ObservableObject
 
     private bool CanCheckout()
     {
-        return IsOrderEditable && TotalPrice > 0;
+        return IsOrderEditable && TotalPrice > 0 && SelectedPaymentMethod != null;
     }
 
     [RelayCommand(CanExecute = nameof(CanCheckout))]
-    private async Task Pay()
+    private async Task Pay(Frame frame)
     {
         try
         {
@@ -209,11 +350,11 @@ public partial class DetailOrderViewModel : ObservableObject
             {
                 Title = "Confirm Payment",
                 CloseButtonText = "Cancel",
-                Content = $"Total Price: {TotalPrice:C}. Do you want to proceed?",
+                Content = $"Total Price: {TotalPrice:C}. Payment Method: {SelectedPaymentMethod?.Name ?? "None"}. Do you want to proceed?",
                 PrimaryButtonText = "Pay",
+                XamlRoot = frame?.XamlRoot ?? App.MainWindow.Content.XamlRoot
             };
 
-            dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
@@ -222,18 +363,17 @@ public partial class DetailOrderViewModel : ObservableObject
                 {
                     order.Status = "Complete";
                     order.TotalAmount = TotalPrice;
+                    order.PaymentMethodId = SelectedPaymentMethod?.Id;
                     await _dao.Orders.Update(order);
                     await _dao.SaveChangesAsync();
 
-                    // Cộng điểm cho khách hàng nếu là thành viên
                     if (order.CustomerId.HasValue)
                     {
                         var customer = await _dao.Customers.GetById(order.CustomerId.Value);
                         if (customer != null)
                         {
-                            int pointsToAdd = (int)TotalPrice; // 1 đô = 1 điểm
+                            int pointsToAdd = (int)TotalPrice;
                             customer.Points += pointsToAdd;
-                            // Cập nhật trạng thái IsMembership dựa trên điểm mới
                             customer.IsMembership = customer.Points >= 100;
                             await _dao.Customers.Update(customer);
                             await _dao.SaveChangesAsync();
@@ -250,16 +390,13 @@ public partial class DetailOrderViewModel : ObservableObject
                     ApplyVoucherCommand.NotifyCanExecuteChanged();
                     PayCommand.NotifyCanExecuteChanged();
                     DeleteOrderDetailCommand.NotifyCanExecuteChanged();
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: Order {orderId} marked as Complete, TotalAmount = {TotalPrice}");
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: Order {orderId} marked as Complete, TotalAmount = {TotalPrice}, PaymentMethodId = {order.PaymentMethodId}");
 
-                    // Điều hướng về trang OrderPage sau khi thanh toán thành công
-                    var frame = App.MainWindow.Content as Frame;
                     frame?.Navigate(typeof(CoffeePOS.Views.OrderPage));
                 }
 
                 if (appliedVoucher != null)
                 {
-                    appliedVoucher.IsUsed = true;
                     await _dao.Vouchers.Update(appliedVoucher);
                     await _dao.SaveChangesAsync();
                     System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.Pay: Voucher {appliedVoucher.Code} marked as used");
@@ -271,6 +408,7 @@ public partial class DetailOrderViewModel : ObservableObject
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.Pay: {ex.Message}");
+            await ShowErrorDialogAsync("Failed to process payment.", frame?.XamlRoot);
         }
     }
 
@@ -322,6 +460,7 @@ public partial class DetailOrderViewModel : ObservableObject
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.DeleteOrderDetail: {ex.Message}");
+            await ShowErrorDialogAsync("Failed to delete order detail.", null);
         }
     }
 
@@ -354,20 +493,19 @@ public partial class DetailOrderViewModel : ObservableObject
                 total -= total * (appliedVoucher.DiscountPercentage / 100);
             }
 
-            // Kiểm tra nếu khách hàng là thành viên thì giảm thêm 5%
             var order = await _dao.Orders.GetById(orderId);
             if (order != null && order.CustomerId.HasValue)
             {
                 var customer = await _dao.Customers.GetById(order.CustomerId.Value);
                 if (customer != null && customer.IsMembership)
                 {
-                    total -= total * 0.05m; // Giảm thêm 5% nếu là thành viên
+                    total -= total * 0.05m;
                     System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.CalculateTotalPrice: Applied 5% membership discount for Customer {customer.Id}. New Total: {total}");
                 }
             }
 
             TotalPrice = total;
-            PayCommand.NotifyCanExecuteChanged(); // Cập nhật trạng thái của nút checkout khi tổng tiền thay đổi
+            PayCommand.NotifyCanExecuteChanged();
             System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.CalculateTotalPrice: TotalPrice = {TotalPrice}");
         }
         catch (Exception ex)
@@ -442,5 +580,47 @@ public partial class DetailOrderViewModel : ObservableObject
         System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.OnPageSizeChanged: PageSize changed to {value}");
         currentPage = 1;
         UpdateSourceWithPagination();
+    }
+
+    private async Task ShowErrorDialogAsync(string message, XamlRoot xamlRoot)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        var enqueueResult = DispatcherQueue.GetForCurrentThread().TryEnqueue(async () =>
+        {
+            try
+            {
+                xamlRoot = xamlRoot ?? App.MainWindow.Content.XamlRoot;
+                if (xamlRoot == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("[ERROR] DetailOrderViewModel.ShowErrorDialogAsync: xamlRoot is null, cannot show dialog");
+                    tcs.SetResult(false);
+                    return;
+                }
+
+                var dialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = message,
+                    CloseButtonText = "OK",
+                    XamlRoot = xamlRoot
+                };
+                await dialog.ShowAsync();
+                tcs.SetResult(true);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] DetailOrderViewModel.ShowErrorDialogAsync: Failed to show dialog. Exception: {ex.Message}");
+                tcs.SetResult(false);
+            }
+        });
+
+        System.Diagnostics.Debug.WriteLine($"[DEBUG] DetailOrderViewModel.ShowErrorDialogAsync: DispatcherQueue.TryEnqueue result: {enqueueResult}");
+        if (!enqueueResult)
+        {
+            System.Diagnostics.Debug.WriteLine("[ERROR] DetailOrderViewModel.ShowErrorDialogAsync: Failed to enqueue dialog creation on UI thread");
+            tcs.SetResult(false);
+        }
+
+        await tcs.Task;
     }
 }

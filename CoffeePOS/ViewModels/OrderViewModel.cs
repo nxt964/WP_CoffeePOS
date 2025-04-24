@@ -8,6 +8,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CoffeePOS.Models;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 namespace CoffeePOS.ViewModels;
 
@@ -15,6 +18,8 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
 {
     private readonly IDao _dao;
     private ObservableCollection<OrderDisplay> _allOrdersDisplay = new ObservableCollection<OrderDisplay>();
+    private XamlRoot _xamlRoot;
+    private bool _isDialogShowing;
 
     [ObservableProperty]
     private ObservableCollection<OrderDisplay> source = new ObservableCollection<OrderDisplay>();
@@ -38,7 +43,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     public OrderViewModel(IDao dao)
     {
         _dao = dao;
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel Constructor: _dao is null: {_dao == null}");
+        LogMessage("DEBUG", $"OrderViewModel Constructor: _dao is null: {_dao == null}");
     }
 
     public int PageSize
@@ -48,11 +53,16 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
         {
             if (SetProperty(ref _pageSize, value))
             {
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.PageSize: Changed to {value}");
+                LogMessage("DEBUG", $"OrderViewModel.PageSize: Changed to {value}");
                 currentPage = 1;
                 UpdatePagination();
             }
         }
+    }
+
+    public void SetXamlRoot(XamlRoot xamlRoot)
+    {
+        _xamlRoot = xamlRoot;
     }
 
     public async void OnNavigatedTo(object parameter)
@@ -62,7 +72,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
 
     public void OnNavigatedFrom()
     {
-        System.Diagnostics.Debug.WriteLine("[DEBUG] OrderViewModel.OnNavigatedFrom: Leaving OrderPage...");
+        LogMessage("DEBUG", "OrderViewModel.OnNavigatedFrom: Leaving OrderPage...");
     }
 
     [RelayCommand]
@@ -75,7 +85,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("[DEBUG] OrderViewModel.LoadOrders: Loading orders...");
+            LogMessage("DEBUG", "OrderViewModel.LoadOrders: Loading orders...");
             _allOrdersDisplay.Clear();
             Source.Clear();
 
@@ -85,7 +95,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
 
             if (!orders.Any())
             {
-                System.Diagnostics.Debug.WriteLine("[DEBUG] OrderViewModel.LoadOrders: No orders found in database.");
+                LogMessage("DEBUG", "OrderViewModel.LoadOrders: No orders found in database.");
             }
 
             foreach (var order in orders)
@@ -114,18 +124,19 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
             }
 
             UpdatePagination();
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.LoadOrders: Loaded {_allOrdersDisplay.Count} orders");
+            LogMessage("DEBUG", $"OrderViewModel.LoadOrders: Loaded {_allOrdersDisplay.Count} orders");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[ERROR] OrderViewModel.LoadOrders: {ex.Message}");
+            LogMessage("ERROR", $"OrderViewModel.LoadOrders: {ex.Message}");
+            await ShowDialogAsync("Error", $"Failed to load orders: {ex.Message}", "OK");
         }
     }
 
     [RelayCommand]
     private void Add()
     {
-        // TODO: Implement Add logic
+        // Handled in OrderPage.xaml.cs
     }
 
     private bool CanDeleteOrder(string orderId)
@@ -136,7 +147,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
         }
 
         var order = _allOrdersDisplay.FirstOrDefault(o => o.Id == id);
-        return order != null; // Bỏ điều kiện kiểm tra trạng thái "Complete"
+        return order != null;
     }
 
     [RelayCommand(CanExecute = nameof(CanDeleteOrder))]
@@ -144,41 +155,48 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.Delete: Deleting OrderId = {orderId}");
-            if (int.TryParse(orderId, out int id))
+            LogMessage("DEBUG", $"OrderViewModel.Delete: Attempting to delete OrderId = {orderId}");
+            if (!int.TryParse(orderId, out int id))
             {
-                var order = _allOrdersDisplay.FirstOrDefault(o => o.Id == id);
-                if (order == null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[ERROR] OrderViewModel.Delete: OrderId {id} not found in _allOrdersDisplay");
-                    return;
-                }
-
-                // Xóa các chi tiết đơn hàng liên quan trước
-                var orderDetails = (await _dao.OrderDetails.GetAll()).Where(od => od.OrderId == id).ToList();
-                foreach (var detail in orderDetails)
-                {
-                    await _dao.OrderDetails.Delete(detail.Id);
-                }
-
-                await _dao.Orders.Delete(id);
-                await _dao.SaveChangesAsync();
-
-                _allOrdersDisplay.Remove(order);
-                UpdatePagination();
-                System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.Delete: Successfully deleted OrderId {id}");
+                LogMessage("ERROR", $"OrderViewModel.Delete: Invalid OrderId = {orderId}");
+                await ShowDialogAsync("Error", "Invalid order ID.", "OK");
+                return;
             }
+
+            var order = _allOrdersDisplay.FirstOrDefault(o => o.Id == id);
+            if (order == null)
+            {
+                LogMessage("ERROR", $"OrderViewModel.Delete: OrderId {id} not found in _allOrdersDisplay");
+                await ShowDialogAsync("Error", "Order not found.", "OK");
+                return;
+            }
+
+            // Delete related order details
+            var orderDetails = (await _dao.OrderDetails.GetAll()).Where(od => od.OrderId == id).ToList();
+            foreach (var detail in orderDetails)
+            {
+                await _dao.OrderDetails.Delete(detail.Id);
+            }
+
+            await _dao.Orders.Delete(id);
+            await _dao.SaveChangesAsync();
+
+            _allOrdersDisplay.Remove(order);
+            UpdatePagination();
+            LogMessage("DEBUG", $"OrderViewModel.Delete: Successfully deleted OrderId = {id}");
+            await ShowDialogAsync("Success", $"Order ID {id} has been deleted successfully.", "OK");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[ERROR] OrderViewModel.Delete: {ex.Message}");
+            LogMessage("ERROR", $"OrderViewModel.Delete: Failed to delete OrderId = {orderId}. Exception: {ex.Message}");
+            await ShowDialogAsync("Error", $"Failed to delete order: {ex.Message}", "OK");
         }
     }
 
     [RelayCommand]
     private void Search()
     {
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.Search: SearchQuery = {SearchQuery}");
+        LogMessage("DEBUG", $"OrderViewModel.Search: SearchQuery = {SearchQuery}");
         currentPage = 1;
         UpdatePagination();
     }
@@ -186,10 +204,10 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     [RelayCommand]
     private void Filter()
     {
-        System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.Filter: FromDate = {FromDate}, ToDate = {ToDate}");
+        LogMessage("DEBUG", $"OrderViewModel.Filter: FromDate = {FromDate}, ToDate = {ToDate}");
         if (FromDate > ToDate)
         {
-            System.Diagnostics.Debug.WriteLine("[DEBUG] OrderViewModel.Filter: FromDate is greater than ToDate, swapping...");
+            LogMessage("DEBUG", "OrderViewModel.Filter: FromDate is greater than ToDate, swapping...");
             var temp = FromDate;
             FromDate = ToDate;
             ToDate = temp;
@@ -201,7 +219,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
     [RelayCommand]
     private void RemoveFilter()
     {
-        System.Diagnostics.Debug.WriteLine("[DEBUG] OrderViewModel.RemoveFilter: Resetting filters...");
+        LogMessage("DEBUG", "OrderViewModel.RemoveFilter: Resetting filters...");
         FromDate = DateTimeOffset.Now.AddDays(-30);
         ToDate = DateTimeOffset.Now;
         SearchQuery = null;
@@ -216,7 +234,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
         {
             currentPage--;
             UpdatePagination();
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.PreviousPage: CurrentPage = {currentPage}");
+            LogMessage("DEBUG", $"OrderViewModel.PreviousPage: CurrentPage = {currentPage}");
         }
     }
 
@@ -227,7 +245,7 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
         {
             currentPage++;
             UpdatePagination();
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.NextPage: CurrentPage = {currentPage}");
+            LogMessage("DEBUG", $"OrderViewModel.NextPage: CurrentPage = {currentPage}");
         }
     }
 
@@ -260,11 +278,81 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
             }
 
             PageInfo = $"{currentPage} / {totalPages}";
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] OrderViewModel.UpdatePagination: PageInfo = {PageInfo}, Displayed Orders = {Source.Count}");
+            LogMessage("DEBUG", $"OrderViewModel.UpdatePagination: PageInfo = {PageInfo}, Displayed Orders = {Source.Count}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[ERROR] OrderViewModel.UpdatePagination: {ex.Message}");
+            LogMessage("ERROR", $"OrderViewModel.UpdatePagination: {ex.Message}");
+            // No dialog to avoid spamming during pagination
+        }
+    }
+
+    private async Task ShowDialogAsync(string title, string content, string closeButtonText)
+    {
+        if (_isDialogShowing)
+        {
+            LogMessage("DEBUG", $"OrderViewModel.ShowDialogAsync: Another dialog is already showing. Skipping...");
+            return;
+        }
+
+        try
+        {
+            _isDialogShowing = true;
+            LogMessage("DEBUG", $"OrderViewModel.ShowDialogAsync: Showing dialog - Title: {title}, Content: {content}");
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = content,
+                CloseButtonText = closeButtonText,
+                XamlRoot = _xamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+        catch (Exception ex)
+        {
+            LogMessage("ERROR", $"OrderViewModel.ShowDialogAsync: Failed to show dialog. Exception: {ex.Message}");
+        }
+        finally
+        {
+            _isDialogShowing = false;
+        }
+    }
+
+    private async void LogMessage(string type, string message)
+    {
+        try
+        {
+            var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var logMessage = $"[{timestamp}] [{type}] {message}";
+
+            // Write to debug console
+            System.Diagnostics.Debug.WriteLine(logMessage);
+
+            if (_xamlRoot == null)
+            {
+                return;
+            }
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = _xamlRoot,
+                Content = logMessage,
+                Style = Application.Current.Resources["ToastNotificationStyle"] as Style,
+                Background = type == "ERROR" ? new SolidColorBrush(Microsoft.UI.Colors.Red) : new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 233, 236, 239)),
+                Foreground = type == "ERROR" ? new SolidColorBrush(Microsoft.UI.Colors.White) : new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 52, 58, 64)),
+            };
+
+            // Run the dialog in the background and auto-dismiss after 3 seconds
+            _ = Task.Run(async () =>
+            {
+                await dialog.ShowAsync();
+                await Task.Delay(3000);
+                dialog.Hide();
+            });
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ERROR] OrderViewModel.LogMessage: Failed to show toast notification. Exception: {ex.Message}");
         }
     }
 

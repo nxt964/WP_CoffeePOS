@@ -18,8 +18,8 @@ internal class OrderStatusToColorConverter : IValueConverter
             return status switch
             {
                 "Pending" => new SolidColorBrush(Color.FromArgb(255, 0, 120, 215)),      
-                "Completed" => new SolidColorBrush(Color.FromArgb(255, 0, 200, 0)),   
-                "Cancelled" => new SolidColorBrush(Color.FromArgb(255, 232, 17, 35)), 
+                "Complete" => new SolidColorBrush(Color.FromArgb(255, 0, 200, 0)),   
+                "Cancel" => new SolidColorBrush(Color.FromArgb(255, 232, 17, 35)), 
                 "In Progress" => new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)), 
                 _ => new SolidColorBrush(Color.FromArgb(255, 128, 128, 128))
             };

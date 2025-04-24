@@ -5,14 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:CoffeePOS.Models"
-    xmlns:converters="using:CoffeePOS.Converters" 
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    <Page.Resources>
-        <converters:CurrencyFormatter x:Key="CurrencyConverter"/>
-        <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
-    </Page.Resources>
+    xmlns:converters="using:CoffeePOS.Converters"
+    mc:Ignorable="d">
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -21,14 +15,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Page Title -->
         <TextBlock
             Grid.Row="0"
             Text="Add Product to Order Detail"
             Style="{StaticResource TitleTextBlockStyle}"
-            Margin="0,0,0,20"/>
+            Margin="0,0,0,20"
+            Foreground="#343A40"/>
 
-        <!-- Thanh tìm kiếm -->
         <AutoSuggestBox
             Grid.Row="0"
             PlaceholderText="Find product by name"
@@ -40,59 +33,55 @@
             Style="{StaticResource AutoSuggestBoxStyle}"/>
 
         <ListView
-    Grid.Row="1"
-    ItemsSource="{Binding Products}"
-    SelectionMode="None"
-    MaxHeight="400"
-    ScrollViewer.VerticalScrollBarVisibility="Auto"
-    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-    BorderThickness="1"
-    CornerRadius="4">
-            <!-- Thay đổi ItemsPanel để hiển thị dạng lưới -->
+            Grid.Row="1"
+            ItemsSource="{Binding Products}"
+            SelectionMode="None"
+            MaxHeight="400"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="1"
+            CornerRadius="4">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3" />
+                    <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3"/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-            <!-- ItemTemplate cho từng sản phẩm -->
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:Product">
                     <Border Background="Transparent" Margin="5">
                         <StackPanel Orientation="Horizontal" Padding="5" MinWidth="0">
                             <CheckBox
-                        IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                        VerticalAlignment="Center"
-                        Width="0" 
+                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                IsEnabled="{Binding IsStocked}"
+                                VerticalAlignment="Center"
+                                Width="0"
                                 Height="0"
                                 Margin="0,0,5,0"/>
-                            <StackPanel VerticalAlignment="Center"
-                                     Width="165">
+                            <StackPanel VerticalAlignment="Center" Width="165">
                                 <TextBlock
-                            Text="{Binding Name}"
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                    Text="{Binding Name}"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
                                 <TextBlock
-                            Text="{Binding IsStocked, Converter={StaticResource BoolToStockStatusConverter}}"
-                            FontSize="12"
-                            Foreground="{Binding IsStocked, Converter={StaticResource BoolToColorConverter}}" />
-                                </StackPanel>
+                                    Text="{Binding IsStocked, Converter={StaticResource BoolToStockStatusConverter}}"
+                                    FontSize="12"
+                                    Foreground="{Binding IsStocked, Converter={StaticResource BoolToColorConverter}}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <!-- Điều chỉnh ItemContainerStyle để tận dụng chiều ngang -->
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                    <Setter Property="Padding" Value="0" />
-                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
 
-        <!-- Thông báo nếu không có sản phẩm -->
         <TextBlock
             Grid.Row="1"
             Text="Không tìm thấy sản phẩm."
@@ -101,21 +90,33 @@
             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
             Visibility="{Binding Products.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter='0'}"/>
 
-        <!-- Buttons -->
         <StackPanel
             Grid.Row="2"
-            Orientation="Horizontal"
-            HorizontalAlignment="Right"
+            Spacing="5"
             Margin="0,20,0,0">
-            <Button
-                Content="Add"
-                Click="AddButton_Click"
-                Style="{StaticResource AccentButtonStyle}"
-                Margin="0,0,10,0"/>
-            <Button
-                Content="Back"
-                Click="BackButton_Click"
-                Style="{StaticResource ButtonStyle}"/>
+            <TextBlock
+                Text="{Binding NoProductsSelectedError, Mode=OneWay}"
+                Foreground="#dc3545"
+                FontSize="12"
+                TextWrapping="Wrap"
+                Visibility="{Binding NoProductsSelectedError, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"
+                HorizontalAlignment="Right"/>
+            <StackPanel
+                Grid.Row="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="10">
+                <Button
+                    Content="Add"
+                    Click="AddButton_Click"
+                    Background="#28a745"
+                    Foreground="White"/>
+                <Button
+                    Content="Back"
+                    Click="BackButton_Click"
+                    Background="#dc3545"
+                    Foreground="White"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

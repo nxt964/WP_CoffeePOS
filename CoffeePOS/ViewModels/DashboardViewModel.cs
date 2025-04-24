@@ -14,6 +14,7 @@ public partial class DashboardViewModel : ObservableRecipient
     public class OrderData : Order
     {
         public string CustomerName { get; set; } = string.Empty;
+        public string CustomerPhone { get; set; } = string.Empty;
         public string ServiceTypeName { get; set; } = string.Empty;
     }
     public DashboardViewModel(IDao dao, INavigationService navigationService)
@@ -142,10 +143,11 @@ public partial class DashboardViewModel : ObservableRecipient
         foreach (var order in latestOrders)
         {
             var customer = await _dao.Customers.GetById((int)order.CustomerId);
-            var customerName = customer != null ? customer.Name : "Unknown";
+            var customerName = customer != null ? customer.Name : "Undefined";
+            var customerPhone = customer != null ? customer.Phone : "Undefined";
 
             var serviceType = await _dao.ServiceTypes.GetById((int)order.ServiceTypeId);
-            var serviceTypeName = serviceType != null ? serviceType.Name : "Unknown";
+            var serviceTypeName = serviceType != null ? serviceType.Name : "Undefined";
 
             LatestOrders.Add(new OrderData
             {
@@ -153,6 +155,7 @@ public partial class DashboardViewModel : ObservableRecipient
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
                 CustomerName = customerName,
+                CustomerPhone = customerPhone,
                 ServiceTypeName = serviceTypeName,
                 Status = order.Status
             });

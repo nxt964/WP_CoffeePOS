@@ -71,7 +71,7 @@ public partial class CategoriesViewModel : ObservableRecipient, INavigationAware
         {
             var outerPanel = (StackPanel)dialog.Content;
             var nameBox = (TextBox)((StackPanel)outerPanel.Children[0]).Children[1];
-            var descriptionBox = (TextBox)((StackPanel)outerPanel.Children[1]).Children[1];
+            var descriptionBox = (TextBox)((StackPanel)outerPanel.Children[2]).Children[1];
 
             var newCategory = new Category { Id = Categories.Count + 1, Name = nameBox.Text, Description = descriptionBox.Text };
             await _dao.Categories.Add(newCategory);
@@ -93,7 +93,7 @@ public partial class CategoriesViewModel : ObservableRecipient, INavigationAware
         {
             var outerPanel = (StackPanel)dialog.Content;
             var nameBox = (TextBox)((StackPanel)outerPanel.Children[0]).Children[1];
-            var descriptionBox = (TextBox)((StackPanel)outerPanel.Children[1]).Children[1];
+            var descriptionBox = (TextBox)((StackPanel)outerPanel.Children[2]).Children[1];
 
             await _dao.Categories.Update(new Category { Id = Selected.Id, Name = nameBox.Text, Description = descriptionBox.Text });
             await LoadCategories();

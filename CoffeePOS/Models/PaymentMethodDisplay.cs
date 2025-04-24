@@ -1,6 +1,6 @@
 ﻿namespace CoffeePOS.Models;
 
-public class PaymentMethod
+public class PaymentMethodDisplay
 {
     public int Id
     {

@@ -192,7 +192,7 @@
                 </Border>
 
                 <!-- Recent Orders -->
-                <Border Grid.Row="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                <Border Grid.Row="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
                         CornerRadius="8" Padding="16" Margin="0,0,0,20">
                     <Grid>
@@ -270,7 +270,7 @@
 
 
                 <!-- Pie Chart Section -->
-                <Border Grid.Row="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                <Border Grid.Row="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
         CornerRadius="8" Padding="16" Margin="0,0,0,20" MinHeight="300">
                     <Grid>
