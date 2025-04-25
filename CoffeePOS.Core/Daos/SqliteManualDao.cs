@@ -4,6 +4,7 @@ using CoffeePOS.Core.Models;
 using CoffeePOS.Core.Repositories;
 using Microsoft.Data.Sqlite;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace CoffeePOS.Core.Daos;
@@ -382,12 +383,12 @@ public class SqliteManualDao : IDao
             "INSERT OR IGNORE INTO Reservations (Id, CustomerId, TableId, ReservationDate, StartTime, EndTime, Status) VALUES (1, 1, 1, '2025-03-25', '18:00', '20:00', 'Confirmed')",
             
             // Orders - Create some sample orders
-            "INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES (1, 1, '2025-03-20 10:00:00', '2025-03-20 10:05:00', 'Completed', 1, 1, 15.00, 1, 1)",
-            "INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES (2, 2, '2025-03-21 12:30:00', NULL, 'Pending', NULL, NULL, 8.50, 2, 2)",
+            //"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES (1, 1, '2025-03-20 10:00:00', '2025-03-20 10:05:00', 'Completed', 1, 1, 15.00, 1, 1)",
+            //"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES (2, 2, '2025-03-21 12:30:00', NULL, 'Pending', NULL, NULL, 8.50, 2, 2)",
             
             // OrderDetails
-            "INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES (1, 1, 1, 2, 2.50)",
-            "INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES (2, 1, 11, 1, 3.00)",
+            //"INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES (1, 1, 1, 2, 2.50)",
+            //"INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES (2, 1, 11, 1, 3.00)",
             
             // Initial inventory transactions - After ingredients are inserted
             @"INSERT OR IGNORE INTO IngredientInventoryTransactions (IngredientId, Timestamp, Quantity, Unit, TransactionType, UnitPrice) 
@@ -629,9 +630,171 @@ public class SqliteManualDao : IDao
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 34, 0.03)", // 30g Strawberries
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 33, 0.03)", // 30g Blueberries
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 42, 0.04)", // 40g Cream Cheese
-            "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 26, 0.02)"  // 20g Sugar
+            "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 26, 0.02)",  // 20g Sugar
+            @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (8, 1, '2025-01-03 14:00:00', '2025-01-03 14:10:00', 'Completed', 1, 5, 29.70, 2, 1),
+    (9, 2, '2025-01-08 16:30:00', '2025-01-08 16:40:00', 'Completed', NULL, NULL, 35.50, 1, 2),
+    (10, 1, '2025-01-12 19:00:00', NULL, 'Pending', 2, NULL, 48.00, NULL, 1),
+    (11, 2, '2025-01-18 11:45:00', '2025-01-18 11:50:00', 'Completed', 1, 6, 62.40, 2, 1),
+    (12, 1, '2025-01-22 13:20:00', '2025-01-22 13:30:00', 'Completed', NULL, 7, 27.20, 1, 2)",
+
+// February 2025 - Valentine's season
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (13, 1, '2025-02-01 18:00:00', '2025-02-01 18:15:00', 'Completed', 2, 8, 76.50, 2, 1),
+    (14, 2, '2025-02-07 12:30:00', '2025-02-07 12:35:00', 'Completed', NULL, NULL, 41.25, 1, 2),
+    (15, 1, '2025-02-12 20:15:00', '2025-02-12 20:25:00', 'Completed', 1, 9, 53.10, 2, 1),
+    (16, 2, '2025-02-16 15:45:00', NULL, 'Pending', NULL, NULL, 39.80, NULL, 2),
+    (17, 1, '2025-02-20 17:30:00', '2025-02-20 17:40:00', 'Completed', 2, 1, 67.50, 1, 1)",
+
+// March 2025 - Spring beginning
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (18, 2, '2025-03-02 10:30:00', '2025-03-02 10:40:00', 'Completed', 1, 2, 44.80, 2, 1),
+    (19, 1, '2025-03-08 13:15:00', '2025-03-08 13:25:00', 'Completed', NULL, NULL, 52.60, 1, 2),
+    (20, 2, '2025-03-12 16:00:00', '2025-03-12 16:10:00', 'Completed', 2, 3, 71.40, 2, 1),
+    (21, 1, '2025-03-18 19:30:00', NULL, 'Pending', 1, NULL, 33.90, NULL, 1),
+    (22, 2, '2025-03-22 11:00:00', '2025-03-22 11:10:00', 'Completed', NULL, 4, 49.50, 1, 2)",
+
+// April 2025 - Spring break
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (23, 1, '2025-04-01 12:45:00', '2025-04-01 12:55:00', 'Completed', 2, 5, 88.20, 2, 1),
+    (24, 2, '2025-04-05 15:30:00', '2025-04-05 15:40:00', 'Completed', NULL, NULL, 46.75, 1, 2),
+    (25, 1, '2025-04-10 18:15:00', '2025-04-10 18:25:00', 'Completed', 1, 6, 64.80, 2, 1),
+    (26, 2, '2025-04-15 20:00:00', NULL, 'Pending', NULL, NULL, 42.30, NULL, 2),
+    (27, 1, '2025-04-20 14:30:00', '2025-04-20 14:40:00', 'Completed', 2, 7, 73.10, 1, 1)",
+
+// May 2025 - Start of summer
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (28, 2, '2025-05-02 11:30:00', '2025-05-02 11:40:00', 'Completed', 1, 8, 55.90, 2, 1),
+    (29, 1, '2025-05-08 13:45:00', '2025-05-08 13:55:00', 'Completed', NULL, NULL, 62.40, 1, 2),
+    (30, 2, '2025-05-12 16:20:00', '2025-05-12 16:30:00', 'Completed', 2, 9, 79.20, 2, 1),
+    (31, 1, '2025-05-18 19:00:00', NULL, 'Pending', 1, NULL, 47.60, NULL, 1),
+    (32, 2, '2025-05-22 12:15:00', '2025-05-22 12:25:00', 'Completed', NULL, 1, 51.30, 1, 2)",
+
+// June 2025 - Summer peak
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (33, 1, '2025-06-01 14:00:00', '2025-06-01 14:10:00', 'Completed', 2, 2, 92.70, 2, 1),
+    (34, 2, '2025-06-05 16:45:00', '2025-06-05 16:55:00', 'Completed', NULL, NULL, 58.90, 1, 2),
+    (35, 1, '2025-06-10 19:30:00', '2025-06-10 19:40:00', 'Completed', 1, 3, 66.40, 2, 1),
+    (36, 2, '2025-06-15 11:45:00', NULL, 'Pending', NULL, NULL, 44.20, NULL, 2),
+    (37, 1, '2025-06-20 13:20:00', '2025-06-20 13:30:00', 'Completed', 2, 4, 81.50, 1, 1)",
+
+// July 2025 - Peak summer
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (38, 2, '2025-07-02 15:30:00', '2025-07-02 15:40:00', 'Completed', 1, 5, 77.80, 2, 1),
+    (39, 1, '2025-07-08 18:15:00', '2025-07-08 18:25:00', 'Completed', NULL, NULL, 63.20, 1, 2),
+    (40, 2, '2025-07-12 20:00:00', '2025-07-12 20:10:00', 'Completed', 2, 6, 85.90, 2, 1),
+    (41, 1, '2025-07-18 12:45:00', NULL, 'Pending', 1, NULL, 49.70, NULL, 1),
+    (42, 2, '2025-07-22 14:30:00', '2025-07-22 14:40:00', 'Completed', NULL, 7, 72.40, 1, 2)",
+
+// August 2025 - Late summer
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (43, 1, '2025-08-01 16:00:00', '2025-08-01 16:10:00', 'Completed', 2, 8, 94.30, 2, 1),
+    (44, 2, '2025-08-05 19:30:00', '2025-08-05 19:40:00', 'Completed', NULL, NULL, 57.60, 1, 2),
+    (45, 1, '2025-08-10 11:45:00', '2025-08-10 11:55:00', 'Completed', 1, 9, 68.20, 2, 1),
+    (46, 2, '2025-08-15 13:20:00', NULL, 'Pending', NULL, NULL, 45.80, NULL, 2),
+    (47, 1, '2025-08-20 15:45:00', '2025-08-20 15:55:00', 'Completed', 2, 1, 83.10, 1, 1)",
+
+// September 2025 - Back to school
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (48, 2, '2025-09-02 12:15:00', '2025-09-02 12:25:00', 'Completed', 1, 2, 61.40, 2, 1),
+    (49, 1, '2025-09-08 14:30:00', '2025-09-08 14:40:00', 'Completed', NULL, NULL, 49.90, 1, 2)",
+// September 2025 - Back to school
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (50, 2, '2025-09-12 16:20:00', '2025-09-12 16:30:00', 'Completed', 2, 3, 82.80, 2, 1),
+    (51, 1, '2025-09-18 18:10:00', NULL, 'Pending', 1, NULL, 56.40, NULL, 1),
+    (52, 2, '2025-09-22 20:00:00', '2025-09-22 20:10:00', 'Completed', NULL, 4, 65.70, 1, 2),
+    (53, 1, '2025-09-25 11:15:00', '2025-09-25 11:25:00', 'Completed', 2, 5, 74.90, 2, 1),
+    (54, 2, '2025-09-28 13:40:00', '2025-09-28 13:50:00', 'Completed', 1, NULL, 43.20, 1, 1)",
+
+// October 2025 - Autumn
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (55, 1, '2025-10-02 15:30:00', '2025-10-02 15:40:00', 'Completed', 2, 6, 91.50, 2, 1),
+    (56, 2, '2025-10-07 17:45:00', '2025-10-07 17:55:00', 'Completed', NULL, NULL, 59.80, 1, 2),
+    (57, 1, '2025-10-12 19:30:00', '2025-10-12 19:40:00', 'Completed', 1, 7, 68.40, 2, 1),
+    (58, 2, '2025-10-18 12:15:00', NULL, 'Pending', NULL, NULL, 47.90, NULL, 2),
+    (59, 1, '2025-10-22 14:00:00', '2025-10-22 14:10:00', 'Completed', 2, 8, 83.20, 1, 1),
+    (60, 2, '2025-10-27 16:30:00', '2025-10-27 16:40:00', 'Completed', 1, 9, 72.60, 2, 1)",
+
+// November 2025 - Pre-holiday
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (61, 1, '2025-11-01 11:45:00', '2025-11-01 11:55:00', 'Completed', 2, 1, 88.90, 2, 1),
+    (62, 2, '2025-11-05 13:20:00', '2025-11-05 13:30:00', 'Completed', NULL, NULL, 55.30, 1, 2),
+    (63, 1, '2025-11-10 15:45:00', '2025-11-10 15:55:00', 'Completed', 1, 2, 76.40, 2, 1),
+    (64, 2, '2025-11-15 18:00:00', NULL, 'Pending', NULL, NULL, 62.10, NULL, 2),
+    (65, 1, '2025-11-20 20:15:00', '2025-11-20 20:25:00', 'Completed', 2, 3, 94.50, 1, 1),
+    (66, 2, '2025-11-25 12:30:00', '2025-11-25 12:40:00', 'Completed', 1, 4, 67.80, 2, 1)",
+
+// December 2025 - Holiday season
+@"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+    (67, 1, '2025-12-02 14:15:00', '2025-12-02 14:25:00', 'Completed', 2, 5, 102.60, 2, 1),
+    (68, 2, '2025-12-07 16:45:00', '2025-12-07 16:55:00', 'Completed', NULL, NULL, 71.20, 1, 2),
+    (69, 1, '2025-12-12 19:00:00', '2025-12-12 19:10:00', 'Completed', 1, 6, 89.40, 2, 1),
+    (70, 2, '2025-12-18 11:30:00', NULL, 'Pending', NULL, NULL, 58.70, NULL, 2),
+    (71, 1, '2025-12-22 13:45:00', '2025-12-22 13:55:00', 'Completed', 2, 7, 96.30, 1, 1),
+    (72, 2, '2025-12-27 15:20:00', '2025-12-27 15:30:00', 'Completed', 1, 8, 84.50, 2, 1)",
+
+// OrderDetails for September to December 2025
+@"INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES 
+    -- September 2025
+    (17, 50, 3, 2, 4.00),  -- 2 Latte
+    (18, 50, 8, 1, 5.50),  -- 1 Club Sandwich
+    (19, 50, 35, 1, 5.00), -- 1 Fruit Tart
+    (20, 51, 12, 1, 4.50), -- 1 Mocha
+    (21, 51, 24, 2, 5.00), -- 2 Tuna Sandwich
+    (22, 52, 7, 2, 3.20),  -- 2 Orange Juice
+    (23, 52, 16, 1, 2.50), -- 1 Croissant
+    (24, 53, 2, 2, 3.50),  -- 2 Cappuccino
+    (25, 53, 30, 1, 4.00), -- 1 Chocolate Cake
+    (26, 54, 6, 1, 3.40),  -- 1 Peach Tea
+    (27, 54, 9, 1, 4.75),  -- 1 BLT Sandwich
+    -- October 2025
+    (28, 55, 1, 3, 2.50),  -- 3 Espresso
+    (29, 55, 31, 1, 3.75), -- 1 Cheesecake
+    (30, 55, 25, 1, 4.50), -- 1 Vanilla Milkshake
+    (31, 56, 20, 2, 2.75), -- 2 Apple Juice
+    (32, 56, 10, 1, 4.00), -- 1 Grilled Cheese
+    (33, 57, 15, 2, 3.50), -- 2 Chai Tea
+    (34, 57, 17, 1, 3.25), -- 1 Danish Pastry
+    (35, 58, 4, 1, 3.00),  -- 1 Chamomile Tea
+    (36, 58, 24, 1, 5.00), -- 1 Tuna Sandwich
+    (37, 59, 11, 2, 2.75), -- 2 Americano
+    (38, 59, 8, 1, 5.50),  -- 1 Club Sandwich
+    (39, 60, 3, 1, 4.00),  -- 1 Latte
+    (40, 60, 35, 1, 5.00), -- 1 Fruit Tart
+    -- November 2025
+    (41, 61, 12, 2, 4.50), -- 2 Mocha
+    (42, 61, 30, 1, 4.00), -- 1 Chocolate Cake
+    (43, 61, 25, 1, 4.50), -- 1 Vanilla Milkshake
+    (44, 62, 7, 2, 3.20),  -- 2 Orange Juice
+    (45, 62, 16, 1, 2.50), -- 1 Croissant
+    (46, 63, 2, 2, 3.50),  -- 2 Cappuccino
+    (47, 63, 9, 1, 4.75),  -- 1 BLT Sandwich
+    (48, 64, 6, 1, 3.40),  -- 1 Peach Tea
+    (49, 64, 24, 2, 5.00), -- 2 Tuna Sandwich
+    (50, 65, 1, 3, 2.50),  -- 3 Espresso
+    (51, 65, 31, 1, 3.75), -- 1 Cheesecake
+    (52, 65, 35, 1, 5.00), -- 1 Fruit Tart
+    (53, 66, 20, 2, 2.75), -- 2 Apple Juice
+    (54, 66, 8, 1, 5.50),  -- 1 Club Sandwich
+    -- December 2025
+    (55, 67, 3, 2, 4.00),  -- 2 Latte
+    (56, 67, 30, 1, 4.00), -- 1 Chocolate Cake
+    (57, 67, 25, 2, 4.50), -- 2 Vanilla Milkshake
+    (58, 68, 15, 2, 3.50), -- 2 Chai Tea
+    (59, 68, 17, 1, 3.25), -- 1 Danish Pastry
+    (60, 69, 12, 2, 4.50), -- 2 Mocha
+    (61, 69, 8, 1, 5.50),  -- 1 Club Sandwich
+    (62, 70, 4, 1, 3.00),  -- 1 Chamomile Tea
+    (63, 70, 24, 1, 5.00), -- 1 Tuna Sandwich
+    (64, 71, 1, 3, 2.50),  -- 3 Espresso
+    (65, 71, 31, 1, 3.75), -- 1 Cheesecake
+    (66, 71, 35, 1, 5.00), -- 1 Fruit Tart
+    (67, 72, 11, 2, 2.75), -- 2 Americano
+    (68, 72, 8, 1, 5.50),  -- 1 Club Sandwich
+    (69, 72, 30, 1, 4.00)",
+
         };
-                
+
                 foreach (var commandText in seedCommands)
                 {
                     using var command = connection.CreateCommand();
