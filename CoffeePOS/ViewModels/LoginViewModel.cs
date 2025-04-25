@@ -138,7 +138,7 @@ public partial class LoginViewModel : ObservableObject
 
         var infoText = new TextBlock
         {
-            Text = "Create a free trial account to test the application. This account will expire in 30 seconds.",
+            Text = "Create a free trial account to test the application. This account will expire in 2 minutes.",
             TextWrapping = TextWrapping.Wrap,
             Margin = new Thickness(0, 0, 0, 10)
         };
@@ -202,7 +202,7 @@ public partial class LoginViewModel : ObservableObject
             {
                 Username = inputUsername,
                 Password = inputPassword,
-                ExpireAt = DateTime.UtcNow.AddSeconds(30)
+                ExpireAt = DateTime.UtcNow.AddSeconds(120)
             };
 
             var isAdded = await _dao.Users.AddTrialUser(trialUser);

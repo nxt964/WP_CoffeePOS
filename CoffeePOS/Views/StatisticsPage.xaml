@@ -337,7 +337,7 @@
                                           MaxHeight="300"
                                           VerticalScrollBarVisibility="Auto">
                             <controls:DataGrid.Columns>
-                                <controls:DataGridTemplateColumn Header="Image" Width="60">
+                                <controls:DataGridTemplateColumn Header="Image" Width="150">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Image Source="{Binding Image, Converter={StaticResource ImageSourceConverter}}" 
@@ -350,7 +350,7 @@
                                 <controls:DataGridTemplateColumn Header="Quantity" Width="Auto">
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding QuantitySold}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="{Binding QuantitySold}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>
@@ -358,7 +358,7 @@
                                     <controls:DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding TotalSales, Converter={StaticResource CurrencyConverter}}" 
-                                                      FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                                      FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                         </DataTemplate>
                                     </controls:DataGridTemplateColumn.CellTemplate>
                                 </controls:DataGridTemplateColumn>

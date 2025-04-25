@@ -215,6 +215,17 @@ public partial class ProductsDetailViewModel : ObservableRecipient, INavigationA
 
         if (result == ContentDialogResult.Primary)
         {
+            foreach (var productingredient in ProductIngredients)
+            {
+                var allProductIngredients = await _dao.ProductIngredients.GetAll();
+                var productIngredient = allProductIngredients.FirstOrDefault(
+                    pi => pi.ProductId == Item.Id && pi.IngredientId == productingredient.Ingredient.Id);
+
+                if (productIngredient != null)
+                {
+                    await _dao.ProductIngredients.Delete(productIngredient.Id);
+                }
+            }
             await _dao.Products.Delete(item.Id);
             _navigationService.GoBack();
         }

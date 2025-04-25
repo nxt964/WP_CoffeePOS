@@ -5,6 +5,14 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>CoffeePOS (Package)</ActiveDebugProfile>
+    <Source>C:\Users\THANH NGUYEN\Downloads\shop.png</Source>
+    <SmallTileSource>C:\Users\THANH NGUYEN\Downloads\shop.png</SmallTileSource>
+    <MediumTileSource>C:\Users\THANH NGUYEN\Downloads\shop.png</MediumTileSource>
+    <WideTileSource>C:\Users\THANH NGUYEN\Downloads\shop.png</WideTileSource>
+    <LargeTileSource>C:\Users\THANH NGUYEN\Downloads\shop.png</LargeTileSource>
+    <AppIconSource>C:\Users\THANH NGUYEN\Downloads\shop.png</AppIconSource>
+    <SplashScreenSource>C:\Users\THANH NGUYEN\Downloads\shop.png</SplashScreenSource>
+    <PackageLogoSource>C:\Users\THANH NGUYEN\Downloads\shop.png</PackageLogoSource>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
