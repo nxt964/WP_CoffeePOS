@@ -6,8 +6,10 @@ using CoffeePOS.Core.Models;
 using CoffeePOS.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Threading.Tasks;
 
@@ -159,32 +161,40 @@ public partial class LoginViewModel : ObservableObject
             Margin = new Thickness(0, 0, 0, 10)
         };
 
+        var errorText = new TextBlock
+        {
+            Foreground = new SolidColorBrush(Colors.Red),
+            Margin = new Thickness(0, 10, 0, 0),
+            TextWrapping = TextWrapping.Wrap
+        };
+
         panel.Children.Add(infoText);
         panel.Children.Add(usernameBox);
         panel.Children.Add(passwordBox);
         panel.Children.Add(confirmPasswordBox);
+        panel.Children.Add(errorText);
 
         dialog.Content = panel;
 
-        var result = await dialog.ShowAsync();
-
-        if (result == ContentDialogResult.Primary)
+        dialog.PrimaryButtonClick += async (s, args) =>
         {
             var inputUsername = usernameBox.Text?.Trim();
             var inputPassword = passwordBox.Password?.Trim();
             var confirmPassword = confirmPasswordBox.Password?.Trim();
 
-            if (string.IsNullOrWhiteSpace(inputUsername) || string.IsNullOrWhiteSpace(inputPassword) || string.IsNullOrEmpty(confirmPassword))
+            if (string.IsNullOrWhiteSpace(inputUsername) ||
+                string.IsNullOrWhiteSpace(inputPassword) ||
+                string.IsNullOrWhiteSpace(confirmPassword))
             {
-                ErrorMessage = "Please fill in all fields to create account!";
-                SuccessMessage = string.Empty;
+                errorText.Text = "Please fill in all fields to create account!";
+                args.Cancel = true;
                 return;
             }
 
             if (inputPassword != confirmPassword)
             {
-                ErrorMessage = "Password does not match!";
-                SuccessMessage = string.Empty;
+                errorText.Text = "Password does not match!";
+                args.Cancel = true;
                 return;
             }
 
@@ -192,23 +202,22 @@ public partial class LoginViewModel : ObservableObject
             {
                 Username = inputUsername,
                 Password = inputPassword,
-                ExpireAt = DateTime.UtcNow.AddSeconds(30) // dùng UTC cho chuẩn so sánh
+                ExpireAt = DateTime.UtcNow.AddSeconds(30)
             };
 
             var isAdded = await _dao.Users.AddTrialUser(trialUser);
             if (isAdded == null)
             {
-                ErrorMessage = "Username already exists!";
-                SuccessMessage = string.Empty;
+                errorText.Text = "Username already exists!";
+                args.Cancel = true;
                 return;
             }
-            else
-            {
-                ErrorMessage = string.Empty;
-                SuccessMessage = "Trial account created successfully!";
-                return;
-            }
-        }
+
+            ErrorMessage = string.Empty;
+            SuccessMessage = "Trial account created successfully!";
+        };
+
+        await dialog.ShowAsync();
     }
 
     private void StartTrialMonitor(User user)
