@@ -214,6 +214,7 @@
                                          AutoGenerateColumns="False"
                                          CanUserSortColumns="True" 
                                          CanUserResizeColumns="True"
+                                         IsReadOnly="True"
                                          GridLinesVisibility="Horizontal"
                                          AlternatingRowBackground="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
                                          Visibility="{x:Bind ViewModel.ProductIngredients.Count, Mode=OneWay, Converter={StaticResource ProductDetailCountToVisibilityConverter}, ConverterParameter='NotEmpty'}">

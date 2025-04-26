@@ -287,7 +287,8 @@
                         <Grid Grid.Row="1">
                             <controls:DataGrid
                                 AutoGenerateColumns="False"
-                                ItemsSource="{x:Bind ViewModel.LatestOrders, Mode=OneWay}">
+                                ItemsSource="{x:Bind ViewModel.LatestOrders, Mode=OneWay}"
+                                IsReadOnly="True">
                                 <controls:DataGrid.Columns>
                                     <controls:DataGridTextColumn
                                         Header="Order ID"
