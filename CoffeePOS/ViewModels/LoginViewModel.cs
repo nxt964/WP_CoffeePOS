@@ -1,8 +1,6 @@
-﻿// ViewModels/LoginViewModel.cs
-using CoffeePOS.Contracts.Services;
-using CoffeePOS.Core.Daos;
-using CoffeePOS.Core.Interfaces;
+﻿using CoffeePOS.Core.Interfaces;
 using CoffeePOS.Core.Models;
+using CoffeePOS.Helpers;
 using CoffeePOS.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -13,247 +11,242 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.Threading.Tasks;
 
-namespace CoffeePOS.ViewModels;
-
-public partial class LoginViewModel : ObservableObject
+namespace CoffeePOS.ViewModels
 {
-    private readonly IDao _dao;
-
-    [ObservableProperty]
-    private string username;
-
-    [ObservableProperty]
-    private string password;
-
-    [ObservableProperty]
-    private string errorMessage;
-
-    [ObservableProperty]
-    private string successMessage;
-
-    [ObservableProperty]
-    private bool rememberMe;
-
-    private DispatcherTimer _timer;
-
-    public LoginViewModel(IDao dao)
+    public partial class LoginViewModel : ObservableObject
     {
-        _dao = dao;
+        private readonly IDao _dao;
 
-        var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-        if (settings.Values.TryGetValue("RememberMe", out var remember) && (bool)remember)
-        {
-            RememberMe = true;
-            Username = settings.Values["SavedUsername"]?.ToString();
-            Password = settings.Values["SavedPassword"]?.ToString();
-        }
-    }
+        [ObservableProperty]
+        private string username;
 
-    [RelayCommand]
-    private async Task LoginAsync()
-    {
-        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        [ObservableProperty]
+        private string password;
+
+        [ObservableProperty]
+        private bool rememberMe;
+
+        [ObservableProperty]
+        private string errorMessage;
+
+        [ObservableProperty]
+        private string successMessage;
+
+        private DispatcherTimer _timer;
+
+        public LoginViewModel(IDao dao)
         {
-            ErrorMessage = "Please input Username and Password";
-            SuccessMessage = string.Empty;
-            return;
+            _dao = dao;
         }
 
-        try
+        // Khởi tạo ViewModel (không cần kiểm tra Remember Me nữa)
+        public async Task InitializeAsync()
         {
-            // Using the IUserRepository.Login method
-            var user = await _dao.Users.Login(Username, Password);
-
-            if (user != null)
+            var savedData = await RememberMeHelper.LoadAsync();
+            if (savedData != null)
             {
-                // Check if the user is expired
-                if (user.ExpireAt != null)
-                {
-                    if (user.ExpireAt <= DateTime.Now)
-                    {
-                        ErrorMessage = "Your trial account has expired!";
-                        SuccessMessage = string.Empty;
-                        return;
-                    }
-                    else
-                    {
-                        StartTrialMonitor(user);
-                    }
-                }
+                Username = savedData.Username;
+                Password = savedData.Password;
+                RememberMe = true;
+            }
+        }
 
-                // Clear error message on successful login
-                ErrorMessage = string.Empty;
-                SuccessMessage = "Log in successfully!";
 
-                // Save the username and password if RememberMe is checked
-                if (RememberMe)
+        [RelayCommand]
+        private async Task LoginAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Please input Username and Password";
+                SuccessMessage = string.Empty;
+                return;
+            }
+
+            try
+            {
+                var user = await _dao.Users.Login(Username, Password);
+
+                if (user != null)
                 {
-                    var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    settings.Values["RememberMe"] = true;
-                    settings.Values["SavedUsername"] = Username;
-                    settings.Values["SavedPassword"] = Password;
+                    if (user.ExpireAt != null)
+                    {
+                        if (user.ExpireAt <= DateTime.Now)
+                        {
+                            ErrorMessage = "Your trial account has expired!";
+                            SuccessMessage = string.Empty;
+                            return;
+                        }
+                        else
+                        {
+                            if (RememberMe)
+                            {
+                                await RememberMeHelper.SaveAsync(new RememberMeData
+                                {
+                                    Username = Username,
+                                    Password = Password
+                                });
+                            }
+                            else
+                            {
+                                RememberMeHelper.Delete();
+                            }
+                            StartTrialMonitor(user);
+                        }
+                    }
+
+                    ErrorMessage = string.Empty;
+                    SuccessMessage = "Log in successfully!";
+
+                    // Chuyển sang màn hình chính
+                    UIElement shell = App.GetService<ShellPage>();
+                    App.MainWindow.Content = shell ?? new Frame();
                 }
                 else
                 {
-                    var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    settings.Values.Remove("RememberMe");
-                    settings.Values.Remove("SavedUsername");
-                    settings.Values.Remove("SavedPassword");
+                    ErrorMessage = "Invalid Username or Password!";
+                    SuccessMessage = string.Empty;
                 }
-
-                // Navigate to the main application shell
-
-                //_navigationService.NavigateTo(typeof(ProductViewModel).FullName!);
-                // Điều hướng đến ShellPage thay vì DashboardViewModel
-                //_navigationService.NavigateTo(typeof(ShellViewModel).FullName!);
-                UIElement _shell = App.GetService<ShellPage>();
-                App.MainWindow.Content = _shell ?? new Frame();
             }
-            else
+            catch (Exception ex)
             {
-                ErrorMessage = "Invalid Username or Password!";
+                ErrorMessage = $"Something went wrong: {ex.Message}";
                 SuccessMessage = string.Empty;
             }
         }
-        catch (Exception ex)
+
+        [RelayCommand]
+        private async Task TrialAsync()
         {
-            ErrorMessage = $"Somethings went wrong: {ex.Message}";
-            SuccessMessage = string.Empty;
-        }
-    }
-
-    [RelayCommand]
-    private async Task TrialAsync()
-    {
-        var dialog = new ContentDialog
-        {
-            Title = "Free trial mode",
-            XamlRoot = App.MainWindow.Content.XamlRoot,
-            PrimaryButtonText = "Create",
-            CloseButtonText = "Cancel",
-            DefaultButton = ContentDialogButton.Primary
-        };
-
-        var panel = new StackPanel();
-
-        var infoText = new TextBlock
-        {
-            Text = "Create a free trial account to test the application. This account will expire in 2 minutes.",
-            TextWrapping = TextWrapping.Wrap,
-            Margin = new Thickness(0, 0, 0, 10)
-        };
-
-        var usernameBox = new TextBox
-        {
-            Header = "Username",
-            Margin = new Thickness(0, 0, 0, 10)
-        };
-
-        var passwordBox = new PasswordBox
-        {
-            Header = "Password",
-            Margin = new Thickness(0, 0, 0, 10)
-        };
-
-        var confirmPasswordBox = new PasswordBox
-        {
-            Header = "Confirm Password",
-            Margin = new Thickness(0, 0, 0, 10)
-        };
-
-        var errorText = new TextBlock
-        {
-            Foreground = new SolidColorBrush(Colors.Red),
-            Margin = new Thickness(0, 10, 0, 0),
-            TextWrapping = TextWrapping.Wrap
-        };
-
-        panel.Children.Add(infoText);
-        panel.Children.Add(usernameBox);
-        panel.Children.Add(passwordBox);
-        panel.Children.Add(confirmPasswordBox);
-        panel.Children.Add(errorText);
-
-        dialog.Content = panel;
-
-        dialog.PrimaryButtonClick += async (s, args) =>
-        {
-            var inputUsername = usernameBox.Text?.Trim();
-            var inputPassword = passwordBox.Password?.Trim();
-            var confirmPassword = confirmPasswordBox.Password?.Trim();
-
-            if (string.IsNullOrWhiteSpace(inputUsername) ||
-                string.IsNullOrWhiteSpace(inputPassword) ||
-                string.IsNullOrWhiteSpace(confirmPassword))
+            var dialog = new ContentDialog
             {
-                errorText.Text = "Please fill in all fields to create account!";
-                args.Cancel = true;
-                return;
-            }
-
-            if (inputPassword != confirmPassword)
-            {
-                errorText.Text = "Password does not match!";
-                args.Cancel = true;
-                return;
-            }
-
-            var trialUser = new User
-            {
-                Username = inputUsername,
-                Password = inputPassword,
-                ExpireAt = DateTime.UtcNow.AddSeconds(120)
+                Title = "Free trial mode",
+                XamlRoot = App.MainWindow.Content.XamlRoot,
+                PrimaryButtonText = "Create",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary
             };
 
-            var isAdded = await _dao.Users.AddTrialUser(trialUser);
-            if (isAdded == null)
+            var panel = new StackPanel();
+
+            var infoText = new TextBlock
             {
-                errorText.Text = "Username already exists!";
-                args.Cancel = true;
-                return;
-            }
+                Text = "Create a free trial account to test the application. This account will expire in 2 minutes.",
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 10)
+            };
 
-            ErrorMessage = string.Empty;
-            SuccessMessage = "Trial account created successfully!";
-        };
-
-        await dialog.ShowAsync();
-    }
-
-    private void StartTrialMonitor(User user)
-    {
-        if (user.ExpireAt == null)
-            return;
-
-        _timer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-
-        _timer.Tick += async (s, e) =>
-        {
-            if (user.ExpireAt <= DateTime.Now)
+            var usernameBox = new TextBox
             {
-                _timer.Stop();
+                Header = "Username",
+                Margin = new Thickness(0, 0, 0, 10)
+            };
 
-                var dialog = new ContentDialog
+            var passwordBox = new PasswordBox
+            {
+                Header = "Password",
+                Margin = new Thickness(0, 0, 0, 10)
+            };
+
+            var confirmPasswordBox = new PasswordBox
+            {
+                Header = "Confirm Password",
+                Margin = new Thickness(0, 0, 0, 10)
+            };
+
+            var errorText = new TextBlock
+            {
+                Foreground = new SolidColorBrush(Colors.Red),
+                Margin = new Thickness(0, 10, 0, 0),
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            panel.Children.Add(infoText);
+            panel.Children.Add(usernameBox);
+            panel.Children.Add(passwordBox);
+            panel.Children.Add(confirmPasswordBox);
+            panel.Children.Add(errorText);
+
+            dialog.Content = panel;
+
+            dialog.PrimaryButtonClick += async (s, args) =>
+            {
+                var inputUsername = usernameBox.Text?.Trim();
+                var inputPassword = passwordBox.Password?.Trim();
+                var confirmPassword = confirmPasswordBox.Password?.Trim();
+
+                if (string.IsNullOrWhiteSpace(inputUsername) ||
+                    string.IsNullOrWhiteSpace(inputPassword) ||
+                    string.IsNullOrWhiteSpace(confirmPassword))
                 {
-                    Title = "Trial Expired",
-                    Content = "Your trial account has expired!",
-                    PrimaryButtonText = "Exit",
-                    DefaultButton = ContentDialogButton.Primary,
-                    XamlRoot = App.MainWindow.Content.XamlRoot
+                    errorText.Text = "Please fill in all fields to create account!";
+                    args.Cancel = true;
+                    return;
+                }
+
+                if (inputPassword != confirmPassword)
+                {
+                    errorText.Text = "Password does not match!";
+                    args.Cancel = true;
+                    return;
+                }
+
+                var trialUser = new User
+                {
+                    Username = inputUsername,
+                    Password = inputPassword,
+                    ExpireAt = DateTime.UtcNow.AddSeconds(120)
                 };
 
-                var result = await dialog.ShowAsync();
-
-                if (result == ContentDialogResult.Primary)
+                var isAdded = await _dao.Users.AddTrialUser(trialUser);
+                if (isAdded == null)
                 {
-                    App.MainWindow.Content = App.GetService<LoginPage>();
+                    errorText.Text = "Username already exists!";
+                    args.Cancel = true;
+                    return;
                 }
-            }
-        };
 
-        _timer.Start();
+                ErrorMessage = string.Empty;
+                SuccessMessage = "Trial account created successfully!";
+            };
+
+            await dialog.ShowAsync();
+        }
+
+        private void StartTrialMonitor(User user)
+        {
+            if (user.ExpireAt == null)
+                return;
+
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+
+            _timer.Tick += async (s, e) =>
+            {
+                if (user.ExpireAt <= DateTime.Now)
+                {
+                    _timer.Stop();
+
+                    var dialog = new ContentDialog
+                    {
+                        Title = "Trial Expired",
+                        Content = "Your trial account has expired!",
+                        PrimaryButtonText = "Exit",
+                        DefaultButton = ContentDialogButton.Primary,
+                        XamlRoot = App.MainWindow.Content.XamlRoot
+                    };
+
+                    var result = await dialog.ShowAsync();
+
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        App.MainWindow.Content = App.GetService<LoginPage>();
+                    }
+                }
+            };
+
+            _timer.Start();
+        }
     }
 }

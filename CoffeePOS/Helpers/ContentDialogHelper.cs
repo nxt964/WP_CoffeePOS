@@ -224,10 +224,8 @@ public class ContentDialogHelper
     {
         if (file == null) return string.Empty;
 
-        // Cloudinary cần đường dẫn vật lý, nên copy file tạm
-        var tempFile = await file.CopyAsync(ApplicationData.Current.TemporaryFolder, file.Name, NameCollisionOption.GenerateUniqueName);
-
-        return await _cloudinaryService.UploadImageAsync(tempFile.Path);
+        using var stream = await file.OpenStreamForReadAsync();
+        return await _cloudinaryService.UploadImageAsync(stream, file.Name);
     }
 
 

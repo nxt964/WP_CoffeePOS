@@ -4,7 +4,7 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup>
-    <ActiveDebugProfile>CoffeePOS (Package)</ActiveDebugProfile>
+    <ActiveDebugProfile>CoffeePOS (Unpackaged)</ActiveDebugProfile>
     <Source>D:\PROGRAMMING\UNIVERSITY\Windows_Programming\FinalProject\CoffeePOS\Assets\Shop.png</Source>
     <SmallTileSource>D:\PROGRAMMING\UNIVERSITY\Windows_Programming\FinalProject\CoffeePOS\Assets\Shop.png</SmallTileSource>
     <MediumTileSource>D:\PROGRAMMING\UNIVERSITY\Windows_Programming\FinalProject\CoffeePOS\Assets\Shop.png</MediumTileSource>
@@ -13,6 +13,7 @@
     <AppIconSource>D:\PROGRAMMING\UNIVERSITY\Windows_Programming\FinalProject\CoffeePOS\Assets\Shop.png</AppIconSource>
     <SplashScreenSource>D:\PROGRAMMING\UNIVERSITY\Windows_Programming\FinalProject\CoffeePOS\Assets\Shop.png</SplashScreenSource>
     <PackageLogoSource>D:\PROGRAMMING\UNIVERSITY\Windows_Programming\FinalProject\CoffeePOS\Assets\Shop.png</PackageLogoSource>
+    <_LastSelectedProfileId>D:\PROGRAMMING\UNIVERSITY\Windows_Programming\FinalProject\CoffeePOS\Properties\PublishProfiles\win10-arm64.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

@@ -42,4 +42,19 @@ public class CloudinaryService
         var uploadResult = await _cloudinary.UploadAsync(uploadParams);
         return uploadResult.SecureUrl?.ToString() ?? string.Empty;
     }
+
+    public async Task<string> UploadImageAsync(Stream stream, string fileName)
+    {
+        var uploadParams = new ImageUploadParams()
+        {
+            File = new FileDescription(fileName, stream),
+            UseFilename = true,
+            UniqueFilename = true,
+            Overwrite = false,
+            Folder = "WP_CoffeePOS"
+        };
+
+        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        return uploadResult.SecureUrl.AbsoluteUri;
+    }
 }

@@ -150,26 +150,68 @@ public partial class App : Application
 
     private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
     {
-        // TODO: Log and handle exceptions as appropriate.
-        // https://docs.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.unhandledexception.
+        var exception = e.Exception;
+        var logMessage = new System.Text.StringBuilder();
+        logMessage.AppendLine($"Unhandled Exception: {exception.GetType().FullName}: {exception.Message}");
+        logMessage.AppendLine($"HResult: {exception.HResult}");
+        logMessage.AppendLine($"Stack Trace: {exception.StackTrace ?? "No stack trace available"}");
+
+        // Ghi tất cả InnerException
+        var inner = exception.InnerException;
+        while (inner != null)
+        {
+            logMessage.AppendLine($"Inner Exception: {inner.GetType().FullName}: {inner.Message}");
+            logMessage.AppendLine($"Inner Stack Trace: {inner.StackTrace ?? "No inner stack trace"}");
+            inner = inner.InnerException;
+        }
+
+        // Ghi thông tin thread
+        logMessage.AppendLine($"Current Thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+        logMessage.AppendLine($"Is UI Thread: {MainWindow.DispatcherQueue.HasThreadAccess}");
+
+        // Ghi vào file
+        File.WriteAllText("error_detailed.log", logMessage.ToString());
+        System.Diagnostics.Debug.WriteLine(logMessage.ToString());
+
+        e.Handled = true; // Ngăn ứng dụng crash ngay
     }
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
 
-        // Khởi tạo database
-        using (var scope = Host.Services.CreateScope())
+        try
         {
-            var dao = scope.ServiceProvider.GetRequiredService<IDao>();
-            if (dao is SqliteManualDao sqliteManualDao)
+            // Bước 1: Khởi tạo database
+            System.Diagnostics.Debug.WriteLine("Starting database initialization...");
+            using (var scope = Host.Services.CreateScope())
             {
-                await sqliteManualDao.InitializeDatabaseAsync();
+                var dao = scope.ServiceProvider.GetRequiredService<IDao>();
+                if (dao is SqliteManualDao sqliteManualDao)
+                {
+                    await sqliteManualDao.InitializeDatabaseAsync();
+                    System.Diagnostics.Debug.WriteLine("Database initialized successfully.");
+                }
             }
+
+            // Bước 2: Gọi notification
+            System.Diagnostics.Debug.WriteLine("Showing notification...");
+            MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
+                System.Diagnostics.Debug.WriteLine("Notification shown successfully.");
+            });
+
+            // Bước 3: Kích hoạt ứng dụng
+            System.Diagnostics.Debug.WriteLine("Activating application...");
+            await App.GetService<IActivationService>().ActivateAsync(args);
+            System.Diagnostics.Debug.WriteLine("Application activated successfully.");
         }
-
-        App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
-
-        await App.GetService<IActivationService>().ActivateAsync(args);
+        catch (Exception ex)
+        {
+            var logMessage = $"OnLaunched Exception: {ex.GetType().FullName}: {ex.Message}\nStack Trace: {ex.StackTrace}";
+            File.WriteAllText("onlaunched_error.log", logMessage);
+            System.Diagnostics.Debug.WriteLine(logMessage);
+        }
     }
 }
