@@ -631,7 +631,7 @@ public class SqliteManualDao : IDao
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 33, 0.03)", // 30g Blueberries
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 42, 0.04)", // 40g Cream Cheese
             "INSERT OR IGNORE INTO ProductIngredients (ProductId, IngredientId, QuantityUsed) VALUES (35, 26, 0.02)",  // 20g Sugar
-            @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
+                        @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
     (8, 1, '2025-01-03 14:00:00', '2025-01-03 14:10:00', 'Completed', 1, 5, 29.70, 2, 1),
     (9, 2, '2025-01-08 16:30:00', '2025-01-08 16:40:00', 'Completed', NULL, NULL, 35.50, 1, 2),
     (10, 1, '2025-01-12 19:00:00', NULL, 'Pending', 2, NULL, 48.00, NULL, 1),
@@ -664,74 +664,74 @@ public class SqliteManualDao : IDao
 
 // May 2025 - Start of summer
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (28, 2, '2025-05-02 11:30:00', '2025-05-02 11:40:00', 'Completed', 1, 8, 55.90, 2, 1),
-    (29, 1, '2025-05-08 13:45:00', '2025-05-08 13:55:00', 'Completed', NULL, NULL, 62.40, 1, 2),
-    (30, 2, '2025-05-12 16:20:00', '2025-05-12 16:30:00', 'Completed', 2, 9, 79.20, 2, 1),
-    (31, 1, '2025-05-18 19:00:00', NULL, 'Pending', 1, NULL, 47.60, NULL, 1),
-    (32, 2, '2025-05-22 12:15:00', '2025-05-22 12:25:00', 'Completed', NULL, 1, 51.30, 1, 2)",
+    (28, 2, '2024-05-02 11:30:00', '2024-05-02 11:40:00', 'Completed', 1, 8, 55.90, 2, 1),
+    (29, 1, '2024-05-08 13:45:00', '2024-05-08 13:55:00', 'Completed', NULL, NULL, 62.40, 1, 2),
+    (30, 2, '2024-05-12 16:20:00', '2024-05-12 16:30:00', 'Completed', 2, 9, 79.20, 2, 1),
+    (31, 1, '2024-05-18 19:00:00', NULL, 'Pending', 1, NULL, 47.60, NULL, 1),
+    (32, 2, '2024-05-22 12:15:00', '2024-05-22 12:25:00', 'Completed', NULL, 1, 51.30, 1, 2)",
 
-// June 2025 - Summer peak
+// June 2024 - Summer peak
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (33, 1, '2025-06-01 14:00:00', '2025-06-01 14:10:00', 'Completed', 2, 2, 92.70, 2, 1),
-    (34, 2, '2025-06-05 16:45:00', '2025-06-05 16:55:00', 'Completed', NULL, NULL, 58.90, 1, 2),
-    (35, 1, '2025-06-10 19:30:00', '2025-06-10 19:40:00', 'Completed', 1, 3, 66.40, 2, 1),
-    (36, 2, '2025-06-15 11:45:00', NULL, 'Pending', NULL, NULL, 44.20, NULL, 2),
-    (37, 1, '2025-06-20 13:20:00', '2025-06-20 13:30:00', 'Completed', 2, 4, 81.50, 1, 1)",
+    (33, 1, '2024-06-01 14:00:00', '2024-06-01 14:10:00', 'Completed', 2, 2, 92.70, 2, 1),
+    (34, 2, '2024-06-05 16:45:00', '2024-06-05 16:55:00', 'Completed', NULL, NULL, 58.90, 1, 2),
+    (35, 1, '2024-06-10 19:30:00', '2024-06-10 19:40:00', 'Completed', 1, 3, 66.40, 2, 1),
+    (36, 2, '2024-06-15 11:45:00', NULL, 'Pending', NULL, NULL, 44.20, NULL, 2),
+    (37, 1, '2024-06-20 13:20:00', '2024-06-20 13:30:00', 'Completed', 2, 4, 81.50, 1, 1)",
 
-// July 2025 - Peak summer
+// July 2024 - Peak summer
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (38, 2, '2025-07-02 15:30:00', '2025-07-02 15:40:00', 'Completed', 1, 5, 77.80, 2, 1),
-    (39, 1, '2025-07-08 18:15:00', '2025-07-08 18:25:00', 'Completed', NULL, NULL, 63.20, 1, 2),
-    (40, 2, '2025-07-12 20:00:00', '2025-07-12 20:10:00', 'Completed', 2, 6, 85.90, 2, 1),
-    (41, 1, '2025-07-18 12:45:00', NULL, 'Pending', 1, NULL, 49.70, NULL, 1),
-    (42, 2, '2025-07-22 14:30:00', '2025-07-22 14:40:00', 'Completed', NULL, 7, 72.40, 1, 2)",
+    (38, 2, '2024-07-02 15:30:00', '2024-07-02 15:40:00', 'Completed', 1, 5, 77.80, 2, 1),
+    (39, 1, '2024-07-08 18:15:00', '2024-07-08 18:25:00', 'Completed', NULL, NULL, 63.20, 1, 2),
+    (40, 2, '2024-07-12 20:00:00', '2024-07-12 20:10:00', 'Completed', 2, 6, 85.90, 2, 1),
+    (41, 1, '2024-07-18 12:45:00', NULL, 'Pending', 1, NULL, 49.70, NULL, 1),
+    (42, 2, '2024-07-22 14:30:00', '2024-07-22 14:40:00', 'Completed', NULL, 7, 72.40, 1, 2)",
 
-// August 2025 - Late summer
+// August 2024 - Late summer
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (43, 1, '2025-08-01 16:00:00', '2025-08-01 16:10:00', 'Completed', 2, 8, 94.30, 2, 1),
-    (44, 2, '2025-08-05 19:30:00', '2025-08-05 19:40:00', 'Completed', NULL, NULL, 57.60, 1, 2),
-    (45, 1, '2025-08-10 11:45:00', '2025-08-10 11:55:00', 'Completed', 1, 9, 68.20, 2, 1),
-    (46, 2, '2025-08-15 13:20:00', NULL, 'Pending', NULL, NULL, 45.80, NULL, 2),
-    (47, 1, '2025-08-20 15:45:00', '2025-08-20 15:55:00', 'Completed', 2, 1, 83.10, 1, 1)",
+    (43, 1, '2024-08-01 16:00:00', '2024-08-01 16:10:00', 'Completed', 2, 8, 94.30, 2, 1),
+    (44, 2, '2024-08-05 19:30:00', '2024-08-05 19:40:00', 'Completed', NULL, NULL, 57.60, 1, 2),
+    (45, 1, '2024-08-10 11:45:00', '2024-08-10 11:55:00', 'Completed', 1, 9, 68.20, 2, 1),
+    (46, 2, '2024-08-15 13:20:00', NULL, 'Pending', NULL, NULL, 45.80, NULL, 2),
+    (47, 1, '2024-08-20 15:45:00', '2024-08-20 15:55:00', 'Completed', 2, 1, 83.10, 1, 1)",
 
-// September 2025 - Back to school
+// September 2024 - Back to school
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (48, 2, '2025-09-02 12:15:00', '2025-09-02 12:25:00', 'Completed', 1, 2, 61.40, 2, 1),
-    (49, 1, '2025-09-08 14:30:00', '2025-09-08 14:40:00', 'Completed', NULL, NULL, 49.90, 1, 2)",
-// September 2025 - Back to school
+    (48, 2, '2024-09-02 12:15:00', '2024-09-02 12:25:00', 'Completed', 1, 2, 61.40, 2, 1),
+    (49, 1, '2024-09-08 14:30:00', '2024-09-08 14:40:00', 'Completed', NULL, NULL, 49.90, 1, 2)",
+// September 2024 - Back to school
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (50, 2, '2025-09-12 16:20:00', '2025-09-12 16:30:00', 'Completed', 2, 3, 82.80, 2, 1),
-    (51, 1, '2025-09-18 18:10:00', NULL, 'Pending', 1, NULL, 56.40, NULL, 1),
-    (52, 2, '2025-09-22 20:00:00', '2025-09-22 20:10:00', 'Completed', NULL, 4, 65.70, 1, 2),
-    (53, 1, '2025-09-25 11:15:00', '2025-09-25 11:25:00', 'Completed', 2, 5, 74.90, 2, 1),
-    (54, 2, '2025-09-28 13:40:00', '2025-09-28 13:50:00', 'Completed', 1, NULL, 43.20, 1, 1)",
+    (50, 2, '2024-09-12 16:20:00', '2024-09-12 16:30:00', 'Completed', 2, 3, 82.80, 2, 1),
+    (51, 1, '2024-09-18 18:10:00', NULL, 'Pending', 1, NULL, 56.40, NULL, 1),
+    (52, 2, '2024-09-22 20:00:00', '2024-09-22 20:10:00', 'Completed', NULL, 4, 65.70, 1, 2),
+    (53, 1, '2024-09-25 11:15:00', '2024-09-25 11:25:00', 'Completed', 2, 5, 74.90, 2, 1),
+    (54, 2, '2024-09-28 13:40:00', '2024-09-28 13:50:00', 'Completed', 1, NULL, 43.20, 1, 1)",
 
-// October 2025 - Autumn
+// October 2024 - Autumn
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (55, 1, '2025-10-02 15:30:00', '2025-10-02 15:40:00', 'Completed', 2, 6, 91.50, 2, 1),
-    (56, 2, '2025-10-07 17:45:00', '2025-10-07 17:55:00', 'Completed', NULL, NULL, 59.80, 1, 2),
-    (57, 1, '2025-10-12 19:30:00', '2025-10-12 19:40:00', 'Completed', 1, 7, 68.40, 2, 1),
-    (58, 2, '2025-10-18 12:15:00', NULL, 'Pending', NULL, NULL, 47.90, NULL, 2),
-    (59, 1, '2025-10-22 14:00:00', '2025-10-22 14:10:00', 'Completed', 2, 8, 83.20, 1, 1),
-    (60, 2, '2025-10-27 16:30:00', '2025-10-27 16:40:00', 'Completed', 1, 9, 72.60, 2, 1)",
+    (55, 1, '2024-10-02 15:30:00', '2024-10-02 15:40:00', 'Completed', 2, 6, 91.50, 2, 1),
+    (56, 2, '2024-10-07 17:45:00', '2024-10-07 17:55:00', 'Completed', NULL, NULL, 59.80, 1, 2),
+    (57, 1, '2024-10-12 19:30:00', '2024-10-12 19:40:00', 'Completed', 1, 7, 68.40, 2, 1),
+    (58, 2, '2024-10-18 12:15:00', NULL, 'Pending', NULL, NULL, 47.90, NULL, 2),
+    (59, 1, '2024-10-22 14:00:00', '2024-10-22 14:10:00', 'Completed', 2, 8, 83.20, 1, 1),
+    (60, 2, '2024-10-27 16:30:00', '2024-10-27 16:40:00', 'Completed', 1, 9, 72.60, 2, 1)",
 
-// November 2025 - Pre-holiday
+// November 2024 - Pre-holiday
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (61, 1, '2025-11-01 11:45:00', '2025-11-01 11:55:00', 'Completed', 2, 1, 88.90, 2, 1),
-    (62, 2, '2025-11-05 13:20:00', '2025-11-05 13:30:00', 'Completed', NULL, NULL, 55.30, 1, 2),
-    (63, 1, '2025-11-10 15:45:00', '2025-11-10 15:55:00', 'Completed', 1, 2, 76.40, 2, 1),
-    (64, 2, '2025-11-15 18:00:00', NULL, 'Pending', NULL, NULL, 62.10, NULL, 2),
-    (65, 1, '2025-11-20 20:15:00', '2025-11-20 20:25:00', 'Completed', 2, 3, 94.50, 1, 1),
-    (66, 2, '2025-11-25 12:30:00', '2025-11-25 12:40:00', 'Completed', 1, 4, 67.80, 2, 1)",
+    (61, 1, '2024-11-01 11:45:00', '2024-11-01 11:55:00', 'Completed', 2, 1, 88.90, 2, 1),
+    (62, 2, '2024-11-05 13:20:00', '2024-11-05 13:30:00', 'Completed', NULL, NULL, 55.30, 1, 2),
+    (63, 1, '2024-11-10 15:45:00', '2024-11-10 15:55:00', 'Completed', 1, 2, 76.40, 2, 1),
+    (64, 2, '2024-11-15 18:00:00', NULL, 'Pending', NULL, NULL, 62.10, NULL, 2),
+    (65, 1, '2024-11-20 20:15:00', '2024-11-20 20:25:00', 'Completed', 2, 3, 94.50, 1, 1),
+    (66, 2, '2024-11-25 12:30:00', '2024-11-25 12:40:00', 'Completed', 1, 4, 67.80, 2, 1)",
 
-// December 2025 - Holiday season
+// December 2024 - Holiday season
 @"INSERT OR IGNORE INTO Orders (Id, CustomerId, OrderDate, PaymentDate, Status, TableId, VoucherId, TotalAmount, PaymentMethodId, ServiceTypeId) VALUES 
-    (67, 1, '2025-12-02 14:15:00', '2025-12-02 14:25:00', 'Completed', 2, 5, 102.60, 2, 1),
-    (68, 2, '2025-12-07 16:45:00', '2025-12-07 16:55:00', 'Completed', NULL, NULL, 71.20, 1, 2),
-    (69, 1, '2025-12-12 19:00:00', '2025-12-12 19:10:00', 'Completed', 1, 6, 89.40, 2, 1),
-    (70, 2, '2025-12-18 11:30:00', NULL, 'Pending', NULL, NULL, 58.70, NULL, 2),
-    (71, 1, '2025-12-22 13:45:00', '2025-12-22 13:55:00', 'Completed', 2, 7, 96.30, 1, 1),
-    (72, 2, '2025-12-27 15:20:00', '2025-12-27 15:30:00', 'Completed', 1, 8, 84.50, 2, 1)",
+    (67, 1, '2024-12-02 14:15:00', '2024-12-02 14:25:00', 'Completed', 2, 5, 102.60, 2, 1),
+    (68, 2, '2024-12-07 16:45:00', '2024-12-07 16:55:00', 'Completed', NULL, NULL, 71.20, 1, 2),
+    (69, 1, '2024-12-12 19:00:00', '2024-12-12 19:10:00', 'Completed', 1, 6, 89.40, 2, 1),
+    (70, 2, '2024-12-18 11:30:00', NULL, 'Pending', NULL, NULL, 58.70, NULL, 2),
+    (71, 1, '2024-12-22 13:45:00', '2024-12-22 13:55:00', 'Completed', 2, 7, 96.30, 1, 1),
+    (72, 2, '2024-12-27 15:20:00', '2024-12-27 15:30:00', 'Completed', 1, 8, 84.50, 2, 1)",
 
 // OrderDetails for September to December 2025
 @"INSERT OR IGNORE INTO OrderDetails (Id, OrderId, ProductId, Quantity, Price) VALUES 

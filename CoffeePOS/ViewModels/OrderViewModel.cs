@@ -123,6 +123,8 @@ public partial class OrderViewModel : ObservableRecipient, INavigationAware
                 _allOrdersDisplay.Add(orderDisplay);
             }
 
+            _allOrdersDisplay = new ObservableCollection<OrderDisplay>(_allOrdersDisplay.OrderByDescending(o => o.OrderDate));
+
             UpdatePagination();
             LogMessage("DEBUG", $"OrderViewModel.LoadOrders: Loaded {_allOrdersDisplay.Count} orders");
         }

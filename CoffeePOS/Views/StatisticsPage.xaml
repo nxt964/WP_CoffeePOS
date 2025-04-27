@@ -94,7 +94,7 @@
                             CornerRadius="8" Padding="16" Margin="0,0,8,0">
                         <StackPanel>
                             <TextBlock Text="Total Revenue" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
-                            <TextBlock Text="{x:Bind ViewModel.TotalRevenue, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
+                            <TextBlock Text="{x:Bind ViewModel.TotalRevenue, Mode=OneWay, Converter={StaticResource PriceFormatter}}" 
                                        FontSize="24" FontWeight="SemiBold" Foreground="#0078D7"/>
                             <TextBlock Text="{x:Bind ViewModel.OrderCount, Mode=OneWay, Converter={StaticResource OrderCountFormatter}}" 
                                        Margin="0,8,0,0" Opacity="0.6"/>
@@ -107,7 +107,7 @@
                             CornerRadius="8" Padding="16" Margin="8,0">
                         <StackPanel>
                             <TextBlock Text="Total Costs" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
-                            <TextBlock Text="{x:Bind ViewModel.TotalCosts, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
+                            <TextBlock Text="{x:Bind ViewModel.TotalCosts, Mode=OneWay, Converter={StaticResource PriceFormatter}}" 
                                        FontSize="24" FontWeight="SemiBold" Foreground="#E81123"/>
                             <TextBlock Text="{x:Bind ViewModel.IngredientTransactionCount, Mode=OneWay, Converter={StaticResource TransactionCountFormatter}}" 
                                        Margin="0,8,0,0" Opacity="0.6"/>
@@ -120,7 +120,7 @@
                             CornerRadius="8" Padding="16" Margin="8,0">
                         <StackPanel>
                             <TextBlock Text="Net Profit" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
-                            <TextBlock Text="{x:Bind ViewModel.NetProfit, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
+                            <TextBlock Text="{x:Bind ViewModel.NetProfit, Mode=OneWay, Converter={StaticResource PriceFormatter}}" 
                                        FontSize="24" FontWeight="SemiBold" Foreground="#107C10"/>
                             <TextBlock Text="{x:Bind ViewModel.ProfitMargin, Mode=OneWay, Converter={StaticResource ProfitMarginFormatter}}" 
                                        Margin="0,8,0,0" Opacity="0.6"/>
@@ -133,7 +133,7 @@
                             CornerRadius="8" Padding="16" Margin="8,0,0,0">
                         <StackPanel>
                             <TextBlock Text="Average Order Value" FontSize="14" Opacity="0.6" Margin="0,0,0,4"/>
-                            <TextBlock Text="{x:Bind ViewModel.AverageOrderValue, Mode=OneWay, Converter={StaticResource CurrencyConverter}}" 
+                            <TextBlock Text="{x:Bind ViewModel.AverageOrderValue, Mode=OneWay, Converter={StaticResource PriceFormatter}}" 
                                        FontSize="24" FontWeight="SemiBold" Foreground="#00B7C3"/>
                             <TextBlock Text="{x:Bind ViewModel.TotalProductsSold, Mode=OneWay, Converter={StaticResource ItemsSoldFormatter}}" 
                                        Margin="0,8,0,0" Opacity="0.6"/>

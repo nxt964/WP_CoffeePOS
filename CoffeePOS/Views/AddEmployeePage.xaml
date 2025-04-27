@@ -39,7 +39,8 @@
                     Header="Phone"
                     Width="300"
                     HorizontalAlignment="Left"
-                    Text="{x:Bind ViewModel.Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{x:Bind ViewModel.Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="PhoneTextBox_TextChanged"/>
                 <TextBox
                     Header="Salary"
                     Width="300"
